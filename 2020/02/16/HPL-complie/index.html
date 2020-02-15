@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="在给我们的cpu添加非对齐指令时，最后的总结。">
+  <meta name="description" content="关于编译BLAS&#x2F;CBLAS，编译HPL以及HPL的优化。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mips ll and sc">
-<meta property="og:url" content="http://yoursite.com/2019/12/21/mips-ll-and-sc/index.html">
+<meta property="og:title" content="HPL complie">
+<meta property="og:url" content="http://yoursite.com/2020/02/16/HPL-complie/index.html">
 <meta property="og:site_name" content="rain的随笔">
-<meta property="og:description" content="在给我们的cpu添加非对齐指令时，最后的总结。">
+<meta property="og:description" content="关于编译BLAS&#x2F;CBLAS，编译HPL以及HPL的优化。">
 <meta property="og:locale" content="zh">
-<meta property="article:published_time" content="2019-12-20T18:51:12.000Z">
-<meta property="article:modified_time" content="2020-02-13T10:48:38.431Z">
+<meta property="article:published_time" content="2020-02-15T16:07:30.000Z">
+<meta property="article:modified_time" content="2020-02-15T16:16:34.544Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="数学 计算机 御坂美琴">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/12/21/mips-ll-and-sc/">
+<link rel="canonical" href="http://yoursite.com/2020/02/16/HPL-complie/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>mips ll and sc | rain的随笔</title>
+  <title>HPL complie | rain的随笔</title>
   
 
 
@@ -145,7 +145,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/21/mips-ll-and-sc/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/16/HPL-complie/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -158,7 +158,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          mips ll and sc
+          HPL complie
         </h1>
 
         <div class="post-meta">
@@ -167,16 +167,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2019-12-21 02:51:12" itemprop="dateCreated datePublished" datetime="2019-12-21T02:51:12+08:00">2019-12-21</time>
+              <time title="Created: 2020-02-16 00:07:30 / Modified: 00:16:34" itemprop="dateCreated datePublished" datetime="2020-02-16T00:07:30+08:00">2020-02-16</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-13 18:48:38" itemprop="dateModified" datetime="2020-02-13T18:48:38+08:00">2020-02-13</time>
-              </span>
 
           
   
@@ -187,13 +181,13 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2019/12/21/mips-ll-and-sc/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/12/21/mips-ll-and-sc/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/02/16/HPL-complie/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/16/HPL-complie/" itemprop="commentCount"></span>
     </a>
   </span>
   
   
-            <div class="post-description">在给我们的cpu添加非对齐指令时，最后的总结。</div>
+            <div class="post-description">关于编译BLAS/CBLAS，编译HPL以及HPL的优化。</div>
 
         </div>
       </header>
@@ -204,20 +198,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="非对齐指令总结"><a href="#非对齐指令总结" class="headerlink" title="非对齐指令总结"></a>非对齐指令总结</h1><h2 id="1-大端与小端"><a href="#1-大端与小端" class="headerlink" title="1 大端与小端"></a>1 大端与小端</h2><ul>
-<li>大端:数据的高位位于内存的低地址，数据的地位位于内存的高地址。</li>
-<li>小端:与大端相反。</li>
-</ul>
-<p>事实上大端更符合人的思维，因为在写一个数字时人们更习惯从高位写到低位，且高位是写在左边的。而这可以直接和内存的“图像”对应，而小端则需要把每个字的字节地址颠倒一下才可以。<br>例如，一个32位的整数0xffeeddcc，在内存里的存储情况如下。<em>（非对齐，起始地址为0x01）</em></p>
-<p><strong>大端</strong>:<br>           0  1  2  3<br>0x00    00ffeedd<br>0x01    cc556677<br><strong>小端</strong>:<br>           3  2  1  0<br>0x00    eeddcc00<br>0x01    776655ff<br><em>ps.假设除去该整数存储的空间，字节地址与存储的十六进制数对应，即地址为0x01存11，0x05存55，这点用来突出字节地址是多少。</em></p>
-<h2 id="2非对齐指令"><a href="#2非对齐指令" class="headerlink" title="2非对齐指令"></a>2非对齐指令</h2><p>instruction<br>lwl/swl, lwr/swr<br>usage<br>lwl t0, offset(s0)</p>
-<p><em>其中的left，与shift left的“左”都表示数据的高位。right则表示数据的低位。</em></p>
-<p>lwl表示将内存对应地址所在的字（align_address，即抹掉地址低两位对应地址）的数据低位复制到寄存器数据的高位。寄存器其它部分不变。</p>
-<p>swl则表示将寄存器的数据高位复制到内存对应数据低位。其它部分不变。<br>即<br>lwl/swl<br>寄存器数据高位↹内存数据低位<br>lwr/swr<br>寄存器数据低位↹内存数据高位</p>
-<h3 id="1-从-1中读取该整数实例"><a href="#1-从-1中读取该整数实例" class="headerlink" title="1 从#1中读取该整数实例"></a>1 从#1中读取该整数实例</h3><p>大端<br>lwl s0, 0(1)<br>lwr s0, 3(1)<br>小端<br>lwr s0, 0(1)<br>lwl s0, 3(1)</p>
-<p><em>将整数以图中所示存储到内存中只需将lw*改为sw*。</em></p>
-<p>可以以此定义非对齐加载、存储伪指令，<br>如uld(rd, rb)表示非对齐load，加载内存[rb+3:rb]的数据，<br>uld(rd, rb)=&gt;<br>lwl rd, 0(rb)<br>lwr rd, 3(rb)<br><em>（可能uld是加载8字节，待确认）</em></p>
-<h3 id="2-关于load-store多少字节"><a href="#2-关于load-store多少字节" class="headerlink" title="2 关于load/store多少字节"></a>2 关于load/store多少字节</h3><p>n为地址低2位，n=addr[1:0]<br>大端<br>lwl/swl  4-n<br>lwr/swr   n+1<br>小端<br>lwr/swr 4-n<br>lwl/swl n+1</p>
+        <h1 id="运行HPL"><a href="#运行HPL" class="headerlink" title="运行HPL"></a>运行HPL</h1><h2 id="编译BLAS-CBLAS"><a href="#编译BLAS-CBLAS" class="headerlink" title="编译BLAS/CBLAS"></a>编译BLAS/CBLAS</h2><p>BLAS为fortran接口的库，CBLAS为C语言接口的库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">tar zxf blas-3.8.0.tgz </span><br><span class="line">tar zxf cblas.tgz</span><br><span class="line"><span class="built_in">cd</span> BLAS-3.8.0</span><br><span class="line">make <span class="comment">#生成blas_LINUX.a</span></span><br><span class="line">cp blas_LINUX.a ../CBLAS</span><br><span class="line"><span class="built_in">cd</span> ../CBLAS</span><br><span class="line">vi Makefile.in</span><br><span class="line"><span class="comment">#修改</span></span><br><span class="line"><span class="comment"># BLLIB = ../blas_LINUX.a</span></span><br><span class="line">make <span class="comment">#在lib/下生成cblas_LINUX.a</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="编译HPL"><a href="#编译HPL" class="headerlink" title="编译HPL"></a>编译HPL</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tar zxf hpl-2.3.tar.gz </span><br><span class="line"><span class="built_in">cd</span> hpl-2.3</span><br><span class="line">cp setup/Make.Linux_PII_CBLAS ./Make.&lt;arch&gt; <span class="comment">#在top-level 文件夹下</span></span><br><span class="line">vi Make.&lt;arch&gt; <span class="comment">#修改</span></span><br><span class="line">make &lt;arch&gt; <span class="comment">#在bin/&lt;arch&gt;/下生成HPL.dat xhpl</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Make-示例"><a href="#Make-示例" class="headerlink" title="Make.示例"></a>Make.<arch>示例</h3><h4 id="OpenMPI-CBLAS"><a href="#OpenMPI-CBLAS" class="headerlink" title="OpenMPI+CBLAS"></a>OpenMPI+CBLAS</h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ARCH         = &lt;arch&gt;</span><br><span class="line"></span><br><span class="line">TOPdir       = /home/mpiuser/hpl-2.3</span><br><span class="line"></span><br><span class="line">MPdir        = /path/to/OpenMPI</span><br><span class="line">MPinc        = -I<span class="variable">$(MPdir)</span>/<span class="keyword">include</span></span><br><span class="line">MPlib        = <span class="variable">$(MPdir)</span>/lib/libmpi.so</span><br><span class="line"></span><br><span class="line">LAdir        = </span><br><span class="line">LAinc        = </span><br><span class="line">LAlib        = path/to/cblas_LINUX.a path/to/blas_LINUX.a <span class="comment">#顺序不能改变，cblas依赖blas</span></span><br><span class="line"></span><br><span class="line">HPL_OPTS     = -DHPL_CALL_CBLAS </span><br><span class="line"></span><br><span class="line">CC           = mpicc</span><br><span class="line">LINKER       = mpif77</span><br></pre></td></tr></table></figure>
+
+<h2 id="HPL优化"><a href="#HPL优化" class="headerlink" title="HPL优化"></a>HPL优化</h2><h3 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h3><p>计算次数：</p>
+<p>$$<br>#Ns \times #NBs \times #(Ps, Qs) \times #PFACTs \times #NBMINs \times #BCASTs \times #DEPTHs<br>$$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">HPLinpack benchmark input file</span><br><span class="line">Innovative Computing Laboratory, University of Tennessee</span><br><span class="line">HPL.out      output file name (if any)</span><br><span class="line">6            device out (6&#x3D;stdout,7&#x3D;stderr,file)</span><br><span class="line">1            # of problems sizes (N)</span><br><span class="line">8192         Ns</span><br><span class="line">1            # of NBs</span><br><span class="line">128          NBs</span><br><span class="line">0            PMAP process mapping (0&#x3D;Row-,1&#x3D;Column-major)</span><br><span class="line">3            # of process grids (P x Q)</span><br><span class="line">2 1 4        Ps</span><br><span class="line">2 4 1        Qs</span><br><span class="line">16.0         threshold</span><br><span class="line">3            # of panel fact</span><br><span class="line">0 1 2        PFACTs (0&#x3D;left, 1&#x3D;Crout, 2&#x3D;Right)</span><br><span class="line">2            # of recursive stopping criterium</span><br><span class="line">2 4          NBMINs (&gt;&#x3D; 1)</span><br><span class="line">2            # of panels in recursion</span><br><span class="line">2            NDIVs</span><br><span class="line">3            # of recursive panel fact.</span><br><span class="line">0 1 2        RFACTs (0&#x3D;left, 1&#x3D;Crout, 2&#x3D;Right)</span><br><span class="line">1            # of broadcast</span><br><span class="line">0            BCASTs (0&#x3D;1rg,1&#x3D;1rM,2&#x3D;2rg,3&#x3D;2rM,4&#x3D;Lng,5&#x3D;LnM)</span><br><span class="line">1            # of lookahead depth</span><br><span class="line">0            DEPTHs (&gt;&#x3D;0)</span><br><span class="line">2            SWAP (0&#x3D;bin-exch,1&#x3D;long,2&#x3D;mix)</span><br><span class="line">64           swapping threshold</span><br><span class="line">0            L1 in (0&#x3D;transposed,1&#x3D;no-transposed) form</span><br><span class="line">0            U  in (0&#x3D;transposed,1&#x3D;no-transposed) form</span><br><span class="line">1            Equilibration (0&#x3D;no,1&#x3D;yes)</span><br><span class="line">8            memory alignment in double (&gt; 0)</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -233,13 +224,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/12/21/write-blog-in-PC-through-a-ssh-link-to-mobile-phone/" rel="prev" title="write blog in PC through a ssh link to mobile phone">
-      <i class="fa fa-chevron-left"></i> write blog in PC through a ssh link to mobile phone
+    <a href="/2020/02/14/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%A4%B1%E7%9C%A0/" rel="prev" title="HPL complie">
+      <i class="fa fa-chevron-left"></i> HPL complie
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/01/07/RISC-V-trend/" rel="next" title="RISC-V trend">
-      RISC-V trend <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -300,7 +288,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#非对齐指令总结"><span class="nav-number">1.</span> <span class="nav-text">非对齐指令总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-大端与小端"><span class="nav-number">1.1.</span> <span class="nav-text">1 大端与小端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2非对齐指令"><span class="nav-number">1.2.</span> <span class="nav-text">2非对齐指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-从-1中读取该整数实例"><span class="nav-number">1.2.1.</span> <span class="nav-text">1 从#1中读取该整数实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-关于load-store多少字节"><span class="nav-number">1.2.2.</span> <span class="nav-text">2 关于load&#x2F;store多少字节</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#运行HPL"><span class="nav-number">1.</span> <span class="nav-text">运行HPL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译BLAS-CBLAS"><span class="nav-number">1.1.</span> <span class="nav-text">编译BLAS&#x2F;CBLAS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译HPL"><span class="nav-number">1.2.</span> <span class="nav-text">编译HPL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Make-示例"><span class="nav-number">1.2.1.</span> <span class="nav-text">Make.示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#OpenMPI-CBLAS"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">OpenMPI+CBLAS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HPL优化"><span class="nav-number">1.3.</span> <span class="nav-text">HPL优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置参数"><span class="nav-number">1.3.1.</span> <span class="nav-text">配置参数</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
