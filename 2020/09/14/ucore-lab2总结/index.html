@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="概述回顾实验1，我觉得需要学习的知识有：  gdb工具的使用 ELF文件的格式，以及readelf, objdump, objcopy工具的使用（查看各个section，查看符号表） x86汇编基础（通用寄存器，段寄存器，EIP，EFLAG等），GCC内联汇编格式（AT&amp;T格式） x86内存分段机制（GDT表，段描述符） x86中断处理机制（IDT表，中断向量 -&gt; 中断处理程序）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ucore lab2总结">
+<meta property="og:url" content="http://yoursite.com/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="概述回顾实验1，我觉得需要学习的知识有：  gdb工具的使用 ELF文件的格式，以及readelf, objdump, objcopy工具的使用（查看各个section，查看符号表） x86汇编基础（通用寄存器，段寄存器，EIP，EFLAG等），GCC内联汇编格式（AT&amp;T格式） x86内存分段机制（GDT表，段描述符） x86中断处理机制（IDT表，中断向量 -&gt; 中断处理程序）">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="http://yoursite.com/images/2020-09-14-ucore-lab2%E6%80%BB%E7%BB%93/image-20200913225912132.png">
+<meta property="article:published_time" content="2020-09-14T12:59:11.000Z">
+<meta property="article:modified_time" content="2020-09-14T13:02:19.107Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="数学 计算机 御坂美琴">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/2020-09-14-ucore-lab2%E6%80%BB%E7%BB%93/image-20200913225912132.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>ucore lab2总结 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">rain的随笔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A secret base!</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">24</span></a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ucore lab2总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-09-14 20:59:11 / Modified: 21:02:19" itemprop="dateCreated datePublished" datetime="2020-09-14T20:59:11+08:00">2020-09-14</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>回顾实验1，我觉得需要学习的知识有：</p>
+<ol>
+<li><strong>gdb</strong>工具的使用</li>
+<li><strong>ELF</strong>文件的格式，以及readelf, objdump, objcopy工具的使用（查看各个section，查看符号表）</li>
+<li>x86汇编基础（通用寄存器，段寄存器，EIP，EFLAG等），GCC<strong>内联汇编</strong>格式（AT&amp;T格式）</li>
+<li>x86内存<strong>分段</strong>机制（GDT表，段描述符）</li>
+<li>x86<strong>中断</strong>处理机制（IDT表，中断向量 -&gt; 中断处理程序）</li>
+<li>操作系统启动过程（BIOS-&gt;bootloader(第一扇区)-&gt;Kernel各阶段做的事情）</li>
+</ol>
+<p>而做完实验2后，我觉得需要学习的知识有：</p>
+<ol>
+<li>BIOS探测物理内存，Kernel打开分页时自带一个页表</li>
+<li><strong>二级页表</strong>进行虚拟地址转换</li>
+<li>物理内存管理 之 <strong>空闲块</strong>(以页为单位)管理（Page数据结构和物理页的对应，空闲块链表free_list，FirstHit分配连续的物理页）</li>
+<li>虚拟内存管理 之 <strong>有效虚拟页</strong>（表示一个程序可能使用的虚拟地址段，vma, mm数据结构）</li>
+<li>导致<strong>PageFault</strong>的原因（1. pte=0即从来没有被加载过, 2. 被swap out, 3. 访问权限错误）</li>
+<li><strong>FIFO页替换</strong>算法实现（page struct增加pra_page_link, pra_vaddr，mm-&gt;sm_priv(<strong>pra_list_header</strong>)记录最近使用的页序列；swap_manager）</li>
+</ol>
+<p>以下介绍一些难点</p>
+<a id="more"></a>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><h3 id="启动时的页表"><a href="#启动时的页表" class="headerlink" title="启动时的页表"></a>启动时的页表</h3><p>由于bootloader加载内核时，将地址与上了一个0xfff_ffff，即抹去了最高位。而内核的虚地址为0xc010_0000 ~ 0xc012_4118。因此线性地址与物理地址的映射关系为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">线性地址 &#x3D; 物理地址 + 0xc000_0000</span><br></pre></td></tr></table></figure>
+
+<p>内核自带一个页目录表(4KB)和一个页表(4KB)用于完成该映射（映射了4M的空间）</p>
+<p>x86打开分页机制，只需提前将页目录表的起始地址加载到cr3寄存器，然后置上cr3的某一位即可<br>之后，cpu每次发出的地址都会被硬件转换为物理地址</p>
+<h3 id="自映射"><a href="#自映射" class="headerlink" title="自映射"></a>自映射</h3><p>主要作用是通过访问地址<code>VPT+offset</code>，便可以直接访问任意一个页表项（4G虚拟地址空间最多有1M个页表项），而不用先访问一次页目录项，转换成虚拟地址后再访问页表项。</p>
+<p>VPT是一个4M对齐的地址（低22位为0）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">boot_pgdir[PDX(VPT)] = PADDR(boot_pgdir) | PTE_P | PTE_W</span><br><span class="line"><span class="keyword">pte_t</span> * <span class="keyword">const</span> vpt = (<span class="keyword">pte_t</span> *) VPT</span><br><span class="line"><span class="keyword">pde_t</span> * <span class="keyword">const</span> vpd = (<span class="keyword">pde_t</span> *) PGADDR((PDX(VPT), PDX(VPT), <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>经过上面的步骤后考虑访问虚拟地址vpt和vpd会发生什么？<br>访问vpt时，经过页目录表的映射，映射到boot_pgdir自身，再经过一层映射（boot_pgdir作为页表），访问了boot_pgdir[0]对应的页表的第一个页表项。<br>依次访问vpt后的4M地址空间，便可以访问整个1M个页表项pte<br>访问vpd时，vpd则被映射到boot_pgdir自身所在页的起始地址，因此访问vpd后的4KB空间，可访问所有的页目录项。</p>
+<h4 id="print-pgdir输出"><a href="#print-pgdir输出" class="headerlink" title="print_pgdir输出"></a>print_pgdir输出</h4><p>——————– BEGIN ——————–<br>PDE(0e0) c0000000-f8000000 38000000 urw<br>  |– PTE(38000) c0000000-f8000000 38000000 -rw<br>PDE(001) fac00000-fb000000 00400000 -rw<br>  |– PTE(000e0) faf00000-fafe0000 000e0000 urw<br>  |– PTE(00001) fafeb000-fafec000 00001000 -rw<br>——————— END ———————</p>
+<p>print_pgdir的作用是输出页目录表和页表的整体情况，按照被<strong>连续映射</strong>的虚拟地址块的形式输出。</p>
+<p>print_pgdir先通过vpd访问boot_pgdir，找到一个被连续映射的虚拟地址块（以4M为单位），接着进一步通过vpt访问页表项找到更精确的连续虚拟地址块（以4KB为单位）。（上面已经说明可以通过vpt访问整个1M项pte）</p>
+<img src="/images/2020-09-14-ucore-lab2总结/image-20200913225912132.png" alt="image-20200913225912132" style="zoom: 80%;" />
+
+<h3 id="PageFault处理"><a href="#PageFault处理" class="headerlink" title="PageFault处理"></a>PageFault处理</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pagefault发生 -&gt; (vector14-&gt;__all_traps-&gt;trap)-&gt;trap_dispatch-&gt;pgfault_handler-&gt;do_pgfault</span><br></pre></td></tr></table></figure>
+
+<p>最关键的为do_pgfault函数，位于vmm.c中</p>
+<p>主要过程如下：</p>
+<ol>
+<li>调用find_vma，检查引起异常的是否为有效的虚拟地址</li>
+<li>检查权限（没太看懂作用）</li>
+<li>调用get_pte，如果pte全为0，表示第一次访问，调用pgdir_alloc_page随机分配一个物理页</li>
+<li>如果pte为一个swap项（之前被换出过），则调用<strong>swap_in</strong>函数（<em>调用alloc_page分配一个物理页，再调用swapfs_read函数将页从磁盘换入到内存</em>（该物理页））。最后更新页表项，让其指向该物理页。然后调用swap_map_swappable将该物理页添加到FIFO中（swap manager维护的链表）</li>
+</ol>
+<p>注：</p>
+<ol>
+<li>其中的pgdir_alloc_page函数只在这里使用到了。作用是调用alloc_page分配一个物理页，并将其添加到FIFO中</li>
+<li>alloc_page函数在空闲块不够时，便会调用<strong>swap_out</strong>函数。swap_out过程如下：<ol>
+<li>调用swap_out_victim函数找到被替换的页page（FIFO结尾）</li>
+<li>调用swapfs_write函数将该物理页从内存写到磁盘（扇区号对应page-&gt;pra_vaddr）</li>
+<li>通过page-&gt;pra_vaddr查找页表，并更新对应pte为swap项（这里如果遇到多个虚拟地址对应一个物理地址的情况怎么办呢？）</li>
+</ol>
+</li>
+</ol>
+<p>存在调用链kern_init()-&gt;vmm_init()-&gt;check_pgfault()</p>
+<p>其中check_pgfault函数在访问地址0x100时会触发pte全0的pagefault，分配物理页后便不会再产生了。</p>
+<p>（后面分析check_swap会产生触发swap的page fault）</p>
+<h3 id="FIFO页替换过程-check-swap过程"><a href="#FIFO页替换过程-check-swap过程" class="headerlink" title="FIFO页替换过程(check_swap过程)"></a>FIFO页替换过程(check_swap过程)</h3><p>存在调用链kern_init()-&gt;swap_init()-&gt;check_swap()</p>
+<p>下面分析check_swap的整个过程</p>
+<ol>
+<li>设置环境，最终：1. 空闲块链表包含4个物理页。2. 设置vma，0x1000~0x5000都是有效的虚拟地址</li>
+<li>调用check_content_set()，依次写了0x1000, 0x2000, …, 0x4000四个地址（分别用a, b, c, d表示），触发四次初始page fault。此时已经没有空闲页了</li>
+<li>调用check_content_access，依次访问c, a, d, b, e, b, a, b, c, d, e<ol>
+<li>访问c, a, d, b</li>
+<li>访问e时pgfault，pte全0，调用alloc_page导致swap out出a对应的物理页，标记a的页表项为swap项</li>
+<li>访问b</li>
+<li>访问a时pgfault，pte为swap项，调用swap in，swap in调用alloc_page又导致swap out出b对应的物理页，标记b的页表项为swap项，更新a的页表项为对应物理页。</li>
+<li>访问b时pgfault…</li>
+<li>…</li>
+</ol>
+</li>
+</ol>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">check_vma_struct() succeeded!</span><br><span class="line">page fault at 0x00000100: K&#x2F;W [no page found].</span><br><span class="line">check_pgfault() succeeded!</span><br><span class="line">check_vmm() succeeded.</span><br><span class="line">ide 0:      10000(sectors), &#39;QEMU HARDDISK&#39;.</span><br><span class="line">ide 1:     262144(sectors), &#39;QEMU HARDDISK&#39;.</span><br><span class="line">SWAP: manager &#x3D; fifo swap manager</span><br><span class="line">BEGIN check_swap: count 1, total 31964</span><br><span class="line">setup Page Table for vaddr 0X1000, so alloc a page</span><br><span class="line">setup Page Table vaddr 0~4MB OVER!</span><br><span class="line">set up init env for check_swap begin!</span><br><span class="line">page fault at 0x00001000: K&#x2F;W [no page found].</span><br><span class="line">page fault at 0x00002000: K&#x2F;W [no page found].</span><br><span class="line">page fault at 0x00003000: K&#x2F;W [no page found].</span><br><span class="line">page fault at 0x00004000: K&#x2F;W [no page found].</span><br><span class="line">set up init env for check_swap over!</span><br><span class="line">write Virt Page c in fifo_check_swap</span><br><span class="line">write Virt Page a in fifo_check_swap</span><br><span class="line">write Virt Page d in fifo_check_swap</span><br><span class="line">write Virt Page b in fifo_check_swap</span><br><span class="line">write Virt Page e in fifo_check_swap</span><br><span class="line">page fault at 0x00005000: K&#x2F;W [no page found].</span><br><span class="line">swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2</span><br><span class="line">write Virt Page b in fifo_check_swap</span><br><span class="line">write Virt Page a in fifo_check_swap</span><br><span class="line">page fault at 0x00001000: K&#x2F;W [no page found].</span><br><span class="line">swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3</span><br><span class="line">swap_in: load disk swap entry 2 with swap_page in vadr 0x1000</span><br><span class="line">write Virt Page b in fifo_check_swap</span><br><span class="line">page fault at 0x00002000: K&#x2F;W [no page found].</span><br><span class="line">swap_out: i 0, store page in vaddr 0x3000 to disk swap entry 4</span><br><span class="line">swap_in: load disk swap entry 3 with swap_page in vadr 0x2000</span><br><span class="line">write Virt Page c in fifo_check_swap</span><br><span class="line">page fault at 0x00003000: K&#x2F;W [no page found].</span><br><span class="line">swap_out: i 0, store page in vaddr 0x4000 to disk swap entry 5</span><br><span class="line">swap_in: load disk swap entry 4 with swap_page in vadr 0x3000</span><br><span class="line">write Virt Page d in fifo_check_swap</span><br><span class="line">page fault at 0x00004000: K&#x2F;W [no page found].</span><br><span class="line">swap_out: i 0, store page in vaddr 0x5000 to disk swap entry 6</span><br><span class="line">swap_in: load disk swap entry 5 with swap_page in vadr 0x4000</span><br><span class="line">write Virt Page e in fifo_check_swap</span><br><span class="line">page fault at 0x00005000: K&#x2F;W [no page found].</span><br><span class="line">swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2</span><br><span class="line">swap_in: load disk swap entry 6 with swap_page in vadr 0x5000</span><br><span class="line">write Virt Page a in fifo_check_swap</span><br><span class="line">page fault at 0x00001000: K&#x2F;R [no page found].</span><br><span class="line">swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3</span><br><span class="line">swap_in: load disk swap entry 2 with swap_page in vadr 0x1000</span><br><span class="line">count is 0, total is 7</span><br><span class="line">check_swap() succeeded!</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/07/%E5%85%B3%E4%BA%8E2020%E5%88%B0%E7%9B%AE%E5%89%8D%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%BB%E7%BB%93/" rel="prev" title="关于2020到目前的一个总结">
+      <i class="fa fa-chevron-left"></i> 关于2020到目前的一个总结
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程"><span class="nav-number">2.</span> <span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动时的页表"><span class="nav-number">2.1.</span> <span class="nav-text">启动时的页表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自映射"><span class="nav-number">2.2.</span> <span class="nav-text">自映射</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#print-pgdir输出"><span class="nav-number">2.2.1.</span> <span class="nav-text">print_pgdir输出</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PageFault处理"><span class="nav-number">2.3.</span> <span class="nav-text">PageFault处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FIFO页替换过程-check-swap过程"><span class="nav-number">2.4.</span> <span class="nav-text">FIFO页替换过程(check_swap过程)</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
