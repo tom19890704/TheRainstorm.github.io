@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="概述不想每次配置linux都需要重新去搜索，因此在自己平时折腾时顺便记录一下（长期更新）">
+  <meta name="description" content="[TOC] 概述不想每次配置linux都需要重新去搜索，因此在自己平时折腾时顺便记录一下（长期更新）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="安装linux后的配置">
 <meta property="og:url" content="http://yoursite.com/2020/10/11/%E5%AE%89%E8%A3%85linux%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="rain的随笔">
-<meta property="og:description" content="概述不想每次配置linux都需要重新去搜索，因此在自己平时折腾时顺便记录一下（长期更新）">
+<meta property="og:description" content="[TOC] 概述不想每次配置linux都需要重新去搜索，因此在自己平时折腾时顺便记录一下（长期更新）">
 <meta property="og:locale" content="zh">
 <meta property="article:published_time" content="2020-10-11T15:05:13.000Z">
-<meta property="article:modified_time" content="2020-10-11T15:10:36.371Z">
+<meta property="article:modified_time" content="2021-02-21T14:57:11.274Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="数学 计算机 御坂美琴">
 <meta name="twitter:card" content="summary">
@@ -167,10 +167,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-10-11 23:05:13 / Modified: 23:10:36" itemprop="dateCreated datePublished" datetime="2020-10-11T23:05:13+08:00">2020-10-11</time>
+              <time title="Created: 2020-10-11 23:05:13" itemprop="dateCreated datePublished" datetime="2020-10-11T23:05:13+08:00">2020-10-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-02-21 22:57:11" itemprop="dateModified" datetime="2021-02-21T22:57:11+08:00">2021-02-21</time>
+              </span>
 
           
   
@@ -197,8 +203,39 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>不想每次配置linux都需要重新去搜索，因此在自己平时折腾时顺便记录一下（长期更新）</p>
+        <p>[TOC]</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>不想每次配置linux都需要重新去搜索，因此在自己平时折腾时顺便记录一下（长期更新）</p>
 <a id="more"></a>
+
+<h2 id="常用软件"><a href="#常用软件" class="headerlink" title="常用软件"></a>常用软件</h2><h3 id="中文输入法"><a href="#中文输入法" class="headerlink" title="中文输入法"></a>中文输入法</h3><p>下载谷歌拼音输入法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install fcitx-googlepinyin</span><br></pre></td></tr></table></figure>
+
+<p>然后在language support中将Keyboard input method从默认的iBus改成fcitx，重启电脑。</p>
+<blockquote>
+<p>如果安装系统时选择了English，而后面想改成中文。可以：</p>
+<ol>
+<li>将设置中的<strong>区域和语言</strong>改为中文。</li>
+<li>打开<strong>language support</strong>，第一次打开会显示语言支持没有完全安装，会安装中文字体等。</li>
+</ol>
+</blockquote>
+<h3 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h3><ul>
+<li>使用qv2ray<ol>
+<li>在github上下载qv2ray, v2ray</li>
+<li>配置qv2ray core</li>
+<li>导入链接</li>
+</ol>
+</li>
+</ul>
+<h3 id="谷歌浏览器"><a href="#谷歌浏览器" class="headerlink" title="谷歌浏览器"></a>谷歌浏览器</h3><ul>
+<li><p>使用chromium（chromium也可以使用google帐号进行同步）</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install chromium-broswer</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用google chrome</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;dl.google.com&#x2F;linux&#x2F;direct&#x2F;google-chrome-stable_current_amd64.deb</span><br><span class="line">cd &#x2F;path</span><br><span class="line">sudo apt install .&#x2F;google-chrome-stable_current_amd64.deb</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="qq"><a href="#qq" class="headerlink" title="qq"></a>qq</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O- https://deepin-wine.i-m.dev/setup.sh | sh</span><br><span class="line">sudo apt-get install deepin.com.qq.im</span><br></pre></td></tr></table></figure>
 
 <h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><h3 id="zsh"><a href="#zsh" class="headerlink" title="zsh"></a>zsh</h3><h4 id="安装zsh并设置为默认shell"><a href="#安装zsh并设置为默认shell" class="headerlink" title="安装zsh并设置为默认shell"></a>安装zsh并设置为默认shell</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ sudo apt install zsh  #安装zsh，换源参考[1]</span><br><span class="line"></span><br><span class="line">➜  ~ chsh #设置zsh为默认</span><br><span class="line">Password:</span><br><span class="line">Changing the login shell for rain</span><br><span class="line">Enter the new value, or press ENTER for the default</span><br><span class="line">        Login Shell [&#x2F;bin&#x2F;zsh]: &#x2F;bin&#x2F;zsh</span><br></pre></td></tr></table></figure>
 
@@ -213,18 +250,49 @@
 <h5 id="autojump"><a href="#autojump" class="headerlink" title="autojump"></a><a href="https://github.com/wting/autojump" target="_blank" rel="noopener">autojump</a></h5><p>作用：j直接跳转到任意一个目录</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone git:&#x2F;&#x2F;github.com&#x2F;wting&#x2F;autojump.git</span><br><span class="line"></span><br><span class="line">cd autojump</span><br><span class="line">.&#x2F;install.py or .&#x2F;uninstall.py</span><br><span class="line">#需要安装python，如果安装了python3但是输入python不存在，可以设置一个软连接，如sudo ln -s &#x2F;usr&#x2F;bin&#x2F;python3 &#x2F;usr&#x2F;bin&#x2F;python</span><br></pre></td></tr></table></figure>
 
-<h2 id="常见操作参考"><a href="#常见操作参考" class="headerlink" title="常见操作参考"></a>常见操作参考</h2><ol>
-<li><p>apt换源</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &quot;s&#x2F;archive.ubuntu.com&#x2F;mirrors.aliyun.com&#x2F;g&quot; &#x2F;etc&#x2F;apt&#x2F;sources.list</span><br></pre></td></tr></table></figure>
+<h2 id="美化"><a href="#美化" class="headerlink" title="美化"></a>美化</h2><h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><ul>
+<li><p>dock栏</p>
+<p>在设置-&gt;外观中设置dock栏为<strong>底部</strong>、<strong>自动隐藏</strong>，并设置合适的大小。</p>
+</li>
+<li><p>背景图（没有找到简单的轮播方法）</p>
+<p>暂时还没有找到轮播的方法</p>
+</li>
+<li><p>gnome-terminal</p>
+<p>设置背景颜色和透明度</p>
+</li>
+</ul>
+<h2 id="常用操作参考"><a href="#常用操作参考" class="headerlink" title="常用操作参考"></a>常用操作参考</h2><h3 id="apt相关"><a href="#apt相关" class="headerlink" title="apt相关"></a>apt相关</h3><h4 id="apt换源"><a href="#apt换源" class="headerlink" title="apt换源"></a>apt换源</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &quot;s&#x2F;archive.ubuntu.com&#x2F;mirrors.aliyun.com&#x2F;g&quot; &#x2F;etc&#x2F;apt&#x2F;sources.list</span><br></pre></td></tr></table></figure>
 
 <p><a href="https://developer.aliyun.com/mirror/ubuntu" target="_blank" rel="noopener">aliyun mirror ubuntu</a></p>
-</li>
-<li><p>git设置代理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git config --global https.proxy http:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line">git config --global https.proxy https:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line">git config --global http.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br><span class="line">git config --global https.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br></pre></td></tr></table></figure>
+<h4 id="apt-get临时使用sock代理"><a href="#apt-get临时使用sock代理" class="headerlink" title="apt-get临时使用sock代理"></a>apt-get临时使用sock代理</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get -o Acquire::http::proxy=<span class="string">"socks5h://127.0.0.1:1089/"</span> install typora</span><br></pre></td></tr></table></figure>
+
+<h3 id="git设置代理"><a href="#git设置代理" class="headerlink" title="git设置代理"></a>git设置代理</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git config --global https.proxy http:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line">git config --global https.proxy https:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line">git config --global http.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br><span class="line">git config --global https.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br></pre></td></tr></table></figure>
 
 <p><a href="https://git-scm.com/docs/git-config#Documentation/git-config.txt-httpproxy" target="_blank" rel="noopener">git doc: http.proxy</a></p>
+<h3 id="恢复默认-bashrc"><a href="#恢复默认-bashrc" class="headerlink" title="恢复默认.bashrc"></a>恢复默认.bashrc</h3><ul>
+<li>在ubuntu中，默认的bashrc文件存储在 <code>/etc/skel/.bashrc</code></li>
+</ul>
+<h3 id="vim复制粘贴（系统剪贴板）"><a href="#vim复制粘贴（系统剪贴板）" class="headerlink" title="vim复制粘贴（系统剪贴板）"></a>vim复制粘贴（系统剪贴板）</h3><ol>
+<li><p>首先确认vim是否开启了clipboard功能</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim --version |grep clipboard <span class="comment">#如果显示出-clipboard则需要重装vim</span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有则重装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt remove vim</span><br><span class="line">sudo apt install vim-gtk</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用鼠标选中内容，输入<code>&quot;+p</code>命令便可将内容复制到剪贴板。</p>
+<p>使用<code>&quot;+p</code>将剪贴板内容到当前位置。</p>
+<p>或者</p>
+<p> 然后在.vim/vimrc中设置快捷键ctrl-c, ctrl-v。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;clipboard</span><br><span class="line">map &lt;C-c&gt; &quot;+y&lt;CR&gt;</span><br><span class="line">map &lt;C-v&gt; &quot;+p&lt;CR&gt;</span><br></pre></td></tr></table></figure>
+
+<p> 此时便可以在选中内容时按ctrl-c复制到系统剪切板。处于normal模式时ctrl-v粘贴了。</p>
 </li>
 </ol>
+<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><p>vim中包含许多不同功能的寄存器，用于存储在vim中复制的内容。可以通过:reg命令查看vim中各寄存器的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">:reg	#查看vim中的寄存器</span><br><span class="line"></span><br><span class="line">    &quot;&quot;      &#x2F;&#x2F; 默认unnamed寄存器，最近一次&quot;d&quot;,&quot;c&quot;,&quot;s&quot;,&quot;x&quot;,&quot;y&quot;复制，删除，修改内容</span><br><span class="line">    &quot;0      &#x2F;&#x2F; 最近一次&quot;y&quot;复制内容</span><br><span class="line">    &quot;1      &#x2F;&#x2F; 最近一次&quot;d&quot;,&quot;c&quot;,&quot;s&quot;,&quot;x&quot;删除，修改内容</span><br><span class="line">    &quot;2      &#x2F;&#x2F; 上一次&quot;d&quot;,&quot;c&quot;,&quot;s&quot;,&quot;x&quot;删除，修改内容，[3-9]类推</span><br><span class="line">    &quot;a      &#x2F;&#x2F; 字母寄存器，供用户指定使用，比如&quot;ay就是复制到&quot;a寄存器，[b-z]类推</span><br><span class="line">    &quot;-      &#x2F;&#x2F; 少于一行的&quot;d&quot;,&quot;c&quot;,&quot;x&quot;删除内容</span><br><span class="line">    &quot;.      &#x2F;&#x2F; 只读寄存器</span><br><span class="line">    &quot;:      &#x2F;&#x2F; 只读寄存器</span><br><span class="line">    &quot;%     	&#x2F;&#x2F; 只读寄存器</span><br><span class="line">    &quot;#     	&#x2F;&#x2F; 只读寄存器</span><br><span class="line"></span><br><span class="line">    &quot;+      &#x2F;&#x2F; 映射系统剪贴板 (有的默认设置不支持)</span><br><span class="line">    &quot;*      &#x2F;&#x2F; 映射系统剪贴板 (有的默认设置不支持)</span><br></pre></td></tr></table></figure>
+
+<p>vim默认复制到的寄存器是<code>&quot;&quot;</code>寄存器，要想复制到系统剪切板，可以通过<code>&quot;+</code>寄存器（需要vim开启clipboard功能）</p>
+<p>在选中内容的情况下，按<code>y</code>默认将内容复制到<code>&quot;&quot;</code>寄存器。按<code>p</code>默认将<code>&quot;&quot;</code>寄存器内容复制到当前位置。要想复制到指定寄存器，输入寄存器名+y即可，粘贴时同理。</p>
 
     </div>
 
@@ -304,7 +372,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令行"><span class="nav-number">2.</span> <span class="nav-text">命令行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#zsh"><span class="nav-number">2.1.</span> <span class="nav-text">zsh</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装zsh并设置为默认shell"><span class="nav-number">2.1.1.</span> <span class="nav-text">安装zsh并设置为默认shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装oh-my-zsh并安装插件"><span class="nav-number">2.1.2.</span> <span class="nav-text">安装oh-my-zsh并安装插件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#zsh-autosuggestions"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">zsh-autosuggestions</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zsh-syntax-highlighting"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">zsh-syntax-highlighting</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#autojump"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">autojump</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见操作参考"><span class="nav-number">3.</span> <span class="nav-text">常见操作参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用软件"><span class="nav-number">2.</span> <span class="nav-text">常用软件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#中文输入法"><span class="nav-number">2.1.</span> <span class="nav-text">中文输入法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代理"><span class="nav-number">2.2.</span> <span class="nav-text">代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#谷歌浏览器"><span class="nav-number">2.3.</span> <span class="nav-text">谷歌浏览器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qq"><span class="nav-number">2.4.</span> <span class="nav-text">qq</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令行"><span class="nav-number">3.</span> <span class="nav-text">命令行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#zsh"><span class="nav-number">3.1.</span> <span class="nav-text">zsh</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装zsh并设置为默认shell"><span class="nav-number">3.1.1.</span> <span class="nav-text">安装zsh并设置为默认shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装oh-my-zsh并安装插件"><span class="nav-number">3.1.2.</span> <span class="nav-text">安装oh-my-zsh并安装插件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#zsh-autosuggestions"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">zsh-autosuggestions</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zsh-syntax-highlighting"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">zsh-syntax-highlighting</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#autojump"><span class="nav-number">3.1.2.3.</span> <span class="nav-text">autojump</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#美化"><span class="nav-number">4.</span> <span class="nav-text">美化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu"><span class="nav-number">4.1.</span> <span class="nav-text">Ubuntu</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用操作参考"><span class="nav-number">5.</span> <span class="nav-text">常用操作参考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apt相关"><span class="nav-number">5.1.</span> <span class="nav-text">apt相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#apt换源"><span class="nav-number">5.1.1.</span> <span class="nav-text">apt换源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#apt-get临时使用sock代理"><span class="nav-number">5.1.2.</span> <span class="nav-text">apt-get临时使用sock代理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git设置代理"><span class="nav-number">5.2.</span> <span class="nav-text">git设置代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#恢复默认-bashrc"><span class="nav-number">5.3.</span> <span class="nav-text">恢复默认.bashrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim复制粘贴（系统剪贴板）"><span class="nav-number">5.4.</span> <span class="nav-text">vim复制粘贴（系统剪贴板）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解释"><span class="nav-number">5.4.1.</span> <span class="nav-text">解释</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -358,7 +426,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
