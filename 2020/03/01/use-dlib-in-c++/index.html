@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="同样是关于dlib库的安装。但由于dlib可以不用预编译，官网上也没有提供预编译的版本，本文主要是介绍如何在项目中直接使用dlib。">
+  <meta name="description" content="同样是关于dlib库的安装。但由于dlib可以不用预编译，官网上也没有提供预编译的版本，本文主要是介绍如何在项目中直接使用dlib。在结尾总结了配置3d_face_reconstruction的过程（国创项目中需要用到，虽然并没有安装成功）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Use dlib in C++">
 <meta property="og:url" content="http://yoursite.com/2020/03/01/use-dlib-in-c++/index.html">
 <meta property="og:site_name" content="rain的随笔">
-<meta property="og:description" content="同样是关于dlib库的安装。但由于dlib可以不用预编译，官网上也没有提供预编译的版本，本文主要是介绍如何在项目中直接使用dlib。">
+<meta property="og:description" content="同样是关于dlib库的安装。但由于dlib可以不用预编译，官网上也没有提供预编译的版本，本文主要是介绍如何在项目中直接使用dlib。在结尾总结了配置3d_face_reconstruction的过程（国创项目中需要用到，虽然并没有安装成功）">
 <meta property="og:locale" content="zh">
 <meta property="article:published_time" content="2020-02-29T17:25:00.000Z">
-<meta property="article:modified_time" content="2020-02-29T17:35:28.000Z">
+<meta property="article:modified_time" content="2021-06-22T04:21:15.166Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="数学 计算机 御坂美琴">
 <meta name="twitter:card" content="summary">
@@ -116,7 +116,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">30</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">31</span></a>
 
   </li>
   </ul>
@@ -167,10 +167,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-03-01 01:25:00 / Modified: 01:35:28" itemprop="dateCreated datePublished" datetime="2020-03-01T01:25:00+08:00">2020-03-01</time>
+              <time title="Created: 2020-03-01 01:25:00" itemprop="dateCreated datePublished" datetime="2020-03-01T01:25:00+08:00">2020-03-01</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-06-22 12:21:15" itemprop="dateModified" datetime="2021-06-22T12:21:15+08:00">2021-06-22</time>
+              </span>
 
           
   
@@ -187,7 +193,7 @@
   </span>
   
   
-            <div class="post-description">同样是关于dlib库的安装。但由于dlib可以不用预编译，官网上也没有提供预编译的版本，本文主要是介绍如何在项目中直接使用dlib。</div>
+            <div class="post-description">同样是关于dlib库的安装。但由于dlib可以不用预编译，官网上也没有提供预编译的版本，本文主要是介绍如何在项目中直接使用dlib。在结尾总结了配置3d_face_reconstruction的过程（国创项目中需要用到，虽然并没有安装成功）</div>
 
         </div>
       </header>
@@ -232,6 +238,40 @@
 <li><p>调用dlib时出现USER_ERROR <strong>inconsistent_build_configuration</strong> see_dlib_faq_2错误。<br>需要将build/dlib/config.h文件拷贝到源码目录dlib-19.17/dlib进行覆盖。config.h文件内有其说明。</p>
 </li>
 </ul>
+<h2 id="配置3d-face-reconstruction总结"><a href="#配置3d-face-reconstruction总结" class="headerlink" title="配置3d_face_reconstruction总结"></a>配置3d_face_reconstruction总结</h2><h3 id="1-OpenCV"><a href="#1-OpenCV" class="headerlink" title="1. OpenCV"></a>1. OpenCV</h3><ol>
+<li><p>windows下载预编译版(只含有msvc编译的版本)</p>
+</li>
+<li><p>CMake直接使用find_packages即可。（需添加环境变量，以便找到OpenCV的config文件）</p>
+</li>
+</ol>
+<h3 id="2-dlib"><a href="#2-dlib" class="headerlink" title="2. dlib"></a>2. dlib</h3><ol>
+<li><p>官方推荐将代码直接包含到项目中编译（好处是没有ABI一致性问题）</p>
+<p>CMake中add_subdirectory(/path/to/dlib/top/dir)即可。（甚至可以自动从网上下载）</p>
+</li>
+</ol>
+<h3 id="3-boost"><a href="#3-boost" class="headerlink" title="3. boost"></a>3. boost</h3><ol>
+<li>分为只含有头文件的库和需要独立编译的库。</li>
+<li>官方编译方法为：<ol>
+<li>先build出Boost.Build（可以看作Boost的一个build工具）</li>
+<li>然后调用b2编译指定模块。（可以添加参数指定编译的库的路径）</li>
+<li>我的编译目录是stage/（库位于stage/lib/下）</li>
+</ol>
+</li>
+<li>CMake find_packages暂时是失败的。</li>
+</ol>
+<h3 id="4-eos"><a href="#4-eos" class="headerlink" title="4. eos"></a>4. eos</h3><ol>
+<li>只需要包含头文件即可(header only)，include和3rdparty</li>
+<li>顶层目录下的CMakeLists.txt默认勾选了编译example下的示例（需要boost的system, filesystem, program_options和openCV的core, higui, imgproc</li>
+<li>CMake直接add_subdirectory(/path/to/eos)比较方便。</li>
+</ol>
+<h3 id="5-Qt"><a href="#5-Qt" class="headerlink" title="5. Qt"></a>5. Qt</h3><ol>
+<li>官方介绍了如何使用CMake find_packages，自动tic, moc等。</li>
+</ol>
+<h3 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h3><ol>
+<li>学习Qt，能自己写界面。</li>
+<li>明白eos那个示例程序输入输出是什么</li>
+<li>最后，自己来改写eos的程序，自己写Qt程序，最后展示出来。</li>
+</ol>
 
     </div>
 
@@ -314,7 +354,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#use-dlib-in-c"><span class="nav-number">1.</span> <span class="nav-text">use dlib in c++</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#with-CMake-officially-recommend"><span class="nav-number">1.1.</span> <span class="nav-text">with CMake(officially recommend)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#with-GCC-in-terminal"><span class="nav-number">1.2.</span> <span class="nav-text">with GCC in terminal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#with-VisualStudio"><span class="nav-number">1.3.</span> <span class="nav-text">with VisualStudio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Installing-dlib-as-a-precompiled-library"><span class="nav-number">1.4.</span> <span class="nav-text">Installing dlib as a precompiled library</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#use-dlib-in-c"><span class="nav-number">1.</span> <span class="nav-text">use dlib in c++</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#with-CMake-officially-recommend"><span class="nav-number">1.1.</span> <span class="nav-text">with CMake(officially recommend)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#with-GCC-in-terminal"><span class="nav-number">1.2.</span> <span class="nav-text">with GCC in terminal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#with-VisualStudio"><span class="nav-number">1.3.</span> <span class="nav-text">with VisualStudio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Installing-dlib-as-a-precompiled-library"><span class="nav-number">1.4.</span> <span class="nav-text">Installing dlib as a precompiled library</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置3d-face-reconstruction总结"><span class="nav-number">2.</span> <span class="nav-text">配置3d_face_reconstruction总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-OpenCV"><span class="nav-number">2.1.</span> <span class="nav-text">1. OpenCV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-dlib"><span class="nav-number">2.2.</span> <span class="nav-text">2. dlib</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-boost"><span class="nav-number">2.3.</span> <span class="nav-text">3. boost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-eos"><span class="nav-number">2.4.</span> <span class="nav-text">4. eos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Qt"><span class="nav-number">2.5.</span> <span class="nav-text">5. Qt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TODO"><span class="nav-number">2.6.</span> <span class="nav-text">TODO</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -330,7 +370,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
