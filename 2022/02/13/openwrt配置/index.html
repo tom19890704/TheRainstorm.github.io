@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ipv6安装好openwrt(21.02)后，会默认开启并配置ipv6，电脑可以直接访问ipv6。但是该方式只有路由器能得到一个公网ipv6地址，路由器局域网内设备只有本地ipv6地址。类似于Openwrt开启了一层ipv6的NAT。而为了让连上路由器的所有设备获得公网ipv6地址，需要进行以下设置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openwrt配置">
+<meta property="og:url" content="http://yoursite.com/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="ipv6安装好openwrt(21.02)后，会默认开启并配置ipv6，电脑可以直接访问ipv6。但是该方式只有路由器能得到一个公网ipv6地址，路由器局域网内设备只有本地ipv6地址。类似于Openwrt开启了一层ipv6的NAT。而为了让连上路由器的所有设备获得公网ipv6地址，需要进行以下设置">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126181749809.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126181855902.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126184655662.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126182454486.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220104231823784.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220104232125544.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220212012558086.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220104232354879.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220125214526946.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220125214936634.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20210916172318383.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20210707233753989.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220122123740710.png">
+<meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
+<meta property="article:modified_time" content="2022-02-14T13:19:04.244Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="折腾">
+<meta property="article:tag" content="如何实现网络自由">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126181749809.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>openwrt配置 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">42</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openwrt配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-14 21:19:04" itemprop="dateModified" datetime="2022-02-14T21:19:04+08:00">2022-02-14</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="ipv6"><a href="#ipv6" class="headerlink" title="ipv6"></a>ipv6</h3><p>安装好openwrt(21.02)后，会默认开启并配置ipv6，电脑可以直接访问ipv6。但是该方式只有路由器能得到一个公网ipv6地址，路由器局域网内设备只有本地ipv6地址。类似于Openwrt开启了一层ipv6的NAT。而为了让连上路由器的所有设备获得公网ipv6地址，需要进行以下设置</p>
+<a id="more"></a>
+
+<h4 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h4><ul>
+<li><p>ICMPv6有多种报文格式，大体可以分为两类，差错报文和数据报文。ipv6使用ICMPv6中的一系列报文RS, RA, NS, NA（R–&gt; router, N–&gt;neighbor, S–&gt;solicitation, A–&gt;advertisement）来完成地址解析(通过ip获得MAC)、邻居不可达检测、地址冲突检测、地址分配(SLAAC)等任务。</p>
+</li>
+<li><p>SLAAC(Stateless Address Autoconfiguration)：无状态的地址自动配置协议。使用RA进行地址配置，特点是无状态的。DHCPv6则是有状态的。目前会混合使用这两个协议来配置ipv6。</p>
+<p>详细：一个接口up时，会发送一个RS报文请求网络前缀。其它设备返回一个RA报文。设备通过前缀+EUI64自动生成ipv6地址。设备的默认网关（路由表中::项）也被设置为响应者，同时设置一个网关的有效时间。其它设备每隔一段时间发送一个RA报文。200-600s</p>
+</li>
+</ul>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h5 id="WAN口为dhcp"><a href="#WAN口为dhcp" class="headerlink" title="WAN口为dhcp"></a>WAN口为dhcp</h5><p>这种情况，路由器为一个二级的路由器，直接转发WAN传来的RA报文即可。</p>
+<p>修改<code>/etc/config/dhcp</code></p>
+<ul>
+<li>lan和wan6 添加3个relay（其中wan6部分可能需要自己添加）</li>
+<li>设置一个master</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">config dhcp &#39;lan&#39;</span><br><span class="line">        option interface &#39;lan&#39;</span><br><span class="line">        option start &#39;100&#39;</span><br><span class="line">        option limit &#39;150&#39;</span><br><span class="line">        option leasetime &#39;12h&#39;</span><br><span class="line">        option dhcpv4 &#39;server&#39;</span><br><span class="line">        option ra &#39;relay&#39;</span><br><span class="line">        option dhcpv6 &#39;relay&#39;</span><br><span class="line">        option ndp &#39;relay&#39;</span><br><span class="line">        list ra_flags &#39;none&#39;</span><br><span class="line"></span><br><span class="line">config dhcp &#39;wan&#39;</span><br><span class="line">        option interface &#39;wan&#39;</span><br><span class="line">        option ignore &#39;1&#39;</span><br><span class="line"></span><br><span class="line">config dhcp &#39;wan6&#39;</span><br><span class="line">        option interface &#39;wan&#39;</span><br><span class="line">        option ra &#39;relay&#39;</span><br><span class="line">        option dhcpv6 &#39;relay&#39;</span><br><span class="line">        option ndp &#39;relay&#39;</span><br><span class="line">        option master &#39;1&#39;</span><br></pre></td></tr></table></figure>
+
+<h6 id="静态ipv6"><a href="#静态ipv6" class="headerlink" title="静态ipv6"></a>静态ipv6</h6><p>理论上获得了一个ipv6前缀后，可以自己设置静态的ipv6地址，基本不会和别人发生冲突。</p>
+<p>可以在WAN6 interface中设置为static（动态为DHCPv6 client)，并设置一个ipv6地址。</p>
+<p>以下为修改后的<code>/etc/config/network</code>内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">config interface &#39;wan&#39;</span><br><span class="line">	option device &#39;wan&#39;</span><br><span class="line">	option proto &#39;dhcp&#39;</span><br><span class="line"></span><br><span class="line">config interface &#39;wan6&#39;</span><br><span class="line">	option device &#39;wan&#39;</span><br><span class="line">	option proto &#39;static&#39;</span><br><span class="line">	list ip6addr &#39;2001:da8:d800:611::123d&#x2F;64&#39;</span><br><span class="line">	option ip6gw &#39;2001:da8:d800:611::1&#39;</span><br></pre></td></tr></table></figure>
+
+<h5 id="WAN口为pppoe"><a href="#WAN口为pppoe" class="headerlink" title="WAN口为pppoe"></a>WAN口为pppoe</h5><p>这种情况，不能使用上面的全部配置为relay的方式。刚开始全部配置为relay后，<strong>发现设备需要先ping一下路由器的WAN口ipv6地址之后，才能正常ipv6上网。</strong></p>
+<p>我还没有搞懂是为什么，经过不断各种尝试后，发现以下配置成功。</p>
+<ul>
+<li><p>首先wan口设置为pppoe后，拨号成功后会生成一个WAN_6虚拟接口，我们可以将WAN6接口删掉</p>
+<p>（以下为最终成功的截图）</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126181749809.png" alt="image-20220126181749809"></p>
+</li>
+<li><p>然后需要将WAN中的DHCP Server设置为忽略，之后需要配置LAN</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126181855902.png" alt="image-20220126181855902"></p>
+</li>
+<li><p>LAN中RA和DHCPv6都需要设置为server</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126184655662.png" alt="image-20220126184655662"></p>
+<p>​    然后Advanced中需要开启Delegate IPv6 prefixes，最终效果就是LAN接口中也出现了ipv6地址</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220126182454486.png" alt="image-20220126182454486"></p>
+</li>
+</ul>
+<p>记录下最后的配置文件</p>
+<p><code>/etc/config/dhcp</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">config dhcp &#39;lan&#39;</span><br><span class="line">        option interface &#39;lan&#39;</span><br><span class="line">        option start &#39;100&#39;</span><br><span class="line">        option limit &#39;150&#39;</span><br><span class="line">        option leasetime &#39;12h&#39;</span><br><span class="line">        option dhcpv4 &#39;server&#39;</span><br><span class="line">        option dhcpv6 &#39;server&#39;</span><br><span class="line">        option ra &#39;server&#39;</span><br><span class="line">        list ra_flags &#39;managed-config&#39;</span><br><span class="line">        list ra_flags &#39;other-config&#39;</span><br><span class="line"></span><br><span class="line">config dhcp &#39;wan&#39;</span><br><span class="line">        option interface &#39;wan&#39;</span><br><span class="line">        option ignore &#39;1&#39;</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/config/network</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">config interface &#39;lan&#39;</span><br><span class="line">        option device &#39;br-lan&#39;</span><br><span class="line">        option proto &#39;static&#39;</span><br><span class="line">        option netmask &#39;255.255.255.0&#39;</span><br><span class="line">        option ipaddr &#39;192.168.33.1&#39;</span><br><span class="line">        option ip6assign &#39;60&#39;</span><br><span class="line">        list ip6class &#39;wan_6&#39;</span><br><span class="line"></span><br><span class="line">config interface &#39;wan&#39;</span><br><span class="line">        option device &#39;wan&#39;</span><br><span class="line">        option proto &#39;pppoe&#39;</span><br><span class="line">        option username &#39;xxx&#39;</span><br><span class="line">        option password &#39;xxx&#39;</span><br><span class="line">        option ipv6 &#39;auto&#39;</span><br></pre></td></tr></table></figure>
+
+<h3 id="DDNS"><a href="#DDNS" class="headerlink" title="DDNS"></a>DDNS</h3><h4 id="FreeDNS"><a href="#FreeDNS" class="headerlink" title="FreeDNS"></a>FreeDNS</h4><p><a href="https://freedns.afraid.org/" target="_blank" rel="noopener">FreeDNS</a>是一个免费提供DDNS服务的网站，上面有许多人分享了自己的一级域名，我们可以在上面注册自己的二级域名。</p>
+<p>以下是FreeDNS各页面功能的介绍</p>
+<ul>
+<li><p><strong><em>Subdomains</em></strong>页面</p>
+<ul>
+<li><p>用于添加和管理自己的子域名</p>
+<ul>
+<li>添加时类型A表示将子域名映射到一个ipv4地址上</li>
+<li>类型AAAA表示映射到ipv6地址上</li>
+<li>CNAME表示映射到另一个域名</li>
+</ul>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220104231823784.png" alt="image-20220104231823784"></p>
+</li>
+</ul>
+</li>
+<li><p><strong><em>Dynamic DNS</em></strong>页面</p>
+<ul>
+<li>包含各种配置DDNS的方式，见下节</li>
+</ul>
+</li>
+<li><p><strong><em>Registry</em></strong>页面</p>
+<ul>
+<li>包含所有可选域名</li>
+</ul>
+</li>
+</ul>
+<h4 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h4><ul>
+<li><p>方式一：使用crontab脚本（最简单）</p>
+<ul>
+<li><p>ipv4</p>
+<p>在FreeDNS <strong><em>Dynamic DNS</em></strong>页面，在每个子域名处，有对应的quick cron example。将其添加到crontab中即可。</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220104232125544.png" alt="image-20220104232125544"></p>
+<p>注：使用这种方式无法更新ipv6地址，会将ipv4地址更新给域名</p>
+</li>
+<li><p>ipv6</p>
+<p>在<a href="https://freedns.afraid.org/dynamic/v2/?style=1" target="_blank" rel="noopener">Get your update URLs (afraid.org)</a>中开启Randomized Update Token</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220212012558086.png" alt="image-20220212012558086"></p>
+<p>使用这里的cron script，其中会访问v6.sync.afraid.org，可以更新ipv6</p>
+</li>
+</ul>
+</li>
+<li><p>方式二：使用openwrt插件</p>
+<ul>
+<li><p>openwrt插件下载：luci-ddns-app</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220104232354879.png" alt="image-20220104232354879"></p>
+</li>
+<li><p>DDNS Service provider选择afraid.org-keyauth（也可使用afraid.orgv2-token，但是下一步使用的编码则使用上一种方式中开启Randomized Update Token处的token）</p>
+</li>
+<li><p>password处填写每个子域名对应更新链接中的编码（在FreeDNS每个子域名的Direct URL中可见）</p>
+<p>类似如下格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;freedns.afraid.org&#x2F;dynamic&#x2F;update.php?Zk9FOG55RxxxxxxxIwMTY3ODY0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其余domain，username都可以随便填</p>
+</li>
+</ul>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220125214526946.png" alt="image-20220125214526946"></p>
+<ul>
+<li><p>在Advanced Setting中选择netwrok</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220125214936634.png" alt="image-20220125214936634"></p>
+</li>
+<li><p>保存应用后，点击reload，可以在Log File Viewer中查看是否成功运行。</p>
+<p>可以看到第一次完成更新，第二次不更新</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">212943       : Detect registered&#x2F;public IP</span><br><span class="line">   212943       : #&gt; &#x2F;usr&#x2F;bin&#x2F;nslookup rm.ipv6.my.to  &gt;&#x2F;var&#x2F;run&#x2F;ddns&#x2F;FreeDNS_ipv6.dat 2&gt;&#x2F;var&#x2F;run&#x2F;ddns&#x2F;FreeDNS_ipv6.err</span><br><span class="line">   212943       : Registered IP &#39;2409:8a38:1600:7e42:9e9d:7e1f:cfc6:de30&#39; detected</span><br><span class="line">   212943  info : Starting main loop at 2022-01-25 21:29</span><br><span class="line">   212943       : Detect local IP on &#39;network&#39;</span><br><span class="line">   212943       : Local IP &#39;2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30&#39; detected on network &#39;wan_6&#39;</span><br><span class="line">   212943       : Update needed - L: &#39;2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30&#39; &lt;&gt; R: &#39;2409:8a38:1600:7e42:9e9d:7e1f:cfc6:de30&#39;</span><br><span class="line">   212943       : Force communication via device &#39;pppoe-wan&#39;</span><br><span class="line">   212943       : #&gt; &#x2F;usr&#x2F;bin&#x2F;curl -RsS -o &#x2F;var&#x2F;run&#x2F;ddns&#x2F;FreeDNS_ipv6.dat --stderr &#x2F;var&#x2F;run&#x2F;ddns&#x2F;FreeDNS_ipv6.err --interface pppoe-wan --noproxy &#39;*&#39; &#39;https:&#x2F;&#x2F;freedns.afraid.org&#x2F;dynamic&#x2F;update.php?***PW***&amp;address&#x3D;2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30&#39;</span><br><span class="line">   212945       : DDNS Provider answered:</span><br><span class="line">  Updated 1 host(s) rm.ipv6.my.to to 2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30 in 0.335 seconds</span><br><span class="line">   212945  info : Update successful - IP &#39;2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30&#39; send</span><br><span class="line">   212945  info : Forced update successful - IP: &#39;2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30&#39; send</span><br><span class="line">   212945       : Waiting 600 seconds (Check Interval)</span><br><span class="line">   </span><br><span class="line">   </span><br><span class="line">   213945       : Detect registered&#x2F;public IP</span><br><span class="line">   213945       : #&gt; &#x2F;usr&#x2F;bin&#x2F;nslookup rm.ipv6.my.to  &gt;&#x2F;var&#x2F;run&#x2F;ddns&#x2F;FreeDNS_ipv6.dat 2&gt;&#x2F;var&#x2F;run&#x2F;ddns&#x2F;FreeDNS_ipv6.err</span><br><span class="line">   213947       : Registered IP &#39;2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30&#39; detected</span><br><span class="line">   213947  info : Rerun IP check at 2022-01-25 21:39</span><br><span class="line">   213947       : Detect local IP on &#39;network&#39;</span><br><span class="line">   213947       : Local IP &#39;2409:8a38:1600:2c2c:9e9d:7e58:c2c6:de30&#39; detected on network &#39;wan_6&#39;</span><br><span class="line">   213947       : Waiting 600 seconds (Check Interval)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="ZeroTier"><a href="#ZeroTier" class="headerlink" title="ZeroTier"></a>ZeroTier</h3><h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><ol>
+<li>将若干个安装了Zerotier的设备添加到一个虚拟的大局域网中互相访问</li>
+<li>可以在Zerotier中设置Route，从而实现访问某个zerotier设备所处局域网中的其它设备</li>
+</ol>
+<h4 id="具体过程"><a href="#具体过程" class="headerlink" title="具体过程"></a>具体过程</h4><ol start="0">
+<li><p>去ZeroTier注册一个账号，并了解ZeroTier的使用</p>
+</li>
+<li><p>安装zerotier</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg install zerotier</span><br></pre></td></tr></table></figure>
+
+<p>这里会依赖kmod-tun等内核模块，这要求内核版本完全一致才能安装成功。</p>
+<ul>
+<li>如果使用的是openwrt开发版本(snapshot)：由于snapshot每天、甚至几个小时就会更新，因此很有可能因为有了新的更新，导致opkg下载的kmod-tun内核版本不一致导致报错。解决办法为更新为新版的开发版，并尽快下载安装。或者自己编译openwrt。</li>
+<li>对于stable版本，官方源保证了一致性，因此这里不会出现问题。</li>
+</ul>
+</li>
+<li><p>配置ZeroTier</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/zerotier</span><br><span class="line">uci <span class="built_in">set</span> zerotier.openwrt_network=zerotier</span><br><span class="line">uci add_list zerotier.openwrt_network.join=<span class="string">'你的网络ID'</span></span><br><span class="line">uci <span class="built_in">set</span> zerotier.openwrt_network.enabled=<span class="string">'1'</span></span><br><span class="line">uci <span class="built_in">set</span> zerotier.openwrt_network.config_path=<span class="string">'/etc/zerotier'</span></span><br><span class="line">uci commit zerotier</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动zerotier（这步之后已经可以从ZeroTier Central中看到路由器连上了）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/zerotier <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/zerotier start</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建接口（这步之后已经可以ping通）</p>
+<ul>
+<li>web界面，网络 -&gt; 接口，添加新接口</li>
+<li>名称 ZeroTier</li>
+<li>协议选静态协议，ip设置为ZeroTier Central中的ip</li>
+<li>接口选z开头的适配器</li>
+<li>创建/分配防火墙区域选择lan（其实lan/wan都可以）</li>
+<li>保存&amp;应用</li>
+</ul>
+</li>
+<li><p>防火墙</p>
+<p>全部设置成allow</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20210916172318383.png" alt="image-20210916172318383"></p>
+</li>
+<li><p><strong>ZeroTier Central配置路由转发</strong></p>
+<p>配置这个后，在外网可以通过局域网ip直接访问不在ZeroTier Central中的其它局域网设备。（过程大致是：外网 -&gt; zerotier -&gt; 局域网一台设备(位于ZeroTier中) -&gt; 局域网其它设备）</p>
+<p>配置图：访问192.168.31.*中的设备时，会通过192.168.192.168(实际局域网ip为路由器)访问</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20210707233753989.png" alt="image-20210707233753989"></p>
+<p><strong>注意</strong>：别将第一行的删了，否则全部无法访问</p>
+<p><strong>缺点</strong>：目前发现，当两台电脑位于同一个局域网，想要直接通过局域网ip访问时，即使没有开启zerotier软件，两台电脑的相互访问速度也会严重受限（原本可以跑到500M，直接降为10M）</p>
+</li>
+</ol>
+<h3 id="Wireguard"><a href="#Wireguard" class="headerlink" title="Wireguard"></a>Wireguard</h3><ul>
+<li><p>官方教程：<a href="https://openwrt.org/docs/guide-user/services/vpn/wireguard/server" target="_blank" rel="noopener">[OpenWrt Wiki] WireGuard server</a></p>
+</li>
+<li><p>安装wireguard</p>
+<p>wiregurad是内核模块，如果是自己编译的openwrt则无法通过opkg安装(linux kernel hash校验失败导致依赖不满足），需要在编译时集成到openwrt中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg install wireguard-tools</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建接口</p>
+<ul>
+<li>web界面，网络 -&gt; 接口，添加新接口</li>
+<li>名称wireguard</li>
+<li>协议选wiregurad VPN</li>
+<li>生成私钥</li>
+<li>设置ip地址为虚拟局域网地址，如10.0.31.10/24</li>
+<li>保存&amp;应用</li>
+</ul>
+</li>
+<li><p>添加peer</p>
+<ul>
+<li><p>在Luci中手动添加</p>
+</li>
+<li><p>或者编辑<code>/etc/config/network</code>，添加已有的设备，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">config wireguard_wireguard</span><br><span class="line">	option public_key &#39;anjf3DtB6EkSo88uBXk8zFMLAZ3W2gD7AmXjqRl2mgM&#x3D;&#39;</span><br><span class="line">	list allowed_ips &#39;10.0.31.2&#x2F;32&#39;</span><br><span class="line">	option route_allowed_ips &#39;1&#39;</span><br><span class="line">	option description &#39;ryzen5800X&#39;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>重启路由器才会生效</p>
+</li>
+</ul>
+<h3 id="透明代理"><a href="#透明代理" class="headerlink" title="透明代理"></a>透明代理</h3><h4 id="OpenClash"><a href="#OpenClash" class="headerlink" title="OpenClash"></a>OpenClash</h4><p><a href="https://github.com/vernesong/OpenClash" target="_blank" rel="noopener">GitHub - vernesong/OpenClash: A Clash Client For OpenWrt</a></p>
+<p>安装方式：可以将openclash集成到openwrt build system中进行编译。</p>
+<p>集成方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#将源码clone到openwrt源码package目录下，并改名为luci-app-openclash</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/vernesong/OpenClash package/luci-app-openclash</span><br><span class="line"></span><br><span class="line">make menuconfig</span><br><span class="line"><span class="comment"># 选择要编译的包 LuCI -&gt; Applications -&gt; luci-app-openclash</span></span><br></pre></td></tr></table></figure>
+
+<p>目前还处于beta版本，因此仅简单介绍下安装好后的简单使用：</p>
+<ol>
+<li>Services–&gt; OpenClash打开openclash配置页面</li>
+<li>Config updata标签中添加订阅</li>
+<li>添加后，在开始标签enable openclash（第一次需要下载clash core，可能需要较长时间。也许可以手动下载然后上传。具体位置见Global setting–&gt;Version update)</li>
+<li>添加黑/白名单：在config manage中包含一个配置文件，可以手动设置一些网站是否经过代理</li>
+</ol>
+<h3 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h3><h4 id="ssh-key登录"><a href="#ssh-key登录" class="headerlink" title="ssh key登录"></a>ssh key登录</h4><ul>
+<li>一般发行版本的 Linux 系统都是使用的 <code>sshd</code> 作为 ssh 服务端，我们将客户端的 <code>~/.ssh/id_rsa.pub</code> 拷贝到服务端的 <code>~/.ssh/authorized_keys</code> 即可</li>
+<li>openwrt 使用的 <code>dropbear</code> 作为 ssh 的服务端程序，我们需要将公钥拷贝到 <code>/etc/dropbear/authorized_keys</code>，最好保证其文件权限是 644</li>
+</ul>
+<p>或者使用luci界面System–&gt;Admin–&gt;SSH key添加</p>
+<h4 id="增大无线的发射功率"><a href="#增大无线的发射功率" class="headerlink" title="增大无线的发射功率"></a>增大无线的发射功率</h4><p>修改路由器的国家地区，使得无线的功率更大，因此信号更好。</p>
+<p>Network–&gt;Wireless中选择Edit 2.4Ghz和5Ghz网络，在Advanced Setting中设置Country Code，可以修改为US。这样2.4Ghz和5Ghz信号功率变为30dBm和26dBm</p>
+<h4 id="软件安装在usb上"><a href="#软件安装在usb上" class="headerlink" title="软件安装在usb上"></a>软件安装在usb上</h4><p>正常情况，路由器的flash都很小，比如16MB，很难装下多少软件。但是如果路由器有USB接口的话，就可以插上U盘作为额外的存储空间。以GB为单位后，就可以随意安装软件了。</p>
+<p>过程：</p>
+<ol>
+<li><p><code>/etc/opkg.conf</code>中添加usb dest</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#/etc/opkg.conf</span></span><br><span class="line">dest root /</span><br><span class="line">dest usb /mnt/sdb1		<span class="comment">#添加此行, sdb1为挂载的U盘位置</span></span><br><span class="line">dest ram /tmp</span><br><span class="line">lists_dir ext /var/opkg-lists</span><br><span class="line">option overlay_root /overlay</span><br><span class="line">option check_signature</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>opkg安装软件时，添加<code>-d usb</code>选项，如安装python</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">opkg install -d usb python3 python3-pip</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不知为何，安装在usb上时，opkg创建软链接时会报错，导致直接运行命令会报错。因此可能需要自己手动创建软连接，如python需要创建以下软连接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ln -s /mnt/sdb1/usr/bin/python3.9 /usr/bin/python3</span><br><span class="line">ln -s /mnt/sdb1/usr/lib/libpython3.9.so.1.0 /usr/lib/libpython3.9.so.1.0</span><br><span class="line"></span><br><span class="line">ln -s /mnt/sdb1/usr/bin/pip3.9 /usr/bin/pip</span><br><span class="line">ln -s /mnt/sdb1/usr/bin/pip3.9 /usr/bin/pip3</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="coremark跑分"><a href="#coremark跑分" class="headerlink" title="coremark跑分"></a>coremark跑分</h4><p>coremark是一个常用的测试MCU性能的跑分程序。在openwrt上安装了gcc, make后，可以在openwrt上编译并运行。</p>
+<p>编译时注意：make NO_LIBRT=1</p>
+<h4 id="wireguard不能访问SMB"><a href="#wireguard不能访问SMB" class="headerlink" title="wireguard不能访问SMB"></a>wireguard不能访问SMB</h4><ul>
+<li><p>网络配置</p>
+<ul>
+<li>一台openwrt路由器，安装了wireguard插件，wireguard接口地址为(10.0.31.1/24)，Peer中开启了<em>Route Allowed IPs(Optional. Create routes for Allowed IPs for this peer.)</em></li>
+<li>wireguard interface位于LAN域中</li>
+<li>路由器有公网ip，配置了ddns</li>
+<li>连接在路由器上的win10(台式)开启了SMB</li>
+<li>现在需要使用另一台win10(笔记本)访问台式机SMB共享的文件</li>
+<li>笔记本连接wireguard后，可以访问路由器LAN(192.168.1.0/24)内的设备，但是无法访问SMB</li>
+</ul>
+</li>
+<li><p>在路由器里添加了端口转发</p>
+<p><img src="/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220122123740710.png" alt="image-20220122123740710"></p>
+<p>没想到就可以了</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
+              <a href="/tags/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="tag"># 如何实现网络自由</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/" rel="prev" title="2022-02-13-记录红米AC2100折腾">
+      <i class="fa fa-chevron-left"></i> 2022-02-13-记录红米AC2100折腾
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" rel="next" title="openwrt编译">
+      openwrt编译 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ipv6"><span class="nav-number">1.</span> <span class="nav-text">ipv6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DDNS"><span class="nav-number">2.</span> <span class="nav-text">DDNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZeroTier"><span class="nav-number">3.</span> <span class="nav-text">ZeroTier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wireguard"><span class="nav-number">4.</span> <span class="nav-text">Wireguard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透明代理"><span class="nav-number">5.</span> <span class="nav-text">透明代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">6.</span> <span class="nav-text">其它</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

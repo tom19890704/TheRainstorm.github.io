@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Openwrt 编译优点 固件体积减小（需要安装的package被压缩到镜像中） 可以定制一些需要的选项（busybox可以选择zsh）   The main advantage of building your own firmware is that it compresses the files, so that you will have room for much more stuff.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openwrt编译">
+<meta property="og:url" content="http://yoursite.com/2022/02/13/openwrt%E7%BC%96%E8%AF%91/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="Openwrt 编译优点 固件体积减小（需要安装的package被压缩到镜像中） 可以定制一些需要的选项（busybox可以选择zsh）   The main advantage of building your own firmware is that it compresses the files, so that you will have room for much more stuff.">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
+<meta property="article:modified_time" content="2022-02-14T12:59:38.190Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="折腾">
+<meta property="article:tag" content="如何实现网络自由">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2022/02/13/openwrt%E7%BC%96%E8%AF%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>openwrt编译 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">42</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/openwrt%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openwrt编译
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-14 20:59:38" itemprop="dateModified" datetime="2022-02-14T20:59:38+08:00">2022-02-14</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Openwrt-编译"><a href="#Openwrt-编译" class="headerlink" title="Openwrt 编译"></a>Openwrt 编译</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>固件体积减小（需要安装的package被压缩到镜像中）</li>
+<li>可以定制一些需要的选项（busybox可以选择zsh）</li>
+</ol>
+<blockquote>
+<p>The main advantage of building your own firmware is that it compresses the files, so that you will have room for much more stuff. It is particularly noticeable on routers with 16 MB flash RAM or less. It also lets you change some options that can only be changed at build time, for instance the features included in BusyBox and the block size of SquashFS. Larger block size will give better compression, but may also slow down the loading of files. (ref: <a href="https://openwrt.org/docs/guide-user/additional-software/beginners-build-guide" target="_blank" rel="noopener">[OpenWrt Wiki] Quick image building guide</a>)</p>
+</blockquote>
+<ol start="3">
+<li>下次刷机，可以不用进行软件安装，配置<a id="more"></a>
+
+</li>
+</ol>
+<h3 id="openwrt-build-system特点"><a href="#openwrt-build-system特点" class="headerlink" title="openwrt build system特点"></a>openwrt build system特点</h3><ul>
+<li>不用配置编译链</li>
+</ul>
+<blockquote>
+<p>While it is possible to manually create your toolchain, and then build OpenWrt with it, this is difficult and error-prone. The OpenWrt build system takes a different approach to building a firmware: it downloads, patches and compiles everything from scratch, including the cross compiler. Or to put it in simpler terms, OpenWrt’s build system doesn’t contain any executables or even sources. It is an automated system for downloading the sources, patching them to work with the given platform and compiling them correctly for the platform. What this means is that just by changing the template, you can change any step in the process. And of course the side benefit of this is that builds are automated, which saves time and guarantees the same result every time.</p>
+<p>For example if a new kernel is released, a simple change to one of the Makefiles will download the latest kernel, patch it to run on the requested platform and produce a new firmware image. There’s no work to be done trying to track down an unmodified copy of the existing kernel to see what changes had been made - the patches are already provided and the process ends up almost completely transparent. This doesn’t just apply to the kernel, but to anything included with OpenWrt - it’s this strategy that allows OpenWrt to stay on the bleeding edge with the latest compilers, kernels and applications. (ref: <a href="https://openwrt.org/docs/guide-developer/build-system/buildsystem_essentials" target="_blank" rel="noopener">[OpenWrt Wiki] Build system essentials</a>)</p>
+</blockquote>
+<ul>
+<li>编译出来的toolchain位置</li>
+</ul>
+<blockquote>
+<p><code>staging_dir/toolchain…</code> is a mini Linux root with its own <code>bin/</code>, <code>lib/</code>, etc that contains the cross C compiler used to build the rest of the firmware. You can actually use that to compile simple C programs outside of OpenWRT that can be loaded onto the firmware. The C compiler might be something like: <code>staging_dir/toolchain-mips_34kc_gcc-4.8-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gcc</code>. You can see the version of the CPU, the C library and gcc encoded into it; this allows multiple targets to be built in the same area concurrently.</p>
+</blockquote>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><h4 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h4><ul>
+<li>根据<a href="https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem" target="_blank" rel="noopener">[OpenWrt Wiki] Build system setup</a>安装对应</li>
+</ul>
+<h4 id="编译-1"><a href="#编译-1" class="headerlink" title="编译"></a>编译</h4><ul>
+<li><p>参考：</p>
+<ul>
+<li>官方教程：<a href="https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem" target="_blank" rel="noopener">[OpenWrt Wiki] Build system usage</a></li>
+<li><strong>非常好的一个教程</strong>：<a href="https://gist.github.com/chankruze/dee8c2ba31c338a60026e14e3383f981" target="_blank" rel="noopener">How To Compile OpenWrt Firmware For Any Router · GitHub</a></li>
+</ul>
+</li>
+<li><p>命令汇总</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Download and update the sources</span></span><br><span class="line">git <span class="built_in">clone</span> https://git.openwrt.org/openwrt/openwrt.git</span><br><span class="line"><span class="built_in">cd</span> openwrt</span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line"><span class="comment"># Select a specific code revision</span></span><br><span class="line">git branch -a</span><br><span class="line">git tag</span><br><span class="line">git checkout v21.02.1</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update the feeds</span></span><br><span class="line">./scripts/feeds update -a</span><br><span class="line">./scripts/feeds install -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># Configure the firmware image and the kernel</span></span><br><span class="line">make menuconfig</span><br><span class="line"><span class="comment">#make kernel_menuconfig</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#download all dependency source files before final make, enables multi-core compilation</span></span><br><span class="line">make download</span><br><span class="line"></span><br><span class="line"><span class="comment"># Build the firmware image</span></span><br><span class="line"><span class="comment">#make (or make world)</span></span><br><span class="line"><span class="comment">#when faild, V=s show all command executed</span></span><br><span class="line"><span class="comment">#make V=s</span></span><br><span class="line"></span><br><span class="line">make -j $(nproc) 2&gt;&amp;1 tee | make.log</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Cleaning Up</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">make clean <span class="comment">#deletes contents of the directories /bin and /build_dir. make clean does not remove the toolchain, it also avoids cleaning architectures/targets other than the one you have selected in your .config</span></span><br><span class="line"></span><br><span class="line">make dirclean <span class="comment">#deletes contents of the directories /bin and /build_dir and additionally /staging_dir and /toolchain (=the cross-compile tools) and /logs. 'Dirclean' is your basic "Full clean" operation.</span></span><br><span class="line"></span><br><span class="line">make distclean <span class="comment">#nukes everything you have compiled or configured and also deletes all downloaded feeds contents and package sources.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#clean small part</span></span><br><span class="line">make target/linux/clean  		<span class="comment">#Clean linux objects </span></span><br><span class="line">make package/base-files/clean 	<span class="comment">#Clean package base-files objects</span></span><br><span class="line">make package/luci/clean 		<span class="comment">#Clean luci</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="menuconfig常用软件"><a href="#menuconfig常用软件" class="headerlink" title="menuconfig常用软件"></a>menuconfig常用软件</h4><ul>
+<li>Target System(MediaTek Ralink MIPS)</li>
+<li>Subtarget(MT7621 based boards)</li>
+<li>Target Profile(Xiaomi Redmi Router AC2100)</li>
+<li><strong>Target Images</strong><ul>
+<li>取消勾选ramdisk，否者会生成<code>openwrt-ramips-mt7621-xiaomi_mi-router-4a-gigabit-initramfs-kernel.bin</code></li>
+<li>勾选squashfs，可以调节block size（默认256B），越大的块压缩率更好，但读取速度更慢（可能影响重启速度？）</li>
+</ul>
+</li>
+<li>Build the Openwrt SDK：一个小的buildroot，用于测试自己的package</li>
+<li>Package the Openwrt-based Toolchain：交叉编译链</li>
+<li><strong>Base system</strong><ul>
+<li>使用Openclash需要取消勾选dnsmasq（已经勾选dnsmasq-full）</li>
+</ul>
+</li>
+<li>Administration<ul>
+<li>htop</li>
+</ul>
+</li>
+<li><strong>Development</strong><ul>
+<li>gcc, gdb等工具</li>
+</ul>
+</li>
+<li>Fonts<ul>
+<li>DejaVu字体，可能zsh乱码原因？</li>
+</ul>
+</li>
+<li><strong>Kernel modules</strong><ul>
+<li>USB support：usb2.0和usb3.0支持</li>
+<li>Other modules/kmod-mtd-rw：开启uboot等flash分区写权限</li>
+</ul>
+</li>
+<li><strong>Languages</strong><ul>
+<li>python<ul>
+<li>requests</li>
+<li>lxml</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Luci</strong><ul>
+<li>Collections<ul>
+<li>Luci：否则没有图形界面</li>
+</ul>
+</li>
+<li>Module<ul>
+<li>luci-compat：据说是必要的</li>
+</ul>
+</li>
+<li>Application<ul>
+<li>adblock</li>
+<li>ddns</li>
+<li>Openclash（需要自己添加）</li>
+<li>qos</li>
+<li>samba4</li>
+<li>upnp</li>
+<li>wireguard</li>
+<li>wol</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Network<ul>
+<li>VPN: <strong>zerotier</strong></li>
+<li>SSH: openssh-server：默认使用dropbear作为ssh服务器，没必要额外安装</li>
+</ul>
+</li>
+<li>Utilities<ul>
+<li>Editors<ul>
+<li>vim-full（只能选一个）</li>
+</ul>
+</li>
+<li>Shells<ul>
+<li>bash</li>
+<li>zsh会乱码</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="image大小参考"><a href="#image大小参考" class="headerlink" title="image大小参考"></a>image大小参考</h5><p>满足16MB的一种配置：</p>
+<ul>
+<li>squashfs块大小设置为512KB</li>
+<li>开启：htop, <strong>python</strong>(requests, lxml), <strong>Luci</strong>, adblock, ddns, qos, upnp, <strong>wireguard</strong>, wol, <strong>zerotier</strong>, vim-full, bash</li>
+<li>大小为15991868B/16121856B，把k2p压榨到只剩126KB了。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
+              <a href="/tags/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="tag"># 如何实现网络自由</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/" rel="prev" title="openwrt配置">
+      <i class="fa fa-chevron-left"></i> openwrt配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/" rel="next" title="openwrt刷机">
+      openwrt刷机 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Openwrt-编译"><span class="nav-number">1.</span> <span class="nav-text">Openwrt 编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">1.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openwrt-build-system特点"><span class="nav-number">1.2.</span> <span class="nav-text">openwrt build system特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译"><span class="nav-number">1.3.</span> <span class="nav-text">编译</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

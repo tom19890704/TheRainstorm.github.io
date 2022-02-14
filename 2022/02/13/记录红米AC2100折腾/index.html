@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="第一次尝试自己刷路由器，网上搜索了很多资料，忙活了2天，期间差点以为将路由器刷成砖了。 红米AC2100这款路由器确实算是很火，网上有很多资料。刚开始在恩山论坛查找各种资料，但是觉得恩山论坛的帖子有点乱，对新手不太友好。看精华帖时帖子之间的联系性不大，要是有一个板块进行总结性的介绍就好了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2022-02-13-记录红米AC2100折腾">
+<meta property="og:url" content="http://yoursite.com/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="第一次尝试自己刷路由器，网上搜索了很多资料，忙活了2天，期间差点以为将路由器刷成砖了。 红米AC2100这款路由器确实算是很火，网上有很多资料。刚开始在恩山论坛查找各种资料，但是觉得恩山论坛的帖子有点乱，对新手不太友好。看精华帖时帖子之间的联系性不大，要是有一个板块进行总结性的介绍就好了。">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/image-20210622145337241.png">
+<meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
+<meta property="article:modified_time" content="2022-02-14T13:19:04.244Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="折腾">
+<meta property="article:tag" content="如何实现网络自由">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/2022-02-13-%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/image-20210622145337241.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>2022-02-13-记录红米AC2100折腾 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">42</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2022-02-13-记录红米AC2100折腾
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-14 21:19:04" itemprop="dateModified" datetime="2022-02-14T21:19:04+08:00">2022-02-14</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>第一次尝试自己刷路由器，网上搜索了很多资料，忙活了2天，期间差点以为将路由器刷成砖了。</p>
+<p>红米AC2100这款路由器确实算是很火，网上有很多资料。刚开始在恩山论坛查找各种资料，但是觉得恩山论坛的帖子有点乱，对新手不太友好。看精华帖时帖子之间的联系性不大，要是有一个板块进行总结性的介绍就好了。</p>
+<a id="more"></a>
+
+<p>比如上来就看到论坛说什么闪存坏块的，导致我刚开始还要去研究如何查看路由器是否有坏块。然后就是看到的都是什么telnet的方案，但是明明有通过网页开启ssh的非常简单的方案啊，为什么不在过时的帖子里提一下呢！这点导致我各种走弯路！（<strong>这点也体现了总结性帖子的重要</strong>）</p>
+<p>然后就是为什么恩山里只提供各种openwrt的改版？就没有人站出来说一下官方版的优缺点吗？这一度让我以为openwrt的官方版不好不能用呢。但后面我看openwrt官网的时候，也没有发现什么缺点啊，而且openwrt官网文档非常丰富！是入门折腾路由器的绝佳材料。</p>
+<p>好了，吐槽完毕，以下是我这段时间折腾的总结。</p>
+<h3 id="名词介绍"><a href="#名词介绍" class="headerlink" title="名词介绍"></a>名词介绍</h3><ol>
+<li><p>breed：一个多功能的<strong>引导程序</strong>，可以刷系统固件，适配了很多硬件，提供了方便的web界面和命令行界面。</p>
+<p>原帖：<a href="https://www.right.com.cn/forum/thread-161906-1-1.html" target="_blank" rel="noopener">【2020-10-09】AR/QCA/MTK Breed，功能强大的多线程 Bootloader - OPENWRT专版 - 恩山无线论坛 - Powered by Discuz! (right.com.cn)</a></p>
+<p>下载：<a href="https://breed.hackpascal.net/" target="_blank" rel="noopener">Index of / (hackpascal.net)</a></p>
+</li>
+</ol>
+<h3 id="直接上图"><a href="#直接上图" class="headerlink" title="直接上图"></a>直接上图</h3><p>这张图显示了各种刷机的方式，具体过程在之后介绍。</p>
+<p><img src="/images/2022-02-13-%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/image-20210622145337241.png" alt="image-20210622145337241"></p>
+<h3 id="获取shell"><a href="#获取shell" class="headerlink" title="获取shell"></a>获取shell</h3><p>方案来源者我没有找到，貌似都是最先在恩山论坛上提出的。</p>
+<ol>
+<li><p>telnet方案</p>
+<p>比较麻烦，不提。</p>
+</li>
+<li><p>ssh方案</p>
+<ul>
+<li><p>原创：<a href="https://www.right.com.cn/forum/thread-4032490-1-1.html" target="_blank" rel="noopener">[0825:AC2100新固件有效AX6无效]AX3600/AX1800/AX5/AC2100官方固件开启SSH方法[原创] - 小米无线路由器以及小米无线相关的设备 - 恩山无线论坛 - Powered by Discuz! (right.com.cn)</a></p>
+</li>
+<li><p>openwrt wiki教程中，提供了一个JavaScript脚本可直接在浏览器控制台运行，不必手动复制Stock代码。<a href="https://openwrt.org/toh/xiaomi/xiaomi_redmi_router_ac2100" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi Redmi Router AC2100</a></p>
+</li>
+</ul>
+<p>有的帖子说有漏洞的官方固件版本是2.0.7版本，但我实测2.0.23版本(2021-06-22时的最新版)是可以用的，openwrt wiki上也要求2.0.23版本。</p>
+</li>
+</ol>
+<h3 id="从官方刷openwrt"><a href="#从官方刷openwrt" class="headerlink" title="从官方刷openwrt"></a>从官方刷openwrt</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mtd write openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-kernel1.bin kernel1</span><br><span class="line">mtd -r write openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-rootfs0.bin rootfs0 #-r参数表示完成后重启</span><br></pre></td></tr></table></figure>
+
+<p>kernel按照原厂bootloader所要求的方式添加到镜像中，因此可以保留原厂的bootloader（见<a href="https://openwrt.org/docs/guide-developer/overview" target="_blank" rel="noopener">[OpenWrt Wiki] Overview</a>）</p>
+<p>（说明路由器这种设备，引导程序和操作系统是绑定在一起的）</p>
+<blockquote>
+<p>Also the kernel is handled like a package, but is added to the firmware image in the special way each device’s bootloader expects it, so you can replace the stock firmware without touching the bootloader itself (that is dangerous and not always possible).</p>
+</blockquote>
+<h3 id="刷breed"><a href="#刷breed" class="headerlink" title="刷breed"></a>刷breed</h3><p><a href="https://www.right.com.cn/forum/thread-4023907-1-1.html" target="_blank" rel="noopener">红米/小米AC2100刷入r3g breed以及恢复官方boot详细教程（更新查坏块方法、pb-boot） - 小米无线路由器以及小米无线相关的设备 - 恩山无线论坛 - Powered by Discuz! (right.com.cn)</a></p>
+<ol>
+<li>进入shell后，<code>cat /proc/mtd</code>查看flash分区</li>
+<li>上传breed并运行<code>mtd -r write /tmp/breed-mt7621-xiaomi-r3g.bin Bootloader</code></li>
+</ol>
+<h3 id="从breed刷openwrt"><a href="#从breed刷openwrt" class="headerlink" title="从breed刷openwrt"></a>从breed刷openwrt</h3><p><a href="https://www.right.com.cn/forum/thread-4025861-1-1.html" target="_blank" rel="noopener">[2020-08-29更新] 教程：小米和红米AC2100用breed刷openwrt - 小米无线路由器以及小米无线相关的设备 - 恩山无线论坛 - Powered by Discuz! (right.com.cn)</a></p>
+<ol>
+<li>进breed的环境变量编缉菜单，新增字段xiaomi.r3g.bootfw值为2</li>
+<li>下载临时固件刷入路由器并重启</li>
+<li>进入openwrt更新系统固件，不要勾选 保留配置选项</li>
+</ol>
+<h3 id="恢复到官方"><a href="#恢复到官方" class="headerlink" title="恢复到官方"></a>恢复到官方</h3><ol>
+<li><p>恢复官方Bootloader</p>
+<ul>
+<li>通过breed更新Bootloader</li>
+<li>进入shell执行mtd write命令</li>
+</ul>
+</li>
+<li><p>使用官方修复工具</p>
+<p><a href="https://www.xiaomi.cn/post/5289432" target="_blank" rel="noopener">【小米路由器修复工具】使用说明和刷机教程 - 小米社区 (xiaomi.cn)</a></p>
+</li>
+</ol>
+<p>记录：</p>
+<p>首先使用breed直接刷了小米官方bootloader（有些地方说不行，最好手动使用mtd write命令），然后使用官方修复工具恢复官方固件</p>
+<p>坑：</p>
+<ul>
+<li>运行官方修复工具需要关闭windows即时杀毒</li>
+<li>最好禁用一些网卡免得选择错误</li>
+<li>失败了三四次，换用不同地方下载的官方固件最后解决了（最后用的本目录的2.0.23.bin）</li>
+<li>实测写官方固件不到1分钟，不必等太长</li>
+</ul>
+<h4 id="其它方式"><a href="#其它方式" class="headerlink" title="其它方式"></a>其它方式</h4><p>适用于breed的修改版官方固件</p>
+<p><a href="https://www.right.com.cn/FORUM/thread-4028850-1-1.html" target="_blank" rel="noopener">[2020年11月28日更新]breed刷机红米AC2100小米AC2100原厂固件官方固件 - 小米无线路由器以及小米无线相关的设备 - 恩山无线论坛 - Powered by Discuz! (right.com.cn)</a></p>
+<h3 id="其它参考"><a href="#其它参考" class="headerlink" title="其它参考"></a>其它参考</h3><p>恩山的这个帖子适合小白：<a href="https://www.right.com.cn/forum/thread-4054150-1-1.html" target="_blank" rel="noopener">红米(小米)AC2100无需Telnet刷入Breed和Padavan固件教程 - 小米无线路由器以及小米无线相关的设备 - 恩山无线论坛 - Powered by Discuz! (right.com.cn)</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
+              <a href="/tags/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="tag"># 如何实现网络自由</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/" rel="prev" title="小米电视访问电脑视频">
+      <i class="fa fa-chevron-left"></i> 小米电视访问电脑视频
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/" rel="next" title="openwrt配置">
+      openwrt配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#名词介绍"><span class="nav-number">1.</span> <span class="nav-text">名词介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接上图"><span class="nav-number">2.</span> <span class="nav-text">直接上图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取shell"><span class="nav-number">3.</span> <span class="nav-text">获取shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从官方刷openwrt"><span class="nav-number">4.</span> <span class="nav-text">从官方刷openwrt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#刷breed"><span class="nav-number">5.</span> <span class="nav-text">刷breed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从breed刷openwrt"><span class="nav-number">6.</span> <span class="nav-text">从breed刷openwrt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#恢复到官方"><span class="nav-number">7.</span> <span class="nav-text">恢复到官方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它参考"><span class="nav-number">8.</span> <span class="nav-text">其它参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
