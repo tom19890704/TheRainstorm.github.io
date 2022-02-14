@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="刷机记录 第一次自己刷机红米AC21002022-02-13-记录红米AC2100折腾，一张精华图   路由器刷出问题，修复经验。知道了备份的重要性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openwrt刷机">
+<meta property="og:url" content="http://yoursite.com/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="刷机记录 第一次自己刷机红米AC21002022-02-13-记录红米AC2100折腾，一张精华图   路由器刷出问题，修复经验。知道了备份的重要性">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20210622145337241.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013203806985.png">
+<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013234425902.png">
+<meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
+<meta property="article:modified_time" content="2022-02-14T13:19:06.117Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="折腾">
+<meta property="article:tag" content="如何实现网络自由">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20210622145337241.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>openwrt刷机 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">42</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openwrt刷机
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-14 21:19:06" itemprop="dateModified" datetime="2022-02-14T21:19:06+08:00">2022-02-14</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="刷机记录"><a href="#刷机记录" class="headerlink" title="刷机记录"></a>刷机记录</h2><ul>
+<li><p>第一次自己刷机红米AC2100<a href="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/" title="2022-02-13-记录红米AC2100折腾">2022-02-13-记录红米AC2100折腾</a>，一张精华图</p>
+<p><img src="/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20210622145337241.png" alt="image-20210622145337241"></p>
+</li>
+<li><p>路由器刷出问题，修复经验。知道了备份的重要性</p>
+<a id="more"></a>
+
+</li>
+</ul>
+<h2 id="刷机方法总结"><a href="#刷机方法总结" class="headerlink" title="刷机方法总结"></a>刷机方法总结</h2><h3 id="Redmi-AC2100刷Openwrt"><a href="#Redmi-AC2100刷Openwrt" class="headerlink" title="Redmi AC2100刷Openwrt"></a>Redmi AC2100刷Openwrt</h3><h4 id="1-确认stock系统版本"><a href="#1-确认stock系统版本" class="headerlink" title="1. 确认stock系统版本"></a>1. 确认stock系统版本</h4><p>确认系统版本是否为2.0.23，如果不是，则在系统内手动升级到该版本<a href="http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin" target="_blank" rel="noopener">http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin</a></p>
+<h4 id="2-获得ssh"><a href="#2-获得ssh" class="headerlink" title="2. 获得ssh"></a>2. 获得ssh</h4><p>使用web漏洞，获得ssh</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Work for RedMi 2100 firmware 2.0.23</span></span><br><span class="line"><span class="comment">// http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSTOK</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> match = location.href.match(<span class="regexp">/;stok=(.*?)\//</span>);</span><br><span class="line">    <span class="keyword">if</span> (!match) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> match[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">execute</span>(<span class="params">stok, command</span>) </span>&#123;</span><br><span class="line">    command = <span class="built_in">encodeURIComponent</span>(command);</span><br><span class="line">    <span class="keyword">let</span> path = <span class="string">`/cgi-bin/luci/;stok=<span class="subst">$&#123;stok&#125;</span>/api/misystem/set_config_iotdev?bssid=SteelyWing&amp;user_id=SteelyWing&amp;ssid=-h%0A<span class="subst">$&#123;command&#125;</span>%0A`</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(path);</span><br><span class="line">    <span class="keyword">return</span> fetch(<span class="keyword">new</span> Request(location.origin + path));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enableSSH</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    stok = getSTOK();</span><br><span class="line">    <span class="keyword">if</span> (!stok) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'stok not found in URL'</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`stok = "<span class="subst">$&#123;stok&#125;</span>"`</span>);</span><br><span class="line"></span><br><span class="line">    password = prompt(<span class="string">'Input new SSH password'</span>);</span><br><span class="line">    <span class="keyword">if</span> (!password) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'You must input password'</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    execute(stok, </span><br><span class="line"><span class="string">`</span></span><br><span class="line"><span class="string">nvram set ssh_en=1</span></span><br><span class="line"><span class="string">nvram commit</span></span><br><span class="line"><span class="string">sed -i 's/channel=.*/channel=\\"debug\\"/g' /etc/init.d/dropbear</span></span><br><span class="line"><span class="string">/etc/init.d/dropbear start</span></span><br><span class="line"><span class="string">`</span></span><br><span class="line">    )</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> response.text())</span><br><span class="line">        .then(<span class="function">(<span class="params">text</span>) =&gt;</span> <span class="built_in">console</span>.log(text));</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'New SSH password: '</span> + password);</span><br><span class="line">    execute(stok, <span class="string">`echo -e "<span class="subst">$&#123;password&#125;</span>\\n<span class="subst">$&#123;password&#125;</span>" | passwd root`</span>)</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> response.text())</span><br><span class="line">        .then(<span class="function">(<span class="params">text</span>) =&gt;</span> <span class="built_in">console</span>.log(text));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">enableSSH();</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-下载openwrt镜像"><a href="#3-下载openwrt镜像" class="headerlink" title="3. 下载openwrt镜像"></a>3. 下载openwrt镜像</h4><p>从官方下载最新镜像，注意有四个文件</p>
+<ul>
+<li>kernel: 具有最少文件系统的Linux内核. 对于首次安装或恢复很有用.</li>
+<li>kernel1: Linux内核作为单独的映像</li>
+<li>rootfs0: 根文件系统作为单独的映像.</li>
+<li>Sysupgrade: 使用Sysupgrade映像更新已经运行OpenWrt的路由器. 该映像可以与LuCI Web界面或终端一起使用.</li>
+</ul>
+<p>需要下载kernel1和rootfs0</p>
+<ul>
+<li><a href="https://downloads.openwrt.org/" target="_blank" rel="noopener">OpenWrt Downloads</a></li>
+<li><a href="https://firmware-selector.openwrt.org/" target="_blank" rel="noopener">OpenWrt Firmware Selector</a></li>
+</ul>
+<h4 id="4-备份"><a href="#4-备份" class="headerlink" title="4. 备份"></a>4. 备份</h4><p>通过dmesg，知道一共有14个mtd分区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[    2.940000] NAND device: Manufacturer ID: 0xc8, Chip ID: 0xd1 (ESMT NAND 128MiB 3,3V 8-bit), 128MiB, page size: 2048, OOB size: 64</span><br><span class="line">[    2.950000] [NAND]select ecc bit:4, sparesize :64 spare_per_sector&#x3D;16</span><br><span class="line">[    2.950000] Scanning device for bad blocks</span><br><span class="line">[    3.100000] Signature matched and data read!</span><br><span class="line">[    3.110000] load_fact_bbt success 1023</span><br><span class="line">...</span><br><span class="line">[    3.190000] Creating 14 MTD partitions on &quot;MT7621-NAND&quot;:</span><br><span class="line">[    3.190000] 0x000000000000-0x000007f80000 : &quot;ALL&quot;</span><br><span class="line">[    3.200000] 0x000000000000-0x000000080000 : &quot;Bootloader&quot;</span><br><span class="line">[    3.210000] 0x000000080000-0x0000000c0000 : &quot;Config&quot;</span><br><span class="line">[    3.210000] 0x0000000c0000-0x000000100000 : &quot;Bdata&quot;</span><br><span class="line">[    3.220000] 0x000000100000-0x000000140000 : &quot;Factory&quot;</span><br><span class="line">[    3.230000] 0x000000140000-0x000000180000 : &quot;crash&quot;</span><br><span class="line">[    3.230000] 0x000000180000-0x0000001c0000 : &quot;crash_syslog&quot;</span><br><span class="line">[    3.240000] 0x0000001c0000-0x000000200000 : &quot;cfg_bak&quot;</span><br><span class="line">[    3.240000] 0x000000200000-0x000000600000 : &quot;kernel0&quot;</span><br><span class="line">[    3.250000] 0x000000600000-0x000000a00000 : &quot;kernel1&quot;</span><br><span class="line">[    3.260000] 0x000000a00000-0x000002400000 : &quot;rootfs0&quot;</span><br><span class="line">[    3.260000] 0x000002400000-0x000003e00000 : &quot;rootfs1&quot;</span><br><span class="line">[    3.270000] 0x000003e00000-0x000006400000 : &quot;overlay&quot;</span><br><span class="line">[    3.280000] 0x000006400000-0x000007f80000 : &quot;obr&quot;</span><br><span class="line">[    3.280000] [mtk_nand] probe successfully!</span><br></pre></td></tr></table></figure>
+
+<p>通过cat /proc/mtd，知道对应关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@XiaoQiang:&#x2F;tmp# cat &#x2F;proc&#x2F;mtd</span><br><span class="line">dev:    size   erasesize  name</span><br><span class="line">mtd0: 07f80000 00020000 &quot;ALL&quot;</span><br><span class="line">mtd1: 00080000 00020000 &quot;Bootloader&quot;</span><br><span class="line">mtd2: 00040000 00020000 &quot;Config&quot;</span><br><span class="line">mtd3: 00040000 00020000 &quot;Bdata&quot;</span><br><span class="line">mtd4: 00040000 00020000 &quot;Factory&quot;</span><br><span class="line">mtd5: 00040000 00020000 &quot;crash&quot;</span><br><span class="line">mtd6: 00040000 00020000 &quot;crash_syslog&quot;</span><br><span class="line">mtd7: 00040000 00020000 &quot;cfg_bak&quot;</span><br><span class="line">mtd8: 00400000 00020000 &quot;kernel0&quot;</span><br><span class="line">mtd9: 00400000 00020000 &quot;kernel1&quot;</span><br><span class="line">mtd10: 01a00000 00020000 &quot;rootfs0&quot;</span><br><span class="line">mtd11: 01a00000 00020000 &quot;rootfs1&quot;</span><br><span class="line">mtd12: 02600000 00020000 &quot;overlay&quot;</span><br><span class="line">mtd13: 01b80000 00020000 &quot;obr&quot;</span><br><span class="line">mtd14: 00c1c000 0001f000 &quot;ubi_rootfs&quot;</span><br><span class="line">mtd15: 021e8000 0001f000 &quot;data&quot;</span><br></pre></td></tr></table></figure>
+
+<p>备份，其中Factory中存储了EEPROM的数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat &#x2F;dev&#x2F;mtd4 &gt; Factory.dump</span><br><span class="line">cat &#x2F;dev&#x2F;mtd3 &gt; Bdata.dump</span><br><span class="line"></span><br><span class="line">scp复制到本地</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-设置环境变量"><a href="#5-设置环境变量" class="headerlink" title="5. 设置环境变量"></a>5. 设置环境变量</h4><p>设置环境变量（rm2100有双系统用于备份保护，需要设置先启动哪一个）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Enable uart and boot_wait, useful for testing or recovery if you have an uart adapter!</span></span><br><span class="line">nvram <span class="built_in">set</span> uart_en=1</span><br><span class="line">nvram <span class="built_in">set</span> boot_wait=on</span><br><span class="line">nvram <span class="built_in">set</span> bootdelay=5</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set kernel1 as the booting kernel</span></span><br><span class="line">nvram <span class="built_in">set</span> flag_try_sys1_failed=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># Commit our nvram changes</span></span><br><span class="line">nvram commit</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-刷机"><a href="#6-刷机" class="headerlink" title="6. 刷机"></a>6. 刷机</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mtd write kernel1.bin kernel1</span><br><span class="line">mtd -r write rootfs0.bin rootfs0</span><br></pre></td></tr></table></figure>
+
+<h3 id="MI-4A千兆版"><a href="#MI-4A千兆版" class="headerlink" title="MI 4A千兆版"></a>MI 4A千兆版</h3><h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>可以漏洞获取shell，不必使用硬件编程器</p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ol>
+<li><p>首先需要使用<code>OpenWRTInvasion</code><strong>获取shell</strong>。参考：<a href="https://github.com/acecilia/OpenWRTInvasion" target="_blank" rel="noopener">acecilia/OpenWRTInvasion(github.com)</a>。</p>
+<p>同时，该仓库也提供了获得shell后的刷机过程。</p>
+<p>不过使用官方的<code>OpenWRTInvasion</code>会从github上下载文件，而因为网络原因可能会失败。恩山论坛中有用户提供了修改代码的离线版本，可以搜索使用。</p>
+<p>不过也可以自行修改代码：修改<code>script.sh</code>，将其中的链接替换成本地链接。可以使用python -m http.server运行一个小的http服务，提供下载。例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -L <span class="string">"https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/busybox-mipsel"</span> --insecure --output busybox</span><br><span class="line"></span><br><span class="line"><span class="comment">#改为,ip需要调整</span></span><br><span class="line">curl <span class="string">"http://192.168.31.189:8000/busybox-mipsel"</span> --output busybox</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>参考仓库README，成功获得shell后，如图所示。接着上传镜像（initramfs-kernel.bin和squashfs-sysupgrade.bin都可以，推荐使用后者），然后运行mtd write（用cat /proc/mtd查看有哪些分区）<br><img src="/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013203806985.png" alt="image-20211013203806985"><br><img src="/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013234425902.png" alt="image-20211013234425902"></p>
+</li>
+<li><p>最后等待路由器重启完成即可。</p>
+</li>
+</ol>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>breed使用说明：<a href="https://www.sohu.com/a/304140654_120096961" target="_blank" rel="noopener">https://www.sohu.com/a/304140654_120096961</a></p>
+<p>breed刷openwrt教程<a href="https://www.ixigua.com/6974624328725824031" target="_blank" rel="noopener">https://www.ixigua.com/6974624328725824031</a></p>
+<h3 id="MI-R3G"><a href="#MI-R3G" class="headerlink" title="MI R3G"></a>MI R3G</h3><ol>
+<li><p>获取ssh</p>
+<ol>
+<li>更新为小米开发版固件</li>
+<li><strong>下载小米路由器手机客户端软件，绑定路由器</strong></li>
+<li>根据<a href="https://d.miwifi.com/rom/ssh，开启SSH" target="_blank" rel="noopener">https://d.miwifi.com/rom/ssh，开启SSH</a></li>
+</ol>
+</li>
+<li><p>先通过cat /dev/mtdxx手动备份了一下闪存，值得注意的是，因为这次flash有128MB。因此就算是在挂载在内存的tmp分区上，空间也不够。不过由于可以插U盘，因此可以直接写到U盘中！！！</p>
+</li>
+<li><p>还是刷了一下breed，备份了一下EEPROM。不过发现刷了breed后，刷openwrt反而变得复杂了，没办法直接刷。不过刷pandavn和老毛子固件倒是很简单。这里有解释，以及一个workaround。</p>
+<p>但是考虑到，这样flash分区就不知道会变得怎样了。因此还是决定采用openwrt官方的方法刷。</p>
+</li>
+<li><p>因此需要从breed恢复小米官方固件</p>
+<ul>
+<li>刚开始直接在固件那上传了小米官方固件（开发版），但是重启后，显示粉色的灯，无法进入系统。</li>
+<li>搜索后找到了正确方法：<ul>
+<li>进入breed后，恢复小米官方Bootloader</li>
+<li>删除设置的环境变量</li>
+<li>刷入小米官方固件（还是用了开发版）</li>
+</ul>
+</li>
+</ul>
+<p>刷完后，发现一切都是刷breed之前的配置。</p>
+</li>
+<li><p>因为恢复后仍然有ssh，所以直接按照openwrt官方方法刷入openwrt，成功</p>
+</li>
+</ol>
+<h3 id="小米路由器救砖"><a href="#小米路由器救砖" class="headerlink" title="小米路由器救砖"></a>小米路由器救砖</h3><h4 id="有官方bootloader的情况"><a href="#有官方bootloader的情况" class="headerlink" title="有官方bootloader的情况"></a>有官方bootloader的情况</h4><p><strong>说明：</strong></p>
+<p>官方的引导程序使用的是uboot，位于flash的Bootloader分区，而官方固件则位于OS1分区。正常刷openwrt的过程中不会修改bootloader。只要还保留着官方bootloader，就可以通过官方修复工具恢复。</p>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>下载<code>小米路由器修复工具</code>和官方镜像：<a href="https://www.xiaomi.cn/post/19184644" target="_blank" rel="noopener">【下载汇总】客户端/ROM下载 - 小米社区 (xiaomi.cn)</a></li>
+<li><strong>路由器通电</strong>，PC通过网线连接到路由器LAN口</li>
+<li>打开<code>MIWIFIRepairTool.x86.exe</code></li>
+<li>选择镜像</li>
+<li><strong>选择网卡</strong>（可以在网络中心中将其它网卡禁用）</li>
+<li>断开路由器电源，按住rst键（也有可能需要用针戳），然后接上电源，等待黄灯闪烁（两个灯，一个是有电源标志，一个有互联网标志，这里为电源灯那个）</li>
+<li>软件自动上传镜像</li>
+<li>保持耐心等待路由器黄灯变蓝（中间过程保持黄灯），<strong>亲测需要4分钟</strong></li>
+<li>断电后重新接上电源，路由器重启</li>
+</ol>
+<h4 id="breed"><a href="#breed" class="headerlink" title="breed"></a>breed</h4><p><strong>说明：</strong></p>
+<p>breed自身便是一个bootloader，刷完breed后会覆盖原本的bootloader。如果想复原，可通过breed的功能，重新刷回官方bootloader。<strong>强烈建议刷breed前，先备份原本的bootloader以及整个flash</strong>。如果没备份，这里是恩山上收集的<strong>小米官方bootloader下载</strong>：<a href="https://www.right.com.cn/forum/thread-4102208-1-1.html" target="_blank" rel="noopener">论坛收集的几个小米路由器官方bootloader - 恩山无线论坛</a></p>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>通过breed刷回官方bootloader</li>
+<li>通过官方修复工具修复</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
+              <a href="/tags/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="tag"># 如何实现网络自由</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" rel="prev" title="openwrt编译">
+      <i class="fa fa-chevron-left"></i> openwrt编译
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/14/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="next" title="如何实现网络自由">
+      如何实现网络自由 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#刷机记录"><span class="nav-number">1.</span> <span class="nav-text">刷机记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷机方法总结"><span class="nav-number">2.</span> <span class="nav-text">刷机方法总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redmi-AC2100刷Openwrt"><span class="nav-number">2.1.</span> <span class="nav-text">Redmi AC2100刷Openwrt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MI-4A千兆版"><span class="nav-number">2.2.</span> <span class="nav-text">MI 4A千兆版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MI-R3G"><span class="nav-number">2.3.</span> <span class="nav-text">MI R3G</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小米路由器救砖"><span class="nav-number">2.4.</span> <span class="nav-text">小米路由器救砖</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
