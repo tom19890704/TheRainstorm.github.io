@@ -124,7 +124,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">44</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">45</span></a>
 
   </li>
   </ul>
@@ -150,6 +150,116 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">ucore lab3 总结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-20 23:52:30" itemprop="dateCreated datePublished" datetime="2020-09-20T23:52:30+08:00">2020-09-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ol>
+<li>x86中断/异常处理(tss和tf作用)</li>
+<li>重要函数说明<ol>
+<li>创建进程(线程)</li>
+<li>调度，运行</li>
+<li>do_wait &amp; do_exit</li>
+<li>do_execve</li>
+<li>其它系统调用</li>
+</ol>
+</li>
+<li>FAQ<ol>
+<li>一个进程被创建后如何开始执行？ </li>
+<li>一个用户进程如果因为时间片用完而被调度掉后，再次被调度回来时会从哪里继续执行？ </li>
+<li>一个进程的完整生命周期？ </li>
+<li>fork调用，为什么父进程返回值为pid，子进程返回值为0（<strong>涉及到用户进程的创建</strong>）</li>
+</ol>
+</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>实验3涉及到的知识点：</p>
+<ol>
+<li>x86中断中tss的作用（类似的内核栈，中断帧的概念）</li>
+<li>进程如何创建、执行、切换（do_fork, do_wait, do_exit等系统调用的设计与实现）</li>
+<li>用户进程的创建、执行过程</li>
+<li>用户ulib库fork, wait, exit的实现</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1035,92 +1145,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/11/%E4%BA%95%E5%AD%97%E6%A3%8B%E4%B8%8E%E6%9C%80%E5%A4%A7%E6%9C%80%E5%B0%8F%E5%80%BC%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
-      <meta itemprop="name" content="rain">
-      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="rain的随笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/11/%E4%BA%95%E5%AD%97%E6%A3%8B%E4%B8%8E%E6%9C%80%E5%A4%A7%E6%9C%80%E5%B0%8F%E5%80%BC%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">井字棋与最大最小值算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-02-11 23:25:33" itemprop="dateCreated datePublished" datetime="2020-02-11T23:25:33+08:00">2020-02-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2020/02/11/%E4%BA%95%E5%AD%97%E6%A3%8B%E4%B8%8E%E6%9C%80%E5%A4%A7%E6%9C%80%E5%B0%8F%E5%80%BC%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/11/%E4%BA%95%E5%AD%97%E6%A3%8B%E4%B8%8E%E6%9C%80%E5%A4%A7%E6%9C%80%E5%B0%8F%E5%80%BC%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>经过昨晚，和今天早上8点醒来趴在床上努力的思考。我终于想起了如何使用数学归纳法证明策梅洛定理。然后经过一上午的努力，我成功使用最大最小值算法实现了井字棋(Tic-Tak-Toe)的AI，然后添加到wwh的井字棋代码中。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/11/%E4%BA%95%E5%AD%97%E6%A3%8B%E4%B8%8E%E6%9C%80%E5%A4%A7%E6%9C%80%E5%B0%8F%E5%80%BC%E7%AE%97%E6%B3%95/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1192,7 +1216,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
