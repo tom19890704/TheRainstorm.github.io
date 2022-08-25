@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="背景家里原本有两个路由器，一个负责楼上，一个负责楼下。但是仍然有许多覆盖不到的地方，比如厨房。并且更影响体验的是楼上楼下的WIFI使用不同的SSID，手机无法很好地自动切换。经常是楼上连接到楼下的网络导致信号很差。因此决定对家里的网络改造一番。 以前听过mesh这个技术，可以将很多台路由器通过无线连接起来，共同提供一个网络。于是去搜索了openwrt是否支持mesh，发现是可以的。并且经过进一步的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Openwrt Mesh和快速漫游配置">
+<meta property="og:url" content="http://yoursite.com/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="背景家里原本有两个路由器，一个负责楼上，一个负责楼下。但是仍然有许多覆盖不到的地方，比如厨房。并且更影响体验的是楼上楼下的WIFI使用不同的SSID，手机无法很好地自动切换。经常是楼上连接到楼下的网络导致信号很差。因此决定对家里的网络改造一番。 以前听过mesh这个技术，可以将很多台路由器通过无线连接起来，共同提供一个网络。于是去搜索了openwrt是否支持mesh，发现是可以的。并且经过进一步的">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185126933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185217075.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185519836.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185451076.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185619578.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185835670.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825200934634.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825221157178.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825200917273.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825220833532.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825220609260.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825190223518.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825214252429.png">
+<meta property="article:published_time" content="2022-08-25T14:17:13.000Z">
+<meta property="article:modified_time" content="2022-08-25T14:18:11.490Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="折腾 openwrt mesh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185126933.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>Openwrt Mesh和快速漫游配置 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">47</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Openwrt Mesh和快速漫游配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-25 22:17:13 / Modified: 22:18:11" itemprop="dateCreated datePublished" datetime="2022-08-25T22:17:13+08:00">2022-08-25</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>家里原本有两个路由器，一个负责楼上，一个负责楼下。但是仍然有许多覆盖不到的地方，比如厨房。并且更影响体验的是楼上楼下的WIFI使用不同的SSID，手机无法很好地自动切换。经常是楼上连接到楼下的网络导致信号很差。因此决定对家里的网络改造一番。</p>
+<p>以前听过mesh这个技术，可以将很多台路由器通过无线连接起来，共同提供一个网络。于是去搜索了openwrt是否支持mesh，发现是可以的。并且经过进一步的了解，纠正了自己之前对无线网络的一些错误认知。</p>
+<ul>
+<li>首先，mesh解决的并不是如何让设备自动切换网络，而是如何进行<strong>无线组网</strong>，可以避免布线的困难。mesh节点通过同一个信道的的无线相互连接，而通过另一个无线提供WIFI。</li>
+<li><strong>快速漫游</strong>(fast roaming)协议，精确来说叫做802.11r协议，可以减少设备切换无线网络的耗时。</li>
+</ul>
+<p>硬件设备上，我选择使用小米路由3G来搭建，主要是因为硬件配置上在wifi5的路由器中算是很不错的了，且某鱼上一个只需要50元。于是又买了两个，加上原本的，现在有4台openwrt路由器，一个红米AC2100作为主路由，3个R3G作为AP节点。</p>
+<p>为了方便配置还实现了一个自动配置脚本放在github：<a href="https://github.com/TheRainstorm/my-openwrt-config" target="_blank" rel="noopener">TheRainstorm/my-openwrt-config (github.com)</a></p>
+<a id="more"></a>
+<h3 id="名词"><a href="#名词" class="headerlink" title="名词"></a>名词</h3><ul>
+<li><p>Wireless Access Point</p>
+<p>无线接入点，通常简称为AP。AP其实隐含dumb的含义。路由器设置里一般会有：路由器模式、AP模式等选项。AP模式下，路由器不提供路由、DHCP、DNS等功能，而是通过主路由来提供。</p>
+<ul>
+<li><p>AP通常的作用是为现有的网络提供额外的无线覆盖，比如主路由器在二楼，通过AP将网络覆盖到一楼。</p>
+</li>
+<li><p>实现上，AP将无线接口和LAN接口桥接在一起，可以理解为一个<strong>二级交换机</strong>。</p>
+</li>
+</ul>
+</li>
+<li><p>SSID、BSSID</p>
+<p>SSID是无线网络的名称，不同的AP可以提供相同的SSID。BSSID是无线网络的MAC地址，是唯一的。</p>
+</li>
+</ul>
+<h3 id="无线漫游的过程"><a href="#无线漫游的过程" class="headerlink" title="无线漫游的过程"></a>无线漫游的过程</h3><p>需要明白两件事</p>
+<ul>
+<li>第一，设备倾向于赖在同一个网络上。当WIFI的信号强度弱于-70dB，且新WIFI的信号强度比原信号高8-12dB时才会选择切换网络。</li>
+<li>第二，连接一个网络需要经过一些耗时过程。<ol>
+<li>需要进行密钥交换、协商加密算法</li>
+<li>设备需要获得一个IP地址（通常通过DHCP协议）</li>
+</ol>
+</li>
+</ul>
+<p>第一个问题，理论上路由器可以给设备发送信号使其选择切换无线网络，不过不知道目前有没有这么做。</p>
+<p>第二个问题</p>
+<ul>
+<li>对于密钥交换和协商的过程很明显是可以避免的，802.11s协议应该就是节约了这部分的时间。只要配置成同一个域，那么在不同BSSID间切换就可以利用原有的连接。</li>
+<li>而对于获得IP，只要路由器是AP模式，那么便可以直接使用原本的IP地址，因此也可以使用原本的IP地址。</li>
+</ul>
+<h3 id="Openwrt配置"><a href="#Openwrt配置" class="headerlink" title="Openwrt配置"></a>Openwrt配置</h3><p>可以详细参考这篇文章：<a href="https://bmaupin.github.io/wiki/other/openwrt/openwrt-80211s.html" target="_blank" rel="noopener">OpenWrt 802.11s mesh | My wiki (bmaupin.github.io)</a></p>
+<p>自己写了一个自动配置脚本：<a href="https://github.com/TheRainstorm/my-openwrt-config" target="_blank" rel="noopener">TheRainstorm/my-openwrt-config (github.com)</a></p>
+<p>简单来说可以分为dumb AP的配置和WIFI的配置</p>
+<h4 id="802-11s是否需要硬件支持"><a href="#802-11s是否需要硬件支持" class="headerlink" title="802.11s是否需要硬件支持"></a>802.11s是否需要硬件支持</h4><p>理论上不需要，但是有些硬件的wifi驱动可能会有问题（开源驱动基本不会有问题）<br>可以通过iw查看驱动是否有mesh选项。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iw list | grep &quot;Supported interface modes&quot; -A 9</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装wpad"><a href="#安装wpad" class="headerlink" title="安装wpad"></a>安装wpad</h4><p>openwrt wifi功能由wpad包提供。openwrt提供了多种wpad包，针对不同功能进行了剪裁，大小不同。不同包会冲突，只能使用一个。使用wpad-mesh-openssl即可。</p>
+<ul>
+<li>wpad：最完整</li>
+<li>wpad-openssl</li>
+<li>wpad-mesh-openssl</li>
+<li>wpad-basic-openssl：精简</li>
+</ul>
+<h4 id="AP配置"><a href="#AP配置" class="headerlink" title="AP配置"></a>AP配置</h4><p>官方文档：<a href="https://openwrt.org/docs/guide-user/network/wifi/dumbap" target="_blank" rel="noopener">[OpenWrt Wiki] Wireless Access Point / Dumb Access Point</a></p>
+<h5 id="关闭DHCP服务器"><a href="#关闭DHCP服务器" class="headerlink" title="关闭DHCP服务器"></a>关闭DHCP服务器</h5><p>ipv4勾选ignore interface即可</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185126933.png" alt="image-20220825185126933"></p>
+<p>ipv6需要将ra, dhcpv6, ndp均设置为disabled</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185217075.png" alt="image-20220825185217075"></p>
+<h5 id="LAN接口ip地址"><a href="#LAN接口ip地址" class="headerlink" title="LAN接口ip地址"></a>LAN接口ip地址</h5><p>LAN接口需要设置ip地址，有两种方式（推荐第二种方法）</p>
+<ul>
+<li><p>设置静态地址，需要同时设置网关、DNS为主路由</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185519836.png" alt="image-20220825185519836"></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185451076.png" alt="image-20220825185451076"></p>
+</li>
+<li><p>更简单的方式为将LAN设置为dhcp客户端。这样好处是不用配置，重启后路由器加入mesh后便可以成功上网。在之后可以在主路由DHCP设置中分配静态地址，这样路由器下次重启便会获得指定ip地址了。</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185619578.png" alt="image-20220825185619578"></p>
+</li>
+</ul>
+<h5 id="关闭防火墙-dns等服务"><a href="#关闭防火墙-dns等服务" class="headerlink" title="关闭防火墙, dns等服务"></a>关闭防火墙, dns等服务</h5><p>system-&gt;starup中关闭一些不必要的服务，如firewall, dnsmasq, odhcpd</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825185835670.png" alt="image-20220825185835670"></p>
+<p>主要部分已经配置完成。接下来是一些可选操作</p>
+<ul>
+<li>删除掉WAN, WAN6等其余接口</li>
+<li>删除掉所有防火墙zone</li>
+</ul>
+<h4 id="mesh无线配置"><a href="#mesh无线配置" class="headerlink" title="mesh无线配置"></a>mesh无线配置</h4><p>mesh需要占掉一个无线频段，这里我选择使用2.4GHz。因为家里的宽带是100MHz，因此2.4GHz的144Mbps带宽足够，然后就是2.4GHz的穿墙性能要好得多。</p>
+<ul>
+<li><p>选择一个radio新建一个网络，比如2.4GHz radio</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825200934634.png" alt="image-20220825200934634"></p>
+</li>
+<li><p>设置WIFI信道，所有mesh节点需要使用相同信道</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825221157178.png" alt="image-20220825221157178"></p>
+</li>
+<li><p>然后然后选择mesh point模式。mesh id为一个字符串，保证mesh节点一致即可。加密必须选择wpa3-SAE加密。</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825200917273.png" alt="image-20220825200917273"></p>
+</li>
+</ul>
+<h4 id="无线802-11r配置"><a href="#无线802-11r配置" class="headerlink" title="无线802.11r配置"></a>无线802.11r配置</h4><p>另一个radio用于提供上网，可以新建一个接口选择AP模式（默认已经存在）</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825220833532.png" alt="image-20220825220833532"></p>
+<p>为了实现快速漫游需要设置802.11r，主要需要设置Mobility Domain，保证所有节点相同</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825220609260.png" alt="image-20220825220609260"></p>
+<p>FT协议的区别，个人感觉不太明显。</p>
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p>二楼是一台RM2100作为主路由，提供2.4GHz和5GHz WIFI。5GHz使用52信道。</p>
+<p>一楼有3台R3G，通过mesh无线相互连接。其中一台通过网线连接到二楼RM2100。3台R3G启用5GHz WIFI名字相同，分别占用36信道，52信道，100信道。不同信道间刚好相差80MHz等于WIFI5的频宽，因此可以相互不干扰。</p>
+<p>下图分别是二楼主路由和一楼一台路由的信道分析图</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825190223518.png" alt="image-20220825190223518"></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220825214252429.png" alt="image-20220825214252429"></p>
+<h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><p>在主路由上开启iperf3服务，手机上安装iperf3客户端测速，并在一楼和二楼走动。经验证确实可以自动实现网络漫游，走到某些位置时网速在降速后马上可以恢复。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li>设置AP和快速漫游：<a href="https://www.youtube.com/watch?v=kMgs2XFClaM" target="_blank" rel="noopener">CHEAP WI-FI MESH ALTERNATIVE with fast roaming OpenWrt Wi-Fi Access points - YouTube</a></li>
+<li>batman，更复杂也功能更多的mesh协议: <a href="https://www.youtube.com/watch?v=t4A0kfg2olo" target="_blank" rel="noopener">DIY MESH WiFi with batman-adv and OpenWrt - YouTube</a></li>
+<li>802.11k, v, r的介绍：<a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/network/fast-roaming-with-802-11k--802-11v--and-802-11r" target="_blank" rel="noopener">Fast Roaming with 802.11k, 802.11v, and 802.11r - Windows drivers | Microsoft Docs</a></li>
+<li>FT over DS还是FT over Air<a href="https://forum.openwrt.org/t/when-does-802-11r-ft-over-ds-make-sense-to-use/88893/2" target="_blank" rel="noopener">When does 802.11r “FT over DS” make sense to use? - Installing and Using OpenWrt / Network and Wireless Configuration - OpenWrt Forum</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%98%E8%85%BE-openwrt-mesh/" rel="tag"># 折腾 openwrt mesh</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" rel="prev" title="gcc mpi源码编译">
+      <i class="fa fa-chevron-left"></i> gcc mpi源码编译
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#名词"><span class="nav-number">2.</span> <span class="nav-text">名词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无线漫游的过程"><span class="nav-number">3.</span> <span class="nav-text">无线漫游的过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Openwrt配置"><span class="nav-number">4.</span> <span class="nav-text">Openwrt配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#802-11s是否需要硬件支持"><span class="nav-number">4.1.</span> <span class="nav-text">802.11s是否需要硬件支持</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装wpad"><span class="nav-number">4.2.</span> <span class="nav-text">安装wpad</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AP配置"><span class="nav-number">4.3.</span> <span class="nav-text">AP配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#关闭DHCP服务器"><span class="nav-number">4.3.1.</span> <span class="nav-text">关闭DHCP服务器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LAN接口ip地址"><span class="nav-number">4.3.2.</span> <span class="nav-text">LAN接口ip地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#关闭防火墙-dns等服务"><span class="nav-number">4.3.3.</span> <span class="nav-text">关闭防火墙, dns等服务</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mesh无线配置"><span class="nav-number">4.4.</span> <span class="nav-text">mesh无线配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#无线802-11r配置"><span class="nav-number">4.5.</span> <span class="nav-text">无线802.11r配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果"><span class="nav-number">5.</span> <span class="nav-text">效果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#结果"><span class="nav-number">5.1.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -119,12 +119,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">7</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">47</span></a>
 
   </li>
   </ul>
@@ -150,6 +150,270 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">Openwrt Mesh和快速漫游配置</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-25 22:17:13 / Modified: 22:18:11" itemprop="dateCreated datePublished" datetime="2022-08-25T22:17:13+08:00">2022-08-25</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>家里原本有两个路由器，一个负责楼上，一个负责楼下。但是仍然有许多覆盖不到的地方，比如厨房。并且更影响体验的是楼上楼下的WIFI使用不同的SSID，手机无法很好地自动切换。经常是楼上连接到楼下的网络导致信号很差。因此决定对家里的网络改造一番。</p>
+<p>以前听过mesh这个技术，可以将很多台路由器通过无线连接起来，共同提供一个网络。于是去搜索了openwrt是否支持mesh，发现是可以的。并且经过进一步的了解，纠正了自己之前对无线网络的一些错误认知。</p>
+<ul>
+<li>首先，mesh解决的并不是如何让设备自动切换网络，而是如何进行<strong>无线组网</strong>，可以避免布线的困难。mesh节点通过同一个信道的的无线相互连接，而通过另一个无线提供WIFI。</li>
+<li><strong>快速漫游</strong>(fast roaming)协议，精确来说叫做802.11r协议，可以减少设备切换无线网络的耗时。</li>
+</ul>
+<p>硬件设备上，我选择使用小米路由3G来搭建，主要是因为硬件配置上在wifi5的路由器中算是很不错的了，且某鱼上一个只需要50元。于是又买了两个，加上原本的，现在有4台openwrt路由器，一个红米AC2100作为主路由，3个R3G作为AP节点。</p>
+<p>为了方便配置还实现了一个自动配置脚本放在github：<a href="https://github.com/TheRainstorm/my-openwrt-config" target="_blank" rel="noopener">TheRainstorm/my-openwrt-config (github.com)</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">gcc mpi源码编译</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-04 16:28:41" itemprop="dateCreated datePublished" datetime="2022-08-04T16:28:41+08:00">2022-08-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-08-05 15:00:29" itemprop="dateModified" datetime="2022-08-05T15:00:29+08:00">2022-08-05</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="GCC"><a href="#GCC" class="headerlink" title="GCC"></a>GCC</h3><h4 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h4><ul>
+<li><p>官方<a href="https://www.gnu.org/prep/ftp.html" target="_blank" rel="noopener">GNU Mirror List - GNU Project - Free Software Foundation</a></p>
+<ul>
+<li><a href="https://ftp.gnu.org/gnu/" target="_blank" rel="noopener">https://ftp.gnu.org/gnu/</a></li>
+<li><a href="http://ftp.gnu.org/gnu/" target="_blank" rel="noopener">http://ftp.gnu.org/gnu/</a></li>
+</ul>
+</li>
+<li><p>国内镜像</p>
+<ul>
+<li><a href="https://mirrors.aliyun.com/gnu/" target="_blank" rel="noopener">https://mirrors.aliyun.com/gnu/</a></li>
+<li><a href="https://mirrors.ustc.edu.cn/gnu/" target="_blank" rel="noopener">https://mirrors.ustc.edu.cn/gnu/</a></li>
+<li><a href="https://mirrors.tuna.tsinghua.edu.cn/gnu/" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/gnu/</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="Configure"><a href="#Configure" class="headerlink" title="Configure"></a>Configure</h4><p>注意：</p>
+<ul>
+<li>不能在src目录configure，而是应该另外创建一个build目录</li>
+<li>gcc提供了依赖安装脚本，不用手动去下载</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tmp/dir</span><br><span class="line">wget https://mirrors.ustc.edu.cn/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz</span><br><span class="line">tar xf gcc-8.5.0.tar.xz</span><br><span class="line"><span class="built_in">cd</span> gcc-8.5.0</span><br><span class="line"><span class="comment">#安装依赖</span></span><br><span class="line">./contrib/download_prerequisites</span><br><span class="line"></span><br><span class="line"><span class="comment">#在build目录下configure</span></span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">mkdir build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line"></span><br><span class="line">../gcc-8.5.0/configure --<span class="built_in">disable</span>-multilib --prefix=<span class="variable">$HOME</span>/ENV/gcc-8.5.0 --<span class="built_in">enable</span>-languages=c,c++</span><br><span class="line"></span><br><span class="line">make -j 2&gt;&amp;1 |tee make.log	<span class="comment">#32线程编译大概40分钟左右</span></span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>–disable-multilib：gcc默认支持编译32位程序(-m32)，关闭此功能</li>
+</ul>
+<h4 id="解决链接库错误"><a href="#解决链接库错误" class="headerlink" title="解决链接库错误"></a>解决链接库错误</h4><p>原因，程序是动态链接的。运行时使用的是系统的库。而系统的库和编译时使用的库不兼容。</p>
+<ul>
+<li><p>方法一：修改<code>LD_LIBRARY_PATH</code>环境变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export LD_LIBRARY_PATH&#x3D;$HOME&#x2F;opt&#x2F;gcc-9.1.0&#x2F;lib64</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法二：编译时将库搜索路径存在二进制文件中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~&#x2F;opt&#x2F;gcc-9.1.0&#x2F;bin&#x2F;g++ -Wl,-rpath&#x3D;$HOME&#x2F;opt&#x2F;gcc-9.1.0&#x2F;lib64 --std&#x3D;c++17 demo.cc -o demo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法三：静态链接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~&#x2F;opt&#x2F;gcc-9.1.0&#x2F;bin&#x2F;g++ --std&#x3D;c++17 demo.cc -o demo -static-libstdc++ -static-libgcc</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><h5 id="解压源码很慢"><a href="#解压源码很慢" class="headerlink" title="解压源码很慢"></a>解压源码很慢</h5><p>服务器上解压60M的源码非常慢，解压了10-20分钟。不只是解压，cp, rm源码目录都非常的慢。推测是NFS的原因。</p>
+<p>解决方法为使用本地目录，如/tmp</p>
+<h5 id="gcc8-3-0-make失败"><a href="#gcc8-3-0-make失败" class="headerlink" title="gcc8.3.0 make失败"></a>gcc8.3.0 make失败</h5><p><a href="https://stackoverflow.com/questions/62435946/building-gcc-8-3-makefile955-all-error-2" target="_blank" rel="noopener">Building gcc 8.3 [Makefile:955: all] Error 2 - Stack Overflow</a></p>
+<p>好像是8.3.0自身的问题，换用8.5.0编译成功</p>
+<h3 id="MPI"><a href="#MPI" class="headerlink" title="MPI"></a>MPI</h3><p>MPI编译较快，可以编译很多版本使用</p>
+<h4 id="mpich和openmpi对比"><a href="#mpich和openmpi对比" class="headerlink" title="mpich和openmpi对比"></a>mpich和openmpi对比</h4><p>MPICH：<a href="https://www.mpich.org/documentation/guides/" target="_blank" rel="noopener">Guides | MPICH</a></p>
+<ul>
+<li>支持mpi2.0，功能强大，效率高</li>
+<li>缺点是仅支持以太网</li>
+</ul>
+<p>OpenMPI：</p>
+<ul>
+<li><p>支持mpi2.0</p>
+</li>
+<li><p>对于CPU核心较多的节点，推荐使用 openmpi</p>
+</li>
+<li><p>支持各种网络，包括以太网和infiniband</p>
+</li>
+</ul>
+<h4 id="mpich"><a href="#mpich" class="headerlink" title="mpich"></a>mpich</h4><ul>
+<li>参考官方文档：<a href="https://www.mpich.org/static/downloads/4.0.2/mpich-4.0.2-installguide.pdf" target="_blank" rel="noopener">mpich-4.0.2-installguide.pdf</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">..&#x2F;configure -prefix&#x3D;$HOME&#x2F;ENV&#x2F;mpich-4.0.2-static CC&#x3D;gcc CXX&#x3D;g++ --disable-fortran --enable-fast&#x3D;all,O3 --with-ucx&#x3D;embedded --disable-shared --enable-static</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>–disable-fortran</p>
+<ul>
+<li>文档里写的是–disable-f77：禁用fortran 77，–disable-fc：禁用Fortran 90（及之后95, 2003, 2008版本）但是尝试后无效，仍然会要求你有fortran编译器。</li>
+</ul>
+</li>
+<li><p>–enable-fast</p>
+<p>MPICH libraries are built with default compiler optimization, -O2, which can be modified by –enable-fast configure option. For instance, –disable-fast disables the default optimization option. –enable-fast=O sets default compiler optimization as -O<n></p>
+</li>
+<li><p>–enable-shared</p>
+<ul>
+<li>mpicc编译出来的程序使用动态链接，运行时需要设置<code>LD_LIBRARY_PATH</code>。</li>
+<li>–disable-shared –enable-static则不用设置<code>LD_LIBRARY_PATH</code></li>
+</ul>
+</li>
+</ul>
+<h5 id="Process-Manger"><a href="#Process-Manger" class="headerlink" title="Process Manger"></a>Process Manger</h5><ul>
+<li>–with-pm=hydra</li>
+</ul>
+<p>MPICH has been designed to work with multiple process managers; that is, although you can start MPICH jobs with mpiexec, there are different mechanisms by which your processes are started. An interface (called PMI) isolates the MPICH library code from the process manager. Currently three process managers are distributed with MPICH</p>
+<ul>
+<li>hydra This is the default process manager that natively uses the existing daemons on the system such as ssh, slurm, pbs.</li>
+<li>gforker This is a simple process manager that creates all processes on a single machine. It is useful both for debugging and for running on shared memory multiprocessors.</li>
+</ul>
+<h5 id="遇到的问题-1"><a href="#遇到的问题-1" class="headerlink" title="遇到的问题"></a>遇到的问题</h5><h6 id="UCX-version"><a href="#UCX-version" class="headerlink" title="UCX version"></a>UCX version</h6><p>configure: error: UCX installation does not meet minimum version requirement (v1.9.0). Please upgrade your installation, or use –with-ucx=embedded</p>
+<h6 id="mpirun多节点卡住"><a href="#mpirun多节点卡住" class="headerlink" title="mpirun多节点卡住"></a>mpirun多节点卡住</h6><p>换用–disable-shared –enable-static编译，结果编译错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;bin&#x2F;ld: &#x2F;tmp&#x2F;yfy&#x2F;build-mpi&#x2F;modules&#x2F;ucx&#x2F;src&#x2F;ucm&#x2F;.libs&#x2F;libucm.a(libucm_la-event.o): in function &#96;ucm_event_install&#39;:</span><br><span class="line">&#x2F;tmp&#x2F;yfy&#x2F;build-mpi&#x2F;modules&#x2F;ucx&#x2F;src&#x2F;ucm&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;mpich-4.0.2&#x2F;modules&#x2F;ucx&#x2F;src&#x2F;ucm&#x2F;event&#x2F;event.c:536: undefined reference to &#96;ucs_load_modules&#39;</span><br><span class="line">collect2: error: ld returned 1 exit status</span><br></pre></td></tr></table></figure>
+
+<h4 id="openmpi"><a href="#openmpi" class="headerlink" title="openmpi"></a>openmpi</h4><ul>
+<li><a href="https://docs.open-mpi.org/en/v5.0.x/installing-open-mpi/configure-cli-options/index.html" target="_blank" rel="noopener">4.7. configure command line options — Open MPI 5.0.x documentation (open-mpi.org)</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">..&#x2F;openmpi-4.1.4&#x2F;configure --prefix&#x3D;$HOME&#x2F;ENV&#x2F;openmpi-4.1.4 --disable-mpi-fortran CC&#x3D;gcc CXX&#x3D;g++</span><br></pre></td></tr></table></figure>
+
+<h5 id="运行选项"><a href="#运行选项" class="headerlink" title="运行选项"></a>运行选项</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-v	verbose</span><br><span class="line">-q	quiet</span><br><span class="line">--use-hwthread-cpus		#使用物理核作为slot数目</span><br><span class="line"></span><br><span class="line">-H, -host, --host &lt;host1,host2,...,hostN&gt;</span><br><span class="line">-hostfile, --hostfile &lt;hostfile&gt;</span><br><span class="line">    % cat myhostfile</span><br><span class="line">    aa slots&#x3D;2</span><br><span class="line">    bb slots&#x3D;2</span><br><span class="line">    cc slots&#x3D;2</span><br><span class="line"></span><br><span class="line">-c, -n, --n, -np &lt;#&gt;</span><br><span class="line">-cpus-per-proc, --cpus-per-proc &lt;#perproc&gt;</span><br><span class="line">-bind-to-core, --bind-to-core</span><br><span class="line">-bind-to-socket, --bind-to-socket</span><br></pre></td></tr></table></figure>
+
+<h5 id="遇到的问题-2"><a href="#遇到的问题-2" class="headerlink" title="遇到的问题"></a>遇到的问题</h5><h6 id="run"><a href="#run" class="headerlink" title="run"></a>run</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">➜  workspace mpirun -n 4 .&#x2F;mpi_hello</span><br><span class="line">--------------------------------------------------------------------------</span><br><span class="line">By default, for Open MPI 4.0 and later, infiniband ports on a device</span><br><span class="line">are not used by default.  The intent is to use UCX for these devices.</span><br><span class="line">You can override this policy by setting the btl_openib_allow_ib MCA parameter</span><br><span class="line">to true.</span><br><span class="line"></span><br><span class="line">  Local host:              snode0</span><br><span class="line">  Local adapter:           mlx5_0</span><br><span class="line">  Local port:              1</span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------</span><br><span class="line">--------------------------------------------------------------------------</span><br><span class="line">WARNING: There was an error initializing an OpenFabrics device.</span><br><span class="line"></span><br><span class="line">  Local host:   snode0</span><br><span class="line">  Local device: mlx5_0</span><br><span class="line">--------------------------------------------------------------------------</span><br><span class="line">Hello world from processor snode0, rank 3 out of 4 processors</span><br><span class="line">Hello world from processor snode0, rank 0 out of 4 processors</span><br><span class="line">Hello world from processor snode0, rank 1 out of 4 processors</span><br><span class="line">Hello world from processor snode0, rank 2 out of 4 processors</span><br><span class="line">[snode0:2773927] 3 more processes have sent help message help-mpi-btl-openib.txt &#x2F; ib port not selected</span><br><span class="line">[snode0:2773927] Set MCA parameter &quot;orte_base_help_aggregate&quot; to 0 to see all help &#x2F; error messages</span><br><span class="line">[snode0:2773927] 3 more processes have sent help message help-mpi-btl-openib.txt &#x2F; error in device init</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -846,181 +1110,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
-      <meta itemprop="name" content="rain">
-      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="rain的随笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/" class="post-title-link" itemprop="url">小米电视访问电脑视频</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-12 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-12T01:18:16+08:00">2022-02-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h3><p>一台电脑上下载了许多视频，如何优雅地在其它设备上（其它电脑、平板、电视）上直接访问播放该视频呢？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
-      <meta itemprop="name" content="rain">
-      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="rain的随笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/" class="post-title-link" itemprop="url">网络挂载磁盘(iSCSi)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-12 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-12T01:18:16+08:00">2022-02-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="网络挂载磁盘-iSCSI"><a href="#网络挂载磁盘-iSCSI" class="headerlink" title="网络挂载磁盘(iSCSI)"></a>网络挂载磁盘(iSCSI)</h2><blockquote>
-<p>iSCSI is an IP-based standard for transferring data that supports host access by carrying SCSI commands over IP networks. The iSCSI standard is defined by RFC 3720. (<a href="https://www.ibm.com/docs/en/spectrumvirtualsoftw/8.2.x?topic=planning-iscsi-overview" target="_blank" rel="noopener">iSCSI overview - IBM Documentation</a>)</p>
-</blockquote>
-<p>使用iSCSI可以将远程服务器上的存储设备映射为本地的一个块设备</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1092,14 +1181,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
