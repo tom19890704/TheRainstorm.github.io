@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="wireguard是一种基于UDP的隧道协议，可以在不同设备间建立虚拟隧道，从而连接不同子网。本文总结了不同使用场景，及其配置方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Wireguard组网">
+<meta property="og:url" content="http://yoursite.com/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="wireguard是一种基于UDP的隧道协议，可以在不同设备间建立虚拟隧道，从而连接不同子网。本文总结了不同使用场景，及其配置方法">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221031222237862.png">
+<meta property="article:published_time" content="2022-10-31T14:17:42.000Z">
+<meta property="article:modified_time" content="2022-10-31T16:07:53.292Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="wireguard iptables ip-rule">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221031222237862.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>Wireguard组网 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">48</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Wireguard组网
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-10-31 22:17:42" itemprop="dateCreated datePublished" datetime="2022-10-31T22:17:42+08:00">2022-10-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-11-01 00:07:53" itemprop="dateModified" datetime="2022-11-01T00:07:53+08:00">2022-11-01</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>wireguard是一种基于UDP的隧道协议，可以在不同设备间建立虚拟隧道，从而连接不同子网。本文总结了不同使用场景，及其配置方法</p>
+<a id="more"></a>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>按照用途，列举几种使用场景</p>
+<h3 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h3><p>即需要从外网访问NAT后设备。</p>
+<p>可以在路由器（有公网地址）上装wg，设置允许wg转发到wan和lan。其它设备（如手机）通过wg连接到路由器，从而可以访问路由器下局域网和通过路由器上网。</p>
+<h3 id="网络转发"><a href="#网络转发" class="headerlink" title="网络转发"></a>网络转发</h3><h4 id="一级网络转发"><a href="#一级网络转发" class="headerlink" title="一级网络转发"></a><strong>一级网络转发</strong></h4><p>一台设备通过另一台设备上网。</p>
+<p>如实验室A服务器无法上网，B服务器可以上网（比如登录了网络通账号），A可以访问B。可以通过wg在A, B间建立隧道，设置A的默认路由器为wg，从而将A的流量都转发给B。B上再开启ipv4路由转发，A便可以上网。</p>
+<p>底层过程其实和上面内网穿透是一样的，不过有个不同的地方：</p>
+<ul>
+<li><strong>原路返回问题</strong>：我们(假设为C)仍需要通过一个ip去直接访问A，请求ip包为(src=C, dst=A)。照理来说响应包的源地址应该是A，但是配置wg后，A的默认路由是wg，因此按照路由规则，响应包会变为(src=wg, dst=C)，并发送给B。B无法将私有地址的包发送到公网上去，因此C无法收到响应。</li>
+<li>解决办法：使用<strong>策略路由</strong>，在应用wg的default路由前，提前将<strong>源地址为A</strong>的按照对应接口发送出去</li>
+</ul>
+<h4 id="二级网络转发"><a href="#二级网络转发" class="headerlink" title="二级网络转发"></a>二级网络转发</h4><p>同上，但是B服务器也是通过wg转发给另一台服务器C的。此时会遇到新的问题：</p>
+<ul>
+<li>在按照上述配置完A后，会发现A仍然无法上网。过程如下：<ul>
+<li>A请求的包(src=wgA, dst=B站)</li>
+<li>B接收后，转发给C(src=wgA, dst=B站)</li>
+<li>C接收后，进行SNAT(src=C_WAN, dst=B站)，记录ip端口映射关系</li>
+<li>B站响应(src=B站, dst=C_WAN)</li>
+<li>C接收后，进行DNAT(src=B站, dst=wgA)</li>
+<li>此时可以发现，dst=wgA，C是无法路由给A的</li>
+</ul>
+</li>
+</ul>
+<p>解决方法：</p>
+<ul>
+<li>B上为wg接口<strong>设置NAT</strong>。过程如下：<ul>
+<li>A请求的包(src=wgA, dst=B站)</li>
+<li>B接收后，进行SNAT(src=wgB, dst=B站)，转发给C</li>
+<li>C接收后，进行SNAT(src=C_WAN, dst=B站)，记录ip端口映射关系</li>
+<li>B站响应(src=B站, dst=C_WAN)</li>
+<li>C接收后，进行DNAT(src=B站, dst=wgB)，转发给B</li>
+<li>B接收后，进行DNAT(src=B站, dst=wgA)，转发给A</li>
+<li>A接收到响应</li>
+</ul>
+</li>
+</ul>
+<h3 id="连接子网"><a href="#连接子网" class="headerlink" title="连接子网"></a>连接子网</h3><p>连接两台路由器对应的子网，连接任一台路由器均可访问两个子网的设备。</p>
+<p>待续</p>
+<h2 id="wireguard设置"><a href="#wireguard设置" class="headerlink" title="wireguard设置"></a>wireguard设置</h2><h3 id="服务端和客户端"><a href="#服务端和客户端" class="headerlink" title="服务端和客户端"></a>服务端和客户端</h3><p>wg是peer2peer的，因此不存在服务端和客户端。这里按照使用上的区别，把提供网络的称为服务端，把将所有流量转发到wg的称为客户端。</p>
+<p>服务端和客户端安装配置方法是一样的</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install wireguard wireguard-tools</span><br><span class="line"></span><br><span class="line">sudo vim /etc/wireguard/wg0.conf <span class="comment">#配置wireguard，配置方法在下节</span></span><br><span class="line"></span><br><span class="line">sudo wg-quick up wg0 <span class="comment">#可能需要安装apt install resolvconf</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>客户端和服务端配置</p>
+<ul>
+<li>公钥私钥可以通过<code>wg genkey | tee privatekey | wg pubkey &gt; publickey</code> 生成。也可以使用windows下的图形界面软件生成</li>
+<li>AllowedIP服务端设置成客户端的vpn虚拟地址/32即可。客户端根据需要设置，设置成<code>0.0.0.0/0</code> 则表示所有流量通过vpn</li>
+<li>Endpoint只需要客户端设置。需要确保客户端通过该ip可以访问到服务端。<ul>
+<li>可以使用ipv4或ipv6地址</li>
+<li>wireguard默认的端口是51820，也可以在服务端的Interface域设置</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Interface]</span><br><span class="line">PrivateKey = xxxx        <span class="comment">#自己的私钥</span></span><br><span class="line">Address = 10.0.31.3/24   <span class="comment">#vpn虚拟地址</span></span><br><span class="line">ListenPort = 51820       <span class="comment">#服务端配置即可</span></span><br><span class="line">DNS = 223.5.5.5</span><br><span class="line"></span><br><span class="line">[Peer]</span><br><span class="line">PublicKey = xxxx         <span class="comment">#peer公钥</span></span><br><span class="line">AllowedIPs = 10.0.31.0/24<span class="comment">#AllowedIP会通过wg发送给peer</span></span><br><span class="line">Endpoint = xxxx          <span class="comment">#peer的地址:端口   wg建立连接只需要一方设置Endpoint</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="wireguard路由表配置"><a href="#wireguard路由表配置" class="headerlink" title="wireguard路由表配置"></a>wireguard路由表配置</h3><h4 id="默认"><a href="#默认" class="headerlink" title="默认"></a>默认</h4><p>wireguard通过<code>wg-quick up</code> 启动后，会<strong>自动修改路由表</strong>，用于实现wireguard的路由。</p>
+<p>如果我们设置了<code>AllowedIPs = 0.0.0.0/0</code>。通过<code>ip rule</code>  可能得到以下输出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0:      from all lookup <span class="built_in">local</span></span><br><span class="line">1:      from all lookup main suppress_prefixlength 0</span><br><span class="line">2:      not from all fwmark 0xca6c lookup 51820</span><br><span class="line">32766:  from all lookup main</span><br><span class="line">32767:  from all lookup default</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>qi中策略2和32766结合在一起表达的是</p>
+<ul>
+<li>所有不用于内部实现wg的流，走路由表51820。会简单的将所有流量路由到wg接口<ul>
+<li>table 51820: <code>default dev wg0 scope link</code></li>
+</ul>
+</li>
+<li>用于实现wg（打上fwmark）的流继续走main。比如用于和peer建立连接的流会正常走机器默认的以太网接口。</li>
+</ul>
+</li>
+<li><p>而对于策略1，其中suppress_prefixlength 0会抑制main路由表中的default路由规则（前缀长度为0，即0.0.0.0/0，会匹配所有流量）。</p>
+<ul>
+<li>该策略在wg生效之前，因此main中配置的原本非default路由规则仍然会生效。比如也许配置了某些地址走特定接口。</li>
+</ul>
+</li>
+</ul>
+<p>参考：<a href="https://stackoverflow.com/a/68988919/9933066" target="_blank" rel="noopener">https://stackoverflow.com/a/68988919/9933066</a></p>
+<h4 id="手动"><a href="#手动" class="headerlink" title="手动"></a>手动</h4><p>在wg conf文件中手动设置下面的参数，wireguard就不会自动修改路由表了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Table &#x3D; 51820</span><br><span class="line"></span><br><span class="line">PostUp   &#x3D; &#x2F;sbin&#x2F;ip -4 route replace default dev %i table default metric 1</span><br><span class="line">PostDown &#x3D; &#x2F;sbin&#x2F;ip -4 route delete  default dev %i table default metric 1</span><br></pre></td></tr></table></figure>
+
+<h2 id="原路返回问题-多网关设置"><a href="#原路返回问题-多网关设置" class="headerlink" title="原路返回问题/多网关设置"></a>原路返回问题/多网关设置</h2><p>在客户端配置wireguard allowip为0.0.0.0/0后，会出现无法访问客户端自身的情况（ping, ssh）。</p>
+<p>这是因为：</p>
+<blockquote>
+<p>linux 默认没有“流量原路返回”的功能</p>
+</blockquote>
+<p>考虑有两个ISP的网络（多出口），如何做到数据原路返回呢</p>
+<p>参考：<a href="https://lartc.org/howto/lartc.rpdb.multiple-links.html#AEN267" target="_blank" rel="noopener">Routing for multiple uplinks/providers (lartc.org)</a></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221031222237862.png" alt="image-20221031222237862"></p>
+<ol>
+<li><p>首先，在main路由表中添加到两个ISP网段的路由，这保证可以访问到两个ISP的网关</p>
+</li>
+<li><p>接着，添加默认路由。</p>
+<ul>
+<li>可以之后再添加策略路由，使得某些ip走IPS1，剩余走IPS2</li>
+</ul>
+</li>
+<li><p>（接下来两步用于保证数据能够原路返回，不会出现来自IPS1的流量，从IPS2出去）</p>
+</li>
+<li><p>然后，创建两个新的路由表T1和T2，各自将对应的ISP设置为默认路由</p>
+</li>
+<li><p>最后，添加路由策略。该规则根据包的源地址选择使用对应ISP的路由表（T1, T2）。</p>
+<ul>
+<li>这里，<strong>重点在于需要原路返回的包，已经获得src地址了</strong>？不需要原路返回的包，则根据之前的策略选择ISP出口后，设置src地址。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ip route add 211.200.0.0/30 dev eth1 src 221.200.0.2 table main</span><br><span class="line">ip route add 58.56.0.0/30 dev eth2 src 58.56.0.2 table main</span><br><span class="line"></span><br><span class="line">ip route add default via 221.200.0.1</span><br><span class="line"></span><br><span class="line">ip route add 211.200.0.0/30 dev eth1 src 221.200.0.2 table T1</span><br><span class="line">ip route add default via 221.200.0.1 table T1</span><br><span class="line">ip route add 58.56.0.0/30 dev eth2 src 58.56.0.2 table T2</span><br><span class="line">ip route add default via 58.56.0.1 table T2</span><br><span class="line"></span><br><span class="line">ip rule add from 221.200.0.2 table T1</span><br><span class="line">ip rule add from 58.56.0.2 table T2</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/wireguard-iptables-ip-rule/" rel="tag"># wireguard iptables ip-rule</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/" rel="prev" title="Openwrt Mesh和快速漫游配置">
+      <i class="fa fa-chevron-left"></i> Openwrt Mesh和快速漫游配置
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">1.</span> <span class="nav-text">使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内网穿透"><span class="nav-number">1.1.</span> <span class="nav-text">内网穿透</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络转发"><span class="nav-number">1.2.</span> <span class="nav-text">网络转发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一级网络转发"><span class="nav-number">1.2.1.</span> <span class="nav-text">一级网络转发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二级网络转发"><span class="nav-number">1.2.2.</span> <span class="nav-text">二级网络转发</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接子网"><span class="nav-number">1.3.</span> <span class="nav-text">连接子网</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wireguard设置"><span class="nav-number">2.</span> <span class="nav-text">wireguard设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端和客户端"><span class="nav-number">2.1.</span> <span class="nav-text">服务端和客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">2.3.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wireguard路由表配置"><span class="nav-number">2.4.</span> <span class="nav-text">wireguard路由表配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#默认"><span class="nav-number">2.4.1.</span> <span class="nav-text">默认</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动"><span class="nav-number">2.4.2.</span> <span class="nav-text">手动</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原路返回问题-多网关设置"><span class="nav-number">3.</span> <span class="nav-text">原路返回问题&#x2F;多网关设置</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
