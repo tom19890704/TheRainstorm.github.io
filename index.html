@@ -794,7 +794,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-31 15:32:54" itemprop="dateModified" datetime="2022-10-31T15:32:54+08:00">2022-10-31</time>
+                <time title="Modified: 2022-10-31 16:53:19" itemprop="dateModified" datetime="2022-10-31T16:53:19+08:00">2022-10-31</time>
               </span>
 
           
@@ -965,7 +965,14 @@
 <li>通过breed刷回官方bootloader</li>
 <li>通过官方修复工具修复</li>
 </ol>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><h3 id="snapshot的说明"><a href="#snapshot的说明" class="headerlink" title="snapshot的说明"></a>snapshot的说明</h3><p>snapshot是开发版分支</p>
+<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><h3 id="刷之前备份mtd分区"><a href="#刷之前备份mtd分区" class="headerlink" title="刷之前备份mtd分区"></a>刷之前备份mtd分区</h3><p>路由器flash有若干分区，其中有一个分区存储路由器MAC地址、无线校准参数等。若损坏可能导致无线信号弱等问题。因此刷之前最好备份。<br>查看mtd分区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">root@XiaoQiang:~<span class="comment"># cat /proc/mtd</span></span><br><span class="line">dev:    size   erasesize  name</span><br><span class="line">mtd0: 07f80000 00020000 <span class="string">"ALL"</span></span><br><span class="line">mtd1: 00080000 00020000 <span class="string">"Bootloader"</span></span><br><span class="line">mtd2: 00040000 00020000 <span class="string">"Config"</span></span><br><span class="line">mtd3: 00040000 00020000 <span class="string">"Bdata"</span></span><br><span class="line">mtd4: 00040000 00020000 <span class="string">"Factory"</span></span><br><span class="line">mtd5: 00040000 00020000 <span class="string">"crash"</span></span><br><span class="line">mtd6: 00040000 00020000 <span class="string">"crash_syslog"</span></span><br><span class="line">mtd7: 00040000 00020000 <span class="string">"reserved0"</span></span><br><span class="line">mtd8: 00400000 00020000 <span class="string">"kernel0"</span></span><br><span class="line">mtd9: 00400000 00020000 <span class="string">"kernel1"</span></span><br><span class="line">mtd10: 02000000 00020000 <span class="string">"rootfs0"</span></span><br><span class="line">mtd11: 02000000 00020000 <span class="string">"rootfs1"</span></span><br><span class="line">mtd12: 03580000 00020000 <span class="string">"overlay"</span></span><br><span class="line">mtd13: 012a6000 0001f000 <span class="string">"ubi_rootfs"</span></span><br><span class="line">mtd14: 030ec000 0001f000 <span class="string">"data"</span></span><br></pre></td></tr></table></figure>
+
+<p>备份factory分区（小米路由器一般是factory存储了上述那些数据）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /dev/mtd4 &gt; /tmp/factory.bin</span><br></pre></td></tr></table></figure>
+
+<p>之后通过scp复制到本地</p>
+<h3 id="snapshot的说明"><a href="#snapshot的说明" class="headerlink" title="snapshot的说明"></a>snapshot的说明</h3><p>snapshot是开发版分支</p>
 <ul>
 <li>默认没有安装luci（没有网页界面）</li>
 <li>上游每天都会编译产生新的snapshot。对于kernel mod相关软件，不是同一次编译则无法安装。</li>
