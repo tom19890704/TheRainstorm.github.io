@@ -41,7 +41,7 @@
 <meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20210707233753989.png">
 <meta property="og:image" content="http://yoursite.com/images/2022-02-13-openwrt%E9%85%8D%E7%BD%AE/image-20220122123740710.png">
 <meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
-<meta property="article:modified_time" content="2022-10-31T07:33:06.791Z">
+<meta property="article:modified_time" content="2022-11-02T08:31:23.509Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="折腾">
 <meta property="article:tag" content="如何实现网络自由">
@@ -137,12 +137,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">12</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">16</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">48</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">49</span></a>
 
   </li>
   </ul>
@@ -203,7 +203,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-31 15:33:06" itemprop="dateModified" datetime="2022-10-31T15:33:06+08:00">2022-10-31</time>
+                <time title="Modified: 2022-11-02 16:31:23" itemprop="dateModified" datetime="2022-11-02T16:31:23+08:00">2022-11-02</time>
               </span>
 
           
@@ -393,8 +393,8 @@
 <li><p>官方教程：<a href="https://openwrt.org/docs/guide-user/services/vpn/wireguard/server" target="_blank" rel="noopener">[OpenWrt Wiki] WireGuard server</a></p>
 </li>
 <li><p>安装wireguard</p>
-<p>wiregurad是内核模块，如果是自己编译的openwrt则无法通过opkg安装(linux kernel hash校验失败导致依赖不满足），需要在编译时集成到openwrt中。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg install wireguard-tools</span><br></pre></td></tr></table></figure>
+<p>wiregurad是内核模块，如果是自己编译的openwrt则无法通过opkg安装(linux kernel hash校验失败导致依赖不满足），需要在编译时集成到openwrt中。或者手动安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg install wireguard-tools luci-app-wireguard luci-proto-wireguard</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>创建接口</p>
 <ul>
@@ -493,8 +493,8 @@
       <i class="fa fa-chevron-left"></i> 2022-02-13-记录红米AC2100折腾
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" rel="next" title="openwrt编译">
-      openwrt编译 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/" rel="next" title="openwrt刷机">
+      openwrt刷机 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -571,14 +571,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

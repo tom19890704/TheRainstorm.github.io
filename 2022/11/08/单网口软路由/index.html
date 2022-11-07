@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="通过本次项目，学会了：  ip, netplan创建bridge和vlan vlan的tag, untag含义，openwrt switch设置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单网口软路由">
+<meta property="og:url" content="http://yoursite.com/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="通过本次项目，学会了：  ip, netplan创建bridge和vlan vlan的tag, untag含义，openwrt switch设置">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106141755.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106161239.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106160620.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108003939.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106144229.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106145016.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106152732.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107215141.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107215209.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107214659.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107235214.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000404.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000447.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000519.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000532.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107232725.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107232701.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233045.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233655.png">
+<meta property="article:published_time" content="2022-11-07T16:45:20.000Z">
+<meta property="article:modified_time" content="2022-11-07T16:49:15.837Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="openwrt">
+<meta property="article:tag" content="vlan">
+<meta property="article:tag" content="软路由">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106141755.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>单网口软路由 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">16</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">49</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          单网口软路由
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-11-08 00:45:20 / Modified: 00:49:15" itemprop="dateCreated datePublished" datetime="2022-11-08T00:45:20+08:00">2022-11-08</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>通过本次项目，学会了：</p>
+<ul>
+<li>ip, netplan创建bridge和vlan</li>
+<li>vlan的tag, untag含义，openwrt switch设置</li>
+</ul>
+<a id="more"></a>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p>司波图：使用笔记本 + PVE，单网口实现软路由：<a href="https://www.youtube.com/watch?v=eqmOnCHM-kc" target="_blank" rel="noopener">一个网口也能做软路由？闲置电脑再利用！ - YouTube</a></p>
+<ul>
+<li>不过这里的结构只适用于pppoe上网方式，对于dhcp上网方式则不适用（此结构中只有软路由一个dhcp服务器，不用考虑dhcp冲突。对于dhcp上网方式则需要使用vlan隔离ISP的dhcp和软路由的dhcp服务）</li>
+<li>结构：<img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106141755.png" alt="pppoe单口软路由"></li>
+</ul>
+</li>
+<li><p>利用树莓派 + LXC运行多个服务，并使用Openwrt作为防火墙管理：<a href="http://www.makikiweb.com/Pi/lxc_openwrt.html" target="_blank" rel="noopener">www.makikiweb.com/Pi/lxc_openwrt.html</a></p>
+<ul>
+<li>新版教程：<a href="http://www.makikiweb.com/Pi/virtual_openwrt_on_lxd.html" target="_blank" rel="noopener">www.makikiweb.com/Pi/virtual_openwrt_on_lxd.html</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="单网口实现软路由"><a href="#单网口实现软路由" class="headerlink" title="单网口实现软路由"></a>单网口实现软路由</h2><h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106161239.png" alt="单网口软路由架构图"></p>
+<h3 id="1-设置host"><a href="#1-设置host" class="headerlink" title="1. 设置host"></a>1. 设置host</h3><h4 id="lxc"><a href="#lxc" class="headerlink" title="lxc"></a>lxc</h4><p>安装lxd</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install lxd   # 安装lxd</span><br><span class="line">lxd init  # 会设置存储池，网络bridge，全部默认即可</span><br></pre></td></tr></table></figure>
+
+<p>创建一个包含两个网络接口的profile，用于openwrt。（还可以创建一个只包含br1的profile，用于其余lxc容器）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lxc profile create twointf</span><br><span class="line">lxc profile edit twointf</span><br></pre></td></tr></table></figure>
+<p>内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">config: &#123;&#125;</span><br><span class="line">description: 2 interfaces</span><br><span class="line">devices:</span><br><span class="line">  eth0:</span><br><span class="line">    name: eth0</span><br><span class="line">    nictype: bridged</span><br><span class="line">    parent: br1</span><br><span class="line">    type: nic</span><br><span class="line">  eth1:</span><br><span class="line">    name: eth1</span><br><span class="line">    nictype: bridged</span><br><span class="line">    parent: br0</span><br><span class="line">    type: nic</span><br><span class="line">  root:</span><br><span class="line">    path: &#x2F;</span><br><span class="line">    pool: default</span><br><span class="line">    type: disk</span><br><span class="line">name: twointf</span><br></pre></td></tr></table></figure>
+
+<p>拉取openwrt镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lxc image copy images:openwrt&#x2F;22.03 local: --copy-aliases --auto-update</span><br></pre></td></tr></table></figure>
+
+<h4 id="bridge-vlan"><a href="#bridge-vlan" class="headerlink" title="bridge, vlan"></a>bridge, vlan</h4><p>设置netplan，按照bridge, vlan节，创建两个vlan和br0, br1。</p>
+<h3 id="2-路由器vlan设置"><a href="#2-路由器vlan设置" class="headerlink" title="2. 路由器vlan设置"></a>2. 路由器vlan设置</h3><p>见后面DSA设置节</p>
+<h3 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h3><p>从实验室到寝室的wireguard隧道可以达到500Mbs的速率，将两核Cortex <a href="mailto:A53@1.2GHz">A53@1.2GHz</a>几乎跑满。而原本通过路由器(4核MIPS 1004kc@880MHz)则仅能跑到200Mbs。<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106160620.png" alt=""></p>
+<p>两边均使用软路由后达到千兆水平, scp可以达到98MB/s的速率。</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108003939.png" alt=""></p>
+<h2 id="创建bridge-vlan"><a href="#创建bridge-vlan" class="headerlink" title="创建bridge, vlan"></a>创建bridge, vlan</h2><h3 id="iproute2-临时设置"><a href="#iproute2-临时设置" class="headerlink" title="iproute2(临时设置)"></a>iproute2(临时设置)</h3><ul>
+<li>bridge：<a href="https://wiki.archlinux.org/title/network_bridge" target="_blank" rel="noopener">Network bridge - ArchWiki (archlinux.org)</a></li>
+<li>vlan: <a href="https://wiki.archlinux.org/title/VLAN#Create_the_VLAN_device" target="_blank" rel="noopener">VLAN - ArchWiki (archlinux.org)</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">lsmod |grep 802</span><br><span class="line"></span><br><span class="line">#添加vlan和bridge</span><br><span class="line">sudo ip link add link enp7s0 eth0.1 type vlan id 1</span><br><span class="line">sudo ip link add link enp7s0 eth0.2 type vlan id 2</span><br><span class="line">sudo ip link add name br0 type bridge</span><br><span class="line">sudo ip link add name br1 type bridge</span><br><span class="line"></span><br><span class="line">#set up</span><br><span class="line">sudo ip link set dev br0 up</span><br><span class="line">sudo ip link set dev br1 up</span><br><span class="line">sudo ip link set dev eth0.1 up</span><br><span class="line">sudo ip link set dev eth0.2 up</span><br><span class="line"></span><br><span class="line">#设置bridge master</span><br><span class="line">sudo ip link set eth0.2 master br1 </span><br><span class="line">sudo ip link set eth0.1 master br0</span><br></pre></td></tr></table></figure>
+
+<h3 id="netplan-networkmanager"><a href="#netplan-networkmanager" class="headerlink" title="netplan/networkmanager"></a>netplan/networkmanager</h3><p>nmcli命令还行，不过配置复杂网络时还是使用netplan配置文件的方式更加适合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">nmcli con add ifname br0 type bridge con-name br0</span><br><span class="line">nmcli con add type bridge-slave ifname enp7s0 master br0</span><br><span class="line">nmcli con up br0</span><br><span class="line"></span><br><span class="line">nmcli con add type vlan con-name vlan1 dev enp7s0 id 1</span><br></pre></td></tr></table></figure>
+
+<h3 id="netplan-networkd-推荐"><a href="#netplan-networkd-推荐" class="headerlink" title="netplan/networkd(推荐)"></a>netplan/networkd(推荐)</h3><p>ubuntu桌面版，netplan底层使用的默认时NetworkManger。服务器版则是networkd，networkd的配置文件使用起来更简单些。</p>
+<p>配置文档：<a href="https://netplan.io/examples#configuring-network-bridges" target="_blank" rel="noopener">Canonical Netplan</a></p>
+<p>配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">network:</span><br><span class="line">  version: 2</span><br><span class="line">  renderer: networkd</span><br><span class="line">  ethernets:</span><br><span class="line">    eth0:</span><br><span class="line">      dhcp4: false</span><br><span class="line">      dhcp6: false</span><br><span class="line">  vlans:</span><br><span class="line">    eth0.1:</span><br><span class="line">      link: eth0</span><br><span class="line">      id: 1</span><br><span class="line">    eth0.2:</span><br><span class="line">      link: eth0</span><br><span class="line">      id: 2</span><br><span class="line">  bridges:</span><br><span class="line">    br0:</span><br><span class="line">      interfaces:</span><br><span class="line">        - eth0.1</span><br><span class="line">    br1:</span><br><span class="line">      dhcp4: true</span><br><span class="line">      interfaces:</span><br><span class="line">        - eth0.2</span><br></pre></td></tr></table></figure>
+<p>配置完成后，需要应用修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netplan apply</span><br></pre></td></tr></table></figure>
+
+<h5 id="设置网卡固定名称"><a href="#设置网卡固定名称" class="headerlink" title="设置网卡固定名称"></a>设置网卡固定名称</h5><p>默认情况下，当机器PCIE设备变化时，网络接口名字可能会发生变化（比如拔插显卡）。解决办法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;udev&#x2F;rules.d&#x2F;80-net.rules</span><br><span class="line"></span><br><span class="line"># 80-net.rules</span><br><span class="line">SUBSYSTEM&#x3D;&#x3D;&quot;net&quot;, ACTION&#x3D;&#x3D;&quot;add&quot;, DRIVERS&#x3D;&#x3D;&quot;?*&quot;, ATTR&#123;address&#125;&#x3D;&#x3D;&quot;7c:10:c9:a2:53:d8&quot;, NAME&#x3D;&quot;eth0&quot;</span><br><span class="line">SUBSYSTEM&#x3D;&#x3D;&quot;net&quot;, ACTION&#x3D;&#x3D;&quot;add&quot;, DRIVERS&#x3D;&#x3D;&quot;?*&quot;, ATTR&#123;address&#125;&#x3D;&#x3D;&quot;38:fc:98:8d:f8:7e&quot;, NAME&#x3D;&quot;wlan0&quot;</span><br><span class="line"></span><br><span class="line">update-initramfs -u -k all    # -u (updates initramfs), -k all(specific all kernel version)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Openwrt-VLAN设置"><a href="#Openwrt-VLAN设置" class="headerlink" title="Openwrt VLAN设置"></a>Openwrt VLAN设置</h2><ul>
+<li>官方文档：<a href="https://openwrt.org/docs/guide-user/network/vlan/switch_configuration" target="_blank" rel="noopener">[OpenWrt Wiki] VLAN</a></li>
+</ul>
+<h3 id="vlan-Q-amp-A"><a href="#vlan-Q-amp-A" class="headerlink" title="vlan Q &amp; A"></a>vlan Q &amp; A</h3><ul>
+<li>vlan作用是什么？：分离不同设备（位于同一个LAN）。优点：不用设置子网段和路由。</li>
+<li>vlan标准：<strong>IEEE 802.1Q</strong>。vlan会在以太网帧中添加4字节，因此通信双方必须要都能识别vlan<ul>
+<li><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106144229.png" alt=""></li>
+</ul>
+</li>
+<li>哪些设备支持vlan？：基本上所有设备都支持vlan（软件的或者硬件交换机）。<ul>
+<li>对于有多个端口的嵌入式设备，内部通常会包含一个<strong>VLAN-capable switch</strong>，或者称managed switch。管理交换机和设备内部的一个ethernet接口连接在一起。管理交换机可以为每个端口设置vlan id，并且<strong>可以独立于CPU工作</strong>。</li>
+<li>对于PC或则单板计算机，每个端口都有一个独立的以太网控制器(nic)，<strong>vlan通过操作系统驱动实现</strong>。</li>
+</ul>
+</li>
+<li>如何查看自己设备是否有硬件switch？<ul>
+<li>通过<code>ls -l /sys/class/net</code>可以查看物理的网络接口</li>
+<li>用过的小米路由器均没有专门的switch页面，后面才知道是采用了DSA架构，每个端口都显式为一个设备，如lan1, lan2, wan。实际上均是位于eth0下。</li>
+</ul>
+</li>
+</ul>
+<h3 id="硬件switch-vlan"><a href="#硬件switch-vlan" class="headerlink" title="硬件switch vlan"></a>硬件switch vlan</h3><p>下图为一个常见的5端口路由器的vlan设置，该路由器只有一个网络接口(eth0)，包含一个内置的交换机，通过vlan将WAN和LAN隔离。<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106145016.png" alt=""></p>
+<p>对于swtich实现的vlan，openwrt有一个页面用于图形化地设置vlan。（使用DSA架构后就没了，见后DSA节）</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106152732.png" alt=""></p>
+<ul>
+<li>tagged:  The <em>tagged</em> port (<code>t</code> is appended to the port number) is the one that forces usage of VLAN tags, i.e. when the packet is outgoing, the VLAN ID tag with <code>vlan</code> value is added to the packet, and when the packet is incoming, the VLAN ID tag has to be present and match the configured <code>vlan</code> value(s).</li>
+<li>untagged:  The <em>untagged</em> port is removing the VLAN ID tag when leaving the port – this is used for communication with ordinary devices that does not have any clue about VLANs. When the untagged packet arrives to the port, the default port VLAN ID (called <code>pvid</code>) is assigned to the packet automatically. The <code>pvid</code> value can be selected by the <code>switch_port</code> section.</li>
+</ul>
+<h3 id="软件vlan"><a href="#软件vlan" class="headerlink" title="软件vlan"></a>软件vlan</h3><p>每个物理接口(nic)可以通过vlan id虚拟出多个虚拟接口（如eth0.1, eth0.2）。当包路由到对应虚拟接口时，包离开物理接口时会打上对应tag。当物理接口接收到对应tag的包时，则会路由到对应虚拟接口（不存在则会drop）。</p>
+<blockquote>
+<p>A driver-level VLAN could be created in the <code>interface</code> section by adding a dot (<code>.</code>) and the respective VLAN ID after the interface name (in the <code>ifname</code> option), like <code>eth1.2</code> for VLAN ID 2 on <code>eth1</code>. When any internal software routing decision sends the packet to the software VLAN, it leaves the respective interface (<code>eth1</code> in our example) with the VLAN tag present and VLAN ID set to the number corresponding to the interface name (<code>2</code> in our example on <code>eth1.2</code>).<br>if the incoming packet arrives to the interface with software VLANs (incoming packet to <code>eth1</code>) and has a VLAN ID tag set, it appears on the respective software-VLAN-interface instead (VLAN ID 2 tag arrives on <code>eth1.2</code>) – if it exists in the configuration! Otherwise the packet is dropped. Non-tagged packets are delivered to non-VLAN interface (<code>eth1</code>) as usual.</p>
+</blockquote>
+<p>当把non-VLAN接口和VLAN接口桥接时，操作系统负责增加和删除tag</p>
+<blockquote>
+<p>When you bridge non-VLAN and VLAN interfaces together, the system takes care about adding VLAN ID when sending packet from non-VLAN to VLAN interface, and it automatically removes the VLAN ID when sending packet from VLAN interface to non-VLAN one.</p>
+</blockquote>
+<h3 id="DSA设置"><a href="#DSA设置" class="headerlink" title="DSA设置"></a>DSA设置</h3><p><strong>Distributed Switch Architecture(DSA)</strong> 是linux kernel对网络架构的一个调整，openwrt从21的版本开始使用该架构。<br>参考：</p>
+<ul>
+<li><strong>推荐仔细观看</strong>：<a href="https://www.youtube.com/watch?v=qeuZqRqH-ug" target="_blank" rel="noopener">VLANs in OpenWrt 21 - YouTube</a></li>
+<li>官方wiki：<a href="https://openwrt.org/docs/guide-user/network/dsa/dsa-mini-tutorial" target="_blank" rel="noopener">[OpenWrt Wiki] DSA Mini-Tutorial</a></li>
+</ul>
+<h4 id="DSA-vs-swconfig"><a href="#DSA-vs-swconfig" class="headerlink" title="DSA vs swconfig"></a>DSA vs swconfig</h4><p>openwrt 19以前版本使用swconfig，从21的版本开始使用DSA。</p>
+<p>区别总结：</p>
+<ul>
+<li>21可以显式定义vlan device（802.1q），19则是在interface通过选择device时手动添加后缀，隐式配置。</li>
+<li>指定端口标签方式<ul>
+<li>19中，专门的switch页面，指定不同端口如何打标签</li>
+<li>21中，每个port变成单独一个device（如lan1, lan2, wan）。可以创建一个bridge添加lan1, lan2, wan，然后通过bridge vlan filtering来指定不同端口的打标签方式。</li>
+</ul>
+</li>
+</ul>
+<p>21总结</p>
+<ul>
+<li>define VLAN on the bridge</li>
+<li>tag and untag on the bridge</li>
+<li>attach wifi to the interface</li>
+</ul>
+<h4 id="ingress-vs-egress-tagged-vs-untagged含义"><a href="#ingress-vs-egress-tagged-vs-untagged含义" class="headerlink" title="ingress vs egress, tagged vs untagged含义"></a>ingress vs egress, tagged vs untagged含义</h4><ul>
+<li>egress tagged：发往VLAN 100的包，会从指定端口发出，并且在以太网帧中插入tag。适用于对面也是vlan-aware设备</li>
+<li>egress untagged: 发往VLAN 100的包，会从指定端口发出，并且在以太网帧中移除tag。适用于连接普通设备，一个端口只能对应一个untagged vlan。</li>
+<li>对于入站的情况，如果包有tag，则直接发往对应的vlan。如果是untagged的，则添加PVID，发往对应vlan。</li>
+</ul>
+<h4 id="swconfig配置实例-p2w"><a href="#swconfig配置实例-p2w" class="headerlink" title="swconfig配置实例(p2w)"></a>swconfig配置实例(p2w)</h4><p>并非21后的版本都使用了DSA，这里p2w使用的op版本为22.03，仍然有switch页面。</p>
+<p>设置vlan的过程为</p>
+<ul>
+<li>在switch中设置端口tagged, untagged，见图1<ul>
+<li>图中vlan100的CPU设置了off，这是因为我们不需要处理该部分流量（该部分是学校到软路由虚拟链路）。这样设置<strong>不会</strong>产生eth0.100的设备。</li>
+</ul>
+</li>
+<li>图2为隐式产生的vlan device</li>
+<li>添加interface，指定使用的vlan。图3 mgr指定了eth0.99，而lan指定的br-lan连接了eth0.200<br>图1<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107215141.png" alt=""><br>图2<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107215209.png" alt=""><br>图3<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107214659.png" alt=""><br>图4<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107235214.png" alt=""></li>
+</ul>
+<p>从配置文件来看，通过switch_vlan指定了不同端口如何打上tag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">config switch</span><br><span class="line">        option name &#39;switch0&#39;</span><br><span class="line">        option reset &#39;1&#39;</span><br><span class="line">        option enable_vlan &#39;1&#39;</span><br><span class="line"></span><br><span class="line">config switch_vlan</span><br><span class="line">        option device &#39;switch0&#39;</span><br><span class="line">        option vlan &#39;1&#39;</span><br><span class="line">        option vid &#39;100&#39;</span><br><span class="line">        option ports &#39;4 1t&#39;</span><br><span class="line">        option description &#39;学校到单口软路由&#39;</span><br><span class="line"></span><br><span class="line">config switch_vlan</span><br><span class="line">        option device &#39;switch0&#39;</span><br><span class="line">        option vlan &#39;2&#39;</span><br><span class="line">        option vid &#39;200&#39;</span><br><span class="line">        option ports &#39;0t 3 1t&#39;</span><br><span class="line">        option description &#39;软路由到LAN&#39;</span><br><span class="line"></span><br><span class="line">config switch_vlan</span><br><span class="line">        option device &#39;switch0&#39;</span><br><span class="line">        option vlan &#39;3&#39;</span><br><span class="line">        option vid &#39;99&#39;</span><br><span class="line">        option description &#39;LAN3用于管理&#39;</span><br><span class="line">        option ports &#39;0t 2&#39;</span><br></pre></td></tr></table></figure>
+
+<h4 id="DSA配置实例-ax6s"><a href="#DSA配置实例-ax6s" class="headerlink" title="DSA配置实例(ax6s)"></a>DSA配置实例(ax6s)</h4><p>ax6s有四个端口</p>
+<ul>
+<li>图1，将所有lan口添加到br-lan（这里其实wan也可以添加进来）</li>
+<li>图2，设置端口标签</li>
+<li>图3，自动生成了vlan设备，但这次是在br-lan上生成的</li>
+<li>图4，创建接口，指定不同vlan设备<ul>
+<li>这里wan口专门用于管理<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000404.png" alt=""></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000447.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000519.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108000532.png" alt=""></p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><h3 id="lxc-openwrt-dnsmasq"><a href="#lxc-openwrt-dnsmasq" class="headerlink" title="lxc openwrt dnsmasq"></a>lxc openwrt dnsmasq</h3><ul>
+<li>lxc创建openwrt容器，刚开始为手动创建镜像。结果启动容器后发现openwrt内无发上网，进一步发现是dnsmasq没有启动导致域名解析不了。<ul>
+<li>按照openwrt论坛中的方法注释掉dnsmasq的启动脚本中的部分行，问题解决。<a href="https://forum.openwrt.org/t/procd-jail-not-work-in-lxc-dnsmasq-fail-to-start/127407/2" target="_blank" rel="noopener">Procd jail not work in lxc, dnsmasq fail to start - For Developers - OpenWrt Forum</a></li>
+<li>现在lxc有openwrt官方镜像，没这个问题，但是其lan interface配置用的还是ifname，openwrt luci会提示更新。</li>
+</ul>
+</li>
+</ul>
+<h3 id="p2w的wan口坑"><a href="#p2w的wan口坑" class="headerlink" title="p2w的wan口坑"></a>p2w的wan口坑</h3><p>wan口用于管理怎么都不行。一修改swtich菜单，马上失联。使用lan口管理成功</p>
+<h3 id="wifi挂载到网桥上才能获得dhcp地址"><a href="#wifi挂载到网桥上才能获得dhcp地址" class="headerlink" title="wifi挂载到网桥上才能获得dhcp地址"></a>wifi挂载到网桥上才能获得dhcp地址</h3><ul>
+<li>eth0.200用于lan，lan设置dhcp client，但是p2w获得到了ip，连接wifi的笔记本获得不了。创建一个网桥br-lan，然后添加eth0.200后成功。</li>
+</ul>
+<h3 id="guest-wifi无法上网"><a href="#guest-wifi无法上网" class="headerlink" title="guest wifi无法上网"></a>guest wifi无法上网</h3><p>在ax6s上创建了一个guest wifi，使用单独的vlan。最终效果如下：</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107232725.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107232701.png" alt=""></p>
+<p>但是创建过程中不知为何guest显式设备不存在，于是手动添加了802.1q设备，vlan id手动指定为201。貌似没有和br-lan中bridge vlan filtering自动创建的802.1q产生冲突。于是设备不存在的问题解决了。</p>
+<p>但是guest仍然无法通过dhcp获得ip。tianyi的br-guest也无法获得ip地址（其中215是手动添加的，234是后面成功后自动获得的），tcpdump -i br-guest可以看到有来自ax6s guest接口的dhcp request。</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233045.png" alt=""></p>
+<p>进入op2，发现也没有生成对应路由，而是全部走192.168.36.1（图中的default和192.168.37.1是后面自动生成的），于是手动添加了一条192.168.37.0/24的规则。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">default via 192.168.36.1 dev br1 proto dhcp src 192.168.36.215 metric 100</span><br><span class="line">default via 192.168.37.1 dev br-guest proto dhcp src 192.168.37.234 metric 100</span><br><span class="line"></span><br><span class="line">192.168.37.0&#x2F;24 dev br-guest proto kernel scope link src 192.168.37.215</span><br><span class="line">192.168.37.1 dev br-guest proto dhcp scope link src 192.168.37.234 metric 100</span><br></pre></td></tr></table></figure>
+
+<p>但是此时ax6s还是无法dhcp获得ip，于是手动添加了一个37.180的地址，发现仍然ping不通37.1<br>检查op2，发现guest无法访问路由器自身因此无法ping。于是开启了input（之后又关闭了，没问题）<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233655.png" alt=""></p>
+<p>此时发现guest已经可以上网了。不知道上面步骤中哪一步导致的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/openwrt/" rel="tag"># openwrt</a>
+              <a href="/tags/vlan/" rel="tag"># vlan</a>
+              <a href="/tags/%E8%BD%AF%E8%B7%AF%E7%94%B1/" rel="tag"># 软路由</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/" rel="prev" title="Wireguard组网">
+      <i class="fa fa-chevron-left"></i> Wireguard组网
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单网口实现软路由"><span class="nav-number">2.</span> <span class="nav-text">单网口实现软路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架构图"><span class="nav-number">2.1.</span> <span class="nav-text">架构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-设置host"><span class="nav-number">2.2.</span> <span class="nav-text">1. 设置host</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lxc"><span class="nav-number">2.2.1.</span> <span class="nav-text">lxc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bridge-vlan"><span class="nav-number">2.2.2.</span> <span class="nav-text">bridge, vlan</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-路由器vlan设置"><span class="nav-number">2.3.</span> <span class="nav-text">2. 路由器vlan设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试"><span class="nav-number">2.4.</span> <span class="nav-text">性能测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建bridge-vlan"><span class="nav-number">3.</span> <span class="nav-text">创建bridge, vlan</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iproute2-临时设置"><span class="nav-number">3.1.</span> <span class="nav-text">iproute2(临时设置)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netplan-networkmanager"><span class="nav-number">3.2.</span> <span class="nav-text">netplan&#x2F;networkmanager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netplan-networkd-推荐"><span class="nav-number">3.3.</span> <span class="nav-text">netplan&#x2F;networkd(推荐)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#设置网卡固定名称"><span class="nav-number">3.3.0.1.</span> <span class="nav-text">设置网卡固定名称</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Openwrt-VLAN设置"><span class="nav-number">4.</span> <span class="nav-text">Openwrt VLAN设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vlan-Q-amp-A"><span class="nav-number">4.1.</span> <span class="nav-text">vlan Q &amp; A</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件switch-vlan"><span class="nav-number">4.2.</span> <span class="nav-text">硬件switch vlan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件vlan"><span class="nav-number">4.3.</span> <span class="nav-text">软件vlan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DSA设置"><span class="nav-number">4.4.</span> <span class="nav-text">DSA设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DSA-vs-swconfig"><span class="nav-number">4.4.1.</span> <span class="nav-text">DSA vs swconfig</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ingress-vs-egress-tagged-vs-untagged含义"><span class="nav-number">4.4.2.</span> <span class="nav-text">ingress vs egress, tagged vs untagged含义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swconfig配置实例-p2w"><span class="nav-number">4.4.3.</span> <span class="nav-text">swconfig配置实例(p2w)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DSA配置实例-ax6s"><span class="nav-number">4.4.4.</span> <span class="nav-text">DSA配置实例(ax6s)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遇到的问题"><span class="nav-number">5.</span> <span class="nav-text">遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lxc-openwrt-dnsmasq"><span class="nav-number">5.1.</span> <span class="nav-text">lxc openwrt dnsmasq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#p2w的wan口坑"><span class="nav-number">5.2.</span> <span class="nav-text">p2w的wan口坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wifi挂载到网桥上才能获得dhcp地址"><span class="nav-number">5.3.</span> <span class="nav-text">wifi挂载到网桥上才能获得dhcp地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#guest-wifi无法上网"><span class="nav-number">5.4.</span> <span class="nav-text">guest wifi无法上网</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
