@@ -933,229 +933,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/openwrt%E7%BC%96%E8%AF%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
-      <meta itemprop="name" content="rain">
-      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="rain的随笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">openwrt编译</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-11-03 21:15:09" itemprop="dateModified" datetime="2022-11-03T21:15:09+08:00">2022-11-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Openwrt-编译"><a href="#Openwrt-编译" class="headerlink" title="Openwrt 编译"></a>Openwrt 编译</h2><h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><h4 id="自己编译优点"><a href="#自己编译优点" class="headerlink" title="自己编译优点"></a>自己编译优点</h4><ol>
-<li><p>固件体积减小（需要安装的package被压缩到镜像中）</p>
-</li>
-<li><p>可以定制一些需要的选项（busybox可以选择zsh）</p>
-</li>
-<li><p>下次刷机，可以不用进行软件安装，配置</p>
-</li>
-</ol>
-<blockquote>
-<p>The main advantage of building your own firmware is that it compresses the files, so that you will have room for much more stuff. It is particularly noticeable on routers <strong>with 16 MB flash RAM or less</strong>. It also lets you change some options that can only be changed at build time, for instance the features included in BusyBox and the block size of SquashFS. Larger block size will give better compression, but may also slow down the loading of files. (ref: <a href="https://openwrt.org/docs/guide-user/additional-software/beginners-build-guide" target="_blank" rel="noopener">[OpenWrt Wiki] Quick image building guide</a>)</p>
-</blockquote>
-<h4 id="Openwrt-Build-System特点"><a href="#Openwrt-Build-System特点" class="headerlink" title="Openwrt Build System特点"></a>Openwrt Build System特点</h4><ul>
-<li>不用配置编译链</li>
-</ul>
-<blockquote>
-<p>While it is possible to manually create your toolchain, and then build OpenWrt with it, this is difficult and error-prone. The OpenWrt build system takes a different approach to building a firmware: it downloads, patches and compiles everything from scratch, including the cross compiler. Or to put it in simpler terms, OpenWrt’s build system doesn’t contain any executables or even sources. It is an automated system for downloading the sources, patching them to work with the given platform and compiling them correctly for the platform. What this means is that just by changing the template, you can change any step in the process. And of course the side benefit of this is that builds are automated, which saves time and guarantees the same result every time.</p>
-<p>For example if a new kernel is released, a simple change to one of the Makefiles will download the latest kernel, patch it to run on the requested platform and produce a new firmware image. There’s no work to be done trying to track down an unmodified copy of the existing kernel to see what changes had been made - the patches are already provided and the process ends up almost completely transparent. This doesn’t just apply to the kernel, but to anything included with OpenWrt - it’s this strategy that allows OpenWrt to stay on the bleeding edge with the latest compilers, kernels and applications. (ref: <a href="https://openwrt.org/docs/guide-developer/build-system/buildsystem_essentials" target="_blank" rel="noopener">[OpenWrt Wiki] Build system essentials</a>)</p>
-</blockquote>
-<ul>
-<li>编译出来的toolchain位置</li>
-</ul>
-<blockquote>
-<p><code>staging_dir/toolchain…</code> is a mini Linux root with its own <code>bin/</code>, <code>lib/</code>, etc that contains the cross C compiler used to build the rest of the firmware. You can actually use that to compile simple C programs outside of OpenWRT that can be loaded onto the firmware. The C compiler might be something like: <code>staging_dir/toolchain-mips_34kc_gcc-4.8-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gcc</code>. You can see the version of the CPU, the C library and gcc encoded into it; this allows multiple targets to be built in the same area concurrently.</p>
-</blockquote>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><h4 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h4><p>根据<a href="https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem" target="_blank" rel="noopener">[OpenWrt Wiki] Build system setup</a>安装对应</p>
-<h4 id="编译-1"><a href="#编译-1" class="headerlink" title="编译"></a>编译</h4><ul>
-<li><p>参考：</p>
-<ul>
-<li>官方教程：<a href="https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem" target="_blank" rel="noopener">[OpenWrt Wiki] Build system usage</a></li>
-<li>非常好的一个教程：<a href="https://gist.github.com/chankruze/dee8c2ba31c338a60026e14e3383f981" target="_blank" rel="noopener">How To Compile OpenWrt Firmware For Any Router · GitHub</a></li>
-</ul>
-</li>
-<li><p>命令汇总</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Download and update the sources</span></span><br><span class="line">git <span class="built_in">clone</span> https://git.openwrt.org/openwrt/openwrt.git</span><br><span class="line"><span class="built_in">cd</span> openwrt</span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line"><span class="comment"># Select a specific code revision</span></span><br><span class="line">git branch -a</span><br><span class="line">git tag</span><br><span class="line">git checkout v21.02.1</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update the feeds</span></span><br><span class="line">./scripts/feeds update -a</span><br><span class="line">./scripts/feeds install -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># Configure the firmware image and the kernel</span></span><br><span class="line">make menuconfig</span><br><span class="line"><span class="comment">#make kernel_menuconfig</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#download all dependency source files before final make, enables multi-core compilation</span></span><br><span class="line">make download</span><br><span class="line"></span><br><span class="line"><span class="comment"># Build the firmware image</span></span><br><span class="line"><span class="comment">#make (or make world)</span></span><br><span class="line"><span class="comment">#when faild, V=s show all command executed</span></span><br><span class="line"><span class="comment">#make V=s</span></span><br><span class="line"></span><br><span class="line">make -j $(nproc) 2&gt;&amp;1 | teemake.log</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Cleaning Up</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">make clean <span class="comment">#deletes contents of the directories /bin and /build_dir. make clean does not remove the toolchain, it also avoids cleaning architectures/targets other than the one you have selected in your .config</span></span><br><span class="line"></span><br><span class="line">make dirclean <span class="comment">#deletes contents of the directories /bin and /build_dir and additionally /staging_dir and /toolchain (=the cross-compile tools) and /logs. 'Dirclean' is your basic "Full clean" operation.</span></span><br><span class="line"></span><br><span class="line">make distclean <span class="comment">#nukes everything you have compiled or configured and also deletes all downloaded feeds contents and package sources.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#clean small part</span></span><br><span class="line">make target/linux/clean  		<span class="comment">#Clean linux objects </span></span><br><span class="line">make package/base-files/clean 	<span class="comment">#Clean package base-files objects</span></span><br><span class="line">make package/luci/clean 		<span class="comment">#Clean luci</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="编译配置-menuconfig"><a href="#编译配置-menuconfig" class="headerlink" title="编译配置(menuconfig)"></a>编译配置(menuconfig)</h3><ul>
-<li>Target System(MediaTek Ralink MIPS)</li>
-<li>Subtarget(MT7621 based boards)</li>
-<li>Target Profile(Xiaomi Redmi Router AC2100)</li>
-<li><strong>Target Images</strong><ul>
-<li>取消勾选ramdisk，否者会生成<code>openwrt-ramips-mt7621-xiaomi_mi-router-4a-gigabit-initramfs-kernel.bin</code></li>
-<li>勾选squashfs，可以调节block size（默认256B），越大的块压缩率更好，但读取速度更慢（可能影响重启速度？）</li>
-</ul>
-</li>
-<li>Build the Openwrt SDK：一个小的buildroot，用于测试自己的package</li>
-<li>Package the Openwrt-based Toolchain：交叉编译链</li>
-<li>Base system<ul>
-<li>使用Openclash需要取消勾选dnsmasq（已经勾选dnsmasq-full）</li>
-<li><strong>中文乱码</strong>：make menuconfig-&gt;Base System-&gt;busybox-&gt;Customize busybox option-&gt;Settings-&gt;support unicode选项（位于结尾）勾上后，勾上选项Check $LANG environment variable</li>
-</ul>
-</li>
-<li>Administration<ul>
-<li>htop</li>
-</ul>
-</li>
-<li>Development<ul>
-<li>gcc, gdb等工具</li>
-</ul>
-</li>
-<li>Fonts<ul>
-<li>DejaVu字体</li>
-</ul>
-</li>
-<li><strong>Kernel modules</strong><ul>
-<li>Other modules: kmod-mtd-rw：开启uboot等flash分区写权限</li>
-<li>USB support: <code>kmod-usb-core kmod-usb-storage kmod-usb-uhci kmod-usb2 kmod-usb3</code></li>
-<li>Video support: kmod-video-core kmod-video-uvc</li>
-</ul>
-</li>
-<li>Languages<ul>
-<li>python：requests, lxml</li>
-</ul>
-</li>
-<li><strong>Luci</strong><ul>
-<li>Collections<ul>
-<li><strong>Luci</strong>：否则没有图形界面</li>
-</ul>
-</li>
-<li>Module<ul>
-<li>luci-compat：据说是必要的</li>
-</ul>
-</li>
-<li>Application<ul>
-<li>adblock</li>
-<li><strong>ddns</strong></li>
-<li>Openclash（需要自己添加）</li>
-<li>qos</li>
-<li>samba4: usb（需要usb挂载东西的话）</li>
-<li>upnp</li>
-<li><strong>wireguard</strong></li>
-<li>wol</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Network<ul>
-<li>Files Transfer: curl</li>
-<li>VPN: <strong>zerotier</strong></li>
-<li><strong>immortalwrt需要开启</strong>: odhcp6c, odhcpd-ipv6only，否则ipv6无法使用</li>
-<li>WirelessPAD:<ul>
-<li>wpad-openssl：最完整</li>
-<li>wpad-mesh-openssl</li>
-<li>wpad-basic-openssl</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Utilities<ul>
-<li>Editors：vim-full（只能选一个）</li>
-<li>Shells：bash</li>
-</ul>
-</li>
-</ul>
-<h4 id="image大小参考"><a href="#image大小参考" class="headerlink" title="image大小参考"></a>image大小参考</h4><p>满足16MB的一种配置：</p>
-<ul>
-<li>squashfs块大小设置为512KB</li>
-<li>开启：htop, <strong>python</strong>(requests, lxml), <strong>Luci</strong>, adblock, ddns, qos, upnp, <strong>wireguard</strong>, wol, <strong>zerotier</strong>, vim-full, bash</li>
-<li>大小为15991868B/16121856B，把k2p压榨到只剩126KB了。</li>
-</ul>
-<h4 id="usb"><a href="#usb" class="headerlink" title="usb"></a>usb</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#kmod &gt; usb support</span><br><span class="line">kmod-usb-core kmod-usb-storage kmod-usb-uhci kmod-usb2 kmod-usb3</span><br></pre></td></tr></table></figure>
-
-<h4 id="webcam"><a href="#webcam" class="headerlink" title="webcam"></a>webcam</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#kmod &gt; video support</span><br><span class="line">kmod-video-core kmod-video-uvc</span><br><span class="line"></span><br><span class="line">#Multimedia</span><br><span class="line">mjpg-streamer</span><br><span class="line">input-uvc</span><br><span class="line">output-rtsp</span><br><span class="line">www-simple</span><br><span class="line"></span><br><span class="line">#luci</span><br><span class="line">luci-app-mjpg-streamer</span><br><span class="line"></span><br><span class="line">#utils(optional)</span><br><span class="line">uvcdynctrl</span><br></pre></td></tr></table></figure>
-
-<h4 id="opkg安装其它软件"><a href="#opkg安装其它软件" class="headerlink" title="opkg安装其它软件"></a>opkg安装其它软件</h4><p>剩余一些可选的使用opkg安装更方便</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mtr-json tmux iperf3 tcpdump htop vim-full</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="闭源驱动"><a href="#闭源驱动" class="headerlink" title="闭源驱动"></a>闭源驱动</h3><p>看到很多非openwrt官方固件都提到了闭源驱动因此了解了一波</p>
-<p>大概就是MTK有mt76无线的驱动代码，但是openwrt内使用的是自己开发的驱动。</p>
-<p><a href="https://forum.openwrt.org/t/mt76-driver-replacement-for-test/58469/18" target="_blank" rel="noopener">Mt76 driver - replacement [for test] - For Developers - OpenWrt Forum</a></p>
-<p><a href="https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/" target="_blank" rel="noopener">openwrt/feeds/mtk-openwrt-feeds - Gitiles (mediatek.com)</a></p>
-<h3 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h3><h4 id="无5Ghz无线"><a href="#无5Ghz无线" class="headerlink" title="无5Ghz无线"></a>无5Ghz无线</h4><p>刚开始编译了rm2100，make clean后，编译了r3g。结果发现一切都好，就是没有5Ghz无线。而使用官方版本是有的。</p>
-<p>尝试make dirclean后(full clean)，重新编译，问题解决。</p>
-<h4 id="测速速度慢"><a href="#测速速度慢" class="headerlink" title="测速速度慢"></a>测速速度慢</h4><p>测速上传下载都是300左右</p>
-<p>尝试保存配置后，在系统中reset，然后重新加载配置。</p>
-<ul>
-<li>reset后，速度很快，基本上上传可以到600-700，下载900-1000</li>
-<li>重新加载配置后，速度依旧很快</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/openwrt%E5%88%B7%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1574,6 +1351,229 @@
 <h3 id="竞斗云2-0"><a href="#竞斗云2-0" class="headerlink" title="竞斗云2.0"></a>竞斗云2.0</h3><p>需要先刷入opboot（一个第三方bootloader）<a href="https://www.red-yellow.net/竞斗云2刷opboot.html" target="_blank" rel="noopener">竞斗云2刷opboot - 路由智态 (red-yellow.net)</a></p>
 <p>然后再刷openwrt。<br>编译：<a href="https://www.red-yellow.net/%e7%ab%9e%e6%96%97%e4%ba%912%e7%9a%84openwrt%e5%9b%ba%e4%bb%b6.html" target="_blank" rel="noopener">竞斗云2的OpenWrt固件 - 路由智态 (red-yellow.net)</a></p>
 <p>比较担心opboot和opewrt最新版的兼容性。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/openwrt%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">openwrt编译</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-11-03 21:15:09" itemprop="dateModified" datetime="2022-11-03T21:15:09+08:00">2022-11-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/openwrt%E7%BC%96%E8%AF%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Openwrt-编译"><a href="#Openwrt-编译" class="headerlink" title="Openwrt 编译"></a>Openwrt 编译</h2><h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><h4 id="自己编译优点"><a href="#自己编译优点" class="headerlink" title="自己编译优点"></a>自己编译优点</h4><ol>
+<li><p>固件体积减小（需要安装的package被压缩到镜像中）</p>
+</li>
+<li><p>可以定制一些需要的选项（busybox可以选择zsh）</p>
+</li>
+<li><p>下次刷机，可以不用进行软件安装，配置</p>
+</li>
+</ol>
+<blockquote>
+<p>The main advantage of building your own firmware is that it compresses the files, so that you will have room for much more stuff. It is particularly noticeable on routers <strong>with 16 MB flash RAM or less</strong>. It also lets you change some options that can only be changed at build time, for instance the features included in BusyBox and the block size of SquashFS. Larger block size will give better compression, but may also slow down the loading of files. (ref: <a href="https://openwrt.org/docs/guide-user/additional-software/beginners-build-guide" target="_blank" rel="noopener">[OpenWrt Wiki] Quick image building guide</a>)</p>
+</blockquote>
+<h4 id="Openwrt-Build-System特点"><a href="#Openwrt-Build-System特点" class="headerlink" title="Openwrt Build System特点"></a>Openwrt Build System特点</h4><ul>
+<li>不用配置编译链</li>
+</ul>
+<blockquote>
+<p>While it is possible to manually create your toolchain, and then build OpenWrt with it, this is difficult and error-prone. The OpenWrt build system takes a different approach to building a firmware: it downloads, patches and compiles everything from scratch, including the cross compiler. Or to put it in simpler terms, OpenWrt’s build system doesn’t contain any executables or even sources. It is an automated system for downloading the sources, patching them to work with the given platform and compiling them correctly for the platform. What this means is that just by changing the template, you can change any step in the process. And of course the side benefit of this is that builds are automated, which saves time and guarantees the same result every time.</p>
+<p>For example if a new kernel is released, a simple change to one of the Makefiles will download the latest kernel, patch it to run on the requested platform and produce a new firmware image. There’s no work to be done trying to track down an unmodified copy of the existing kernel to see what changes had been made - the patches are already provided and the process ends up almost completely transparent. This doesn’t just apply to the kernel, but to anything included with OpenWrt - it’s this strategy that allows OpenWrt to stay on the bleeding edge with the latest compilers, kernels and applications. (ref: <a href="https://openwrt.org/docs/guide-developer/build-system/buildsystem_essentials" target="_blank" rel="noopener">[OpenWrt Wiki] Build system essentials</a>)</p>
+</blockquote>
+<ul>
+<li>编译出来的toolchain位置</li>
+</ul>
+<blockquote>
+<p><code>staging_dir/toolchain…</code> is a mini Linux root with its own <code>bin/</code>, <code>lib/</code>, etc that contains the cross C compiler used to build the rest of the firmware. You can actually use that to compile simple C programs outside of OpenWRT that can be loaded onto the firmware. The C compiler might be something like: <code>staging_dir/toolchain-mips_34kc_gcc-4.8-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gcc</code>. You can see the version of the CPU, the C library and gcc encoded into it; this allows multiple targets to be built in the same area concurrently.</p>
+</blockquote>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><h4 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h4><p>根据<a href="https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem" target="_blank" rel="noopener">[OpenWrt Wiki] Build system setup</a>安装对应</p>
+<h4 id="编译-1"><a href="#编译-1" class="headerlink" title="编译"></a>编译</h4><ul>
+<li><p>参考：</p>
+<ul>
+<li>官方教程：<a href="https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem" target="_blank" rel="noopener">[OpenWrt Wiki] Build system usage</a></li>
+<li>非常好的一个教程：<a href="https://gist.github.com/chankruze/dee8c2ba31c338a60026e14e3383f981" target="_blank" rel="noopener">How To Compile OpenWrt Firmware For Any Router · GitHub</a></li>
+</ul>
+</li>
+<li><p>命令汇总</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Download and update the sources</span></span><br><span class="line">git <span class="built_in">clone</span> https://git.openwrt.org/openwrt/openwrt.git</span><br><span class="line"><span class="built_in">cd</span> openwrt</span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line"><span class="comment"># Select a specific code revision</span></span><br><span class="line">git branch -a</span><br><span class="line">git tag</span><br><span class="line">git checkout v21.02.1</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update the feeds</span></span><br><span class="line">./scripts/feeds update -a</span><br><span class="line">./scripts/feeds install -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># Configure the firmware image and the kernel</span></span><br><span class="line">make menuconfig</span><br><span class="line"><span class="comment">#make kernel_menuconfig</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#download all dependency source files before final make, enables multi-core compilation</span></span><br><span class="line">make download</span><br><span class="line"></span><br><span class="line"><span class="comment"># Build the firmware image</span></span><br><span class="line"><span class="comment">#make (or make world)</span></span><br><span class="line"><span class="comment">#when faild, V=s show all command executed</span></span><br><span class="line"><span class="comment">#make V=s</span></span><br><span class="line"></span><br><span class="line">make -j $(nproc) 2&gt;&amp;1 | teemake.log</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Cleaning Up</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">make clean <span class="comment">#deletes contents of the directories /bin and /build_dir. make clean does not remove the toolchain, it also avoids cleaning architectures/targets other than the one you have selected in your .config</span></span><br><span class="line"></span><br><span class="line">make dirclean <span class="comment">#deletes contents of the directories /bin and /build_dir and additionally /staging_dir and /toolchain (=the cross-compile tools) and /logs. 'Dirclean' is your basic "Full clean" operation.</span></span><br><span class="line"></span><br><span class="line">make distclean <span class="comment">#nukes everything you have compiled or configured and also deletes all downloaded feeds contents and package sources.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#clean small part</span></span><br><span class="line">make target/linux/clean  		<span class="comment">#Clean linux objects </span></span><br><span class="line">make package/base-files/clean 	<span class="comment">#Clean package base-files objects</span></span><br><span class="line">make package/luci/clean 		<span class="comment">#Clean luci</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="编译配置-menuconfig"><a href="#编译配置-menuconfig" class="headerlink" title="编译配置(menuconfig)"></a>编译配置(menuconfig)</h3><ul>
+<li>Target System(MediaTek Ralink MIPS)</li>
+<li>Subtarget(MT7621 based boards)</li>
+<li>Target Profile(Xiaomi Redmi Router AC2100)</li>
+<li><strong>Target Images</strong><ul>
+<li>取消勾选ramdisk，否者会生成<code>openwrt-ramips-mt7621-xiaomi_mi-router-4a-gigabit-initramfs-kernel.bin</code></li>
+<li>勾选squashfs，可以调节block size（默认256B），越大的块压缩率更好，但读取速度更慢（可能影响重启速度？）</li>
+</ul>
+</li>
+<li>Build the Openwrt SDK：一个小的buildroot，用于测试自己的package</li>
+<li>Package the Openwrt-based Toolchain：交叉编译链</li>
+<li>Base system<ul>
+<li>使用Openclash需要取消勾选dnsmasq（已经勾选dnsmasq-full）</li>
+<li><strong>中文乱码</strong>：make menuconfig-&gt;Base System-&gt;busybox-&gt;Customize busybox option-&gt;Settings-&gt;support unicode选项（位于结尾）勾上后，勾上选项Check $LANG environment variable</li>
+</ul>
+</li>
+<li>Administration<ul>
+<li>htop</li>
+</ul>
+</li>
+<li>Development<ul>
+<li>gcc, gdb等工具</li>
+</ul>
+</li>
+<li>Fonts<ul>
+<li>DejaVu字体</li>
+</ul>
+</li>
+<li><strong>Kernel modules</strong><ul>
+<li>Other modules: kmod-mtd-rw：开启uboot等flash分区写权限</li>
+<li>USB support: <code>kmod-usb-core kmod-usb-storage kmod-usb-uhci kmod-usb2 kmod-usb3</code></li>
+<li>Video support: kmod-video-core kmod-video-uvc</li>
+</ul>
+</li>
+<li>Languages<ul>
+<li>python：requests, lxml</li>
+</ul>
+</li>
+<li><strong>Luci</strong><ul>
+<li>Collections<ul>
+<li><strong>Luci</strong>：否则没有图形界面</li>
+</ul>
+</li>
+<li>Module<ul>
+<li>luci-compat：据说是必要的</li>
+</ul>
+</li>
+<li>Application<ul>
+<li>adblock</li>
+<li><strong>ddns</strong></li>
+<li>Openclash（需要自己添加）</li>
+<li>qos</li>
+<li>samba4: usb（需要usb挂载东西的话）</li>
+<li>upnp</li>
+<li><strong>wireguard</strong></li>
+<li>wol</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Network<ul>
+<li>Files Transfer: curl</li>
+<li>VPN: <strong>zerotier</strong></li>
+<li><strong>immortalwrt需要开启</strong>: odhcp6c, odhcpd-ipv6only，否则ipv6无法使用</li>
+<li>WirelessPAD:<ul>
+<li>wpad-openssl：最完整</li>
+<li>wpad-mesh-openssl</li>
+<li>wpad-basic-openssl</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Utilities<ul>
+<li>Editors：vim-full（只能选一个）</li>
+<li>Shells：bash</li>
+</ul>
+</li>
+</ul>
+<h4 id="image大小参考"><a href="#image大小参考" class="headerlink" title="image大小参考"></a>image大小参考</h4><p>满足16MB的一种配置：</p>
+<ul>
+<li>squashfs块大小设置为512KB</li>
+<li>开启：htop, <strong>python</strong>(requests, lxml), <strong>Luci</strong>, adblock, ddns, qos, upnp, <strong>wireguard</strong>, wol, <strong>zerotier</strong>, vim-full, bash</li>
+<li>大小为15991868B/16121856B，把k2p压榨到只剩126KB了。</li>
+</ul>
+<h4 id="usb"><a href="#usb" class="headerlink" title="usb"></a>usb</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#kmod &gt; usb support</span><br><span class="line">kmod-usb-core kmod-usb-storage kmod-usb-uhci kmod-usb2 kmod-usb3</span><br></pre></td></tr></table></figure>
+
+<h4 id="webcam"><a href="#webcam" class="headerlink" title="webcam"></a>webcam</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#kmod &gt; video support</span><br><span class="line">kmod-video-core kmod-video-uvc</span><br><span class="line"></span><br><span class="line">#Multimedia</span><br><span class="line">mjpg-streamer</span><br><span class="line">input-uvc</span><br><span class="line">output-rtsp</span><br><span class="line">www-simple</span><br><span class="line"></span><br><span class="line">#luci</span><br><span class="line">luci-app-mjpg-streamer</span><br><span class="line"></span><br><span class="line">#utils(optional)</span><br><span class="line">uvcdynctrl</span><br></pre></td></tr></table></figure>
+
+<h4 id="opkg安装其它软件"><a href="#opkg安装其它软件" class="headerlink" title="opkg安装其它软件"></a>opkg安装其它软件</h4><p>剩余一些可选的使用opkg安装更方便</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mtr-json tmux iperf3 tcpdump htop vim-full</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="闭源驱动"><a href="#闭源驱动" class="headerlink" title="闭源驱动"></a>闭源驱动</h3><p>看到很多非openwrt官方固件都提到了闭源驱动因此了解了一波</p>
+<p>大概就是MTK有mt76无线的驱动代码，但是openwrt内使用的是自己开发的驱动。</p>
+<p><a href="https://forum.openwrt.org/t/mt76-driver-replacement-for-test/58469/18" target="_blank" rel="noopener">Mt76 driver - replacement [for test] - For Developers - OpenWrt Forum</a></p>
+<p><a href="https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/" target="_blank" rel="noopener">openwrt/feeds/mtk-openwrt-feeds - Gitiles (mediatek.com)</a></p>
+<h3 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h3><h4 id="无5Ghz无线"><a href="#无5Ghz无线" class="headerlink" title="无5Ghz无线"></a>无5Ghz无线</h4><p>刚开始编译了rm2100，make clean后，编译了r3g。结果发现一切都好，就是没有5Ghz无线。而使用官方版本是有的。</p>
+<p>尝试make dirclean后(full clean)，重新编译，问题解决。</p>
+<h4 id="测速速度慢"><a href="#测速速度慢" class="headerlink" title="测速速度慢"></a>测速速度慢</h4><p>测速上传下载都是300左右</p>
+<p>尝试保存配置后，在系统中reset，然后重新加载配置。</p>
+<ul>
+<li>reset后，速度很快，基本上上传可以到600-700，下载900-1000</li>
+<li>重新加载配置后，速度依旧很快</li>
+</ul>
 
       
     </div>
