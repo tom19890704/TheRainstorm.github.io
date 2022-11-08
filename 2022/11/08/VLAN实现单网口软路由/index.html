@@ -20,15 +20,16 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="通过本次项目，学会了：  ip, netplan创建bridge和vlan vlan的tag, untag含义，openwrt switch设置">
+  <meta name="description" content="起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。可以说，目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex A53@2.0">
 <meta property="og:type" content="article">
 <meta property="og:title" content="单网口软路由">
-<meta property="og:url" content="http://yoursite.com/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:url" content="http://yoursite.com/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/index.html">
 <meta property="og:site_name" content="rain的随笔">
-<meta property="og:description" content="通过本次项目，学会了：  ip, netplan创建bridge和vlan vlan的tag, untag含义，openwrt switch设置">
+<meta property="og:description" content="起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。可以说，目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex A53@2.0">
 <meta property="og:locale" content="zh">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106141755.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106161239.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108140021.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108140122.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106160620.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108003939.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106144229.png">
@@ -47,7 +48,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233045.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233655.png">
 <meta property="article:published_time" content="2022-11-07T16:45:20.000Z">
-<meta property="article:modified_time" content="2022-11-07T16:49:15.837Z">
+<meta property="article:modified_time" content="2022-11-08T06:03:03.510Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="openwrt">
 <meta property="article:tag" content="vlan">
@@ -55,7 +56,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106141755.png">
 
-<link rel="canonical" href="http://yoursite.com/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/">
+<link rel="canonical" href="http://yoursite.com/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/">
 
 
 <script id="page-configurations">
@@ -179,7 +180,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -203,7 +204,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-11-08 00:45:20 / Modified: 00:49:15" itemprop="dateCreated datePublished" datetime="2022-11-08T00:45:20+08:00">2022-11-08</time>
+              <time title="Created: 2022-11-08 00:45:20 / Modified: 14:03:03" itemprop="dateCreated datePublished" datetime="2022-11-08T00:45:20+08:00">2022-11-08</time>
             </span>
 
           
@@ -215,8 +216,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/08/%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -231,12 +232,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>通过本次项目，学会了：</p>
+        <p>起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。可以说，目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex <a href="mailto:A53@2.0GHz">A53@2.0GHz</a>的水平。</p>
+<p>偶然看到用旧笔记本做软路由的视频，遂萌生了折腾软路由的想法。仔细研究其方案后发现为pppoe拨号上网的方式，不适用于dhcp上网的情况。后偶然发现所购买路由器支持vlan功能（其实所有openwrt路由器都支持），于是自己独立构思了后面的架构图。并尝试成功(11/5)，最终在红米AX6S+软路由的情况下，达到了500M的带宽，此时AX6S的双核Cortex <a href="mailto:A53@1.2GHz">A53@1.2GHz</a> CPU占用率也达到了100%。</p>
+<p>之后再接再励，将AX6S也配置了vlan，并在旧笔记本实现软路由。最终终于带宽可以达到880Mbps的水平，scp文件能达到98MB/s的速率。并且还配置成功了Guest WIFI，实现了隔离，保证安全。</p>
+<p>通过本次项目，学会了：</p>
 <ul>
-<li>ip, netplan创建bridge和vlan</li>
-<li>vlan的tag, untag含义，openwrt switch设置</li>
+<li>linux下，ip, netplan创建bridge和vlan</li>
+<li>lxc的使用</li>
+<li>openwrt DSA架构配置vlan</li>
 </ul>
-<a id="more"></a>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><p>司波图：使用笔记本 + PVE，单网口实现软路由：<a href="https://www.youtube.com/watch?v=eqmOnCHM-kc" target="_blank" rel="noopener">一个网口也能做软路由？闲置电脑再利用！ - YouTube</a></p>
 <ul>
@@ -250,7 +254,21 @@
 </ul>
 </li>
 </ul>
-<h2 id="单网口实现软路由"><a href="#单网口实现软路由" class="headerlink" title="单网口实现软路由"></a>单网口实现软路由</h2><h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106161239.png" alt="单网口软路由架构图"></p>
+<h2 id="单网口实现软路由"><a href="#单网口实现软路由" class="headerlink" title="单网口实现软路由"></a>单网口实现软路由</h2><h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p>switch:</p>
+<ul>
+<li>绿：端口  </li>
+<li>橙：设备  </li>
+<li>虚线：虚拟设备  </li>
+<li>蓝：网桥  </li>
+<li>灰：网络接口<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108140021.png" alt="单网口软路由架构图"></li>
+</ul>
+<p>DSA</p>
+<ul>
+<li>橙：设备  </li>
+<li>虚线：虚拟设备  </li>
+<li>蓝：网桥  </li>
+<li>绿：网络接口<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108140122.png" alt=""></li>
+</ul>
 <h3 id="1-设置host"><a href="#1-设置host" class="headerlink" title="1. 设置host"></a>1. 设置host</h3><h4 id="lxc"><a href="#lxc" class="headerlink" title="lxc"></a>lxc</h4><p>安装lxd</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install lxd   # 安装lxd</span><br><span class="line">lxd init  # 会设置存储池，网络bridge，全部默认即可</span><br></pre></td></tr></table></figure>
 
