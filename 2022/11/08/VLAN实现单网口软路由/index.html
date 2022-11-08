@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。可以说，目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex A53@2.0">
+  <meta name="description" content="起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex A53@2.0GHz的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="单网口软路由">
 <meta property="og:url" content="http://yoursite.com/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/index.html">
 <meta property="og:site_name" content="rain的随笔">
-<meta property="og:description" content="起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。可以说，目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex A53@2.0">
+<meta property="og:description" content="起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex A53@2.0GHz的">
 <meta property="og:locale" content="zh">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221106141755.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221108140021.png">
@@ -48,7 +48,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233045.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221107233655.png">
 <meta property="article:published_time" content="2022-11-07T16:45:20.000Z">
-<meta property="article:modified_time" content="2022-11-08T06:03:03.510Z">
+<meta property="article:modified_time" content="2022-11-08T06:19:18.931Z">
 <meta property="article:author" content="rain">
 <meta property="article:tag" content="openwrt">
 <meta property="article:tag" content="vlan">
@@ -204,7 +204,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-11-08 00:45:20 / Modified: 14:03:03" itemprop="dateCreated datePublished" datetime="2022-11-08T00:45:20+08:00">2022-11-08</time>
+              <time title="Created: 2022-11-08 00:45:20 / Modified: 14:19:18" itemprop="dateCreated datePublished" datetime="2022-11-08T00:45:20+08:00">2022-11-08</time>
             </span>
 
           
@@ -232,14 +232,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。可以说，目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex <a href="mailto:A53@2.0GHz">A53@2.0GHz</a>的水平。</p>
-<p>偶然看到用旧笔记本做软路由的视频，遂萌生了折腾软路由的想法。仔细研究其方案后发现为pppoe拨号上网的方式，不适用于dhcp上网的情况。后偶然发现所购买路由器支持vlan功能（其实所有openwrt路由器都支持），于是自己独立构思了后面的架构图。并尝试成功(11/5)，最终在红米AX6S+软路由的情况下，达到了500M的带宽，此时AX6S的双核Cortex <a href="mailto:A53@1.2GHz">A53@1.2GHz</a> CPU占用率也达到了100%。</p>
-<p>之后再接再励，将AX6S也配置了vlan，并在旧笔记本实现软路由。最终终于带宽可以达到880Mbps的水平，scp文件能达到98MB/s的速率。并且还配置成功了Guest WIFI，实现了隔离，保证安全。</p>
+        <p>起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex <a href="mailto:A53@2.0GHz">A53@2.0GHz</a>的水平。</p>
+<p>偶然看到用旧笔记本做软路由的视频，遂萌生了折腾软路由的想法。仔细研究其方案后发现为pppoe拨号上网的方式，不适用于dhcp上网的情况。后偶然发现所购买路由器支持vlan功能（其实后面发现所有openwrt路由器都支持），于是自己独立构思了后面的架构图。并尝试成功(11/5)，最终在红米AX6S+软路由的情况下，达到了500M的带宽，此时AX6S的双核Cortex <a href="mailto:A53@1.2GHz">A53@1.2GHz</a> CPU占用率也达到了100%。</p>
+<p>之后再接再励，将AX6S也配置了vlan，并在旧笔记本实现软路由。最终带宽达到了880Mbps，scp文件达到98MB/s的速率。并且之后还成功配置了Guest WIFI，将其和主网络隔离开来，更加保证了安全性。</p>
 <p>通过本次项目，学会了：</p>
 <ul>
 <li>linux下，ip, netplan创建bridge和vlan</li>
-<li>lxc的使用</li>
+<li>lxc容器的使用</li>
 <li>openwrt DSA架构配置vlan</li>
+</ul>
+<a id="more"></a>
+
+<p>弄完后，在网上搜索了一下相关实现，发现提到单网口软路由，有几种情况：</p>
+<ul>
+<li>默认是pppoe上网方式，该方式比较简单，不涉及vlan的设置，但是不适用于dhcp上网的情况。</li>
+<li>旁路由，之前我也写过使用树莓派实现透明代理。该方式需要修改上网设备的网关为旁路设备。<ul>
+<li>网上争论比较多的是是否会有两次NAT，其实不论怎样，主路由必然要起到一次NAT。这样的话，主路由的性能至少不能太弱。当然如果家里只有100M的宽带，这种方式也许足够。但是如果旁路设备的性能很强的话，性能还是白白浪费了。不如这里介绍的vlan方式。</li>
+</ul>
+</li>
+<li>也看到了使用vlan实现我这种软路由的玩法，但是需要一个硬件交换机。知道使用普通openwrt设备就可以实现vlan的还是不多。</li>
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><p>司波图：使用笔记本 + PVE，单网口实现软路由：<a href="https://www.youtube.com/watch?v=eqmOnCHM-kc" target="_blank" rel="noopener">一个网口也能做软路由？闲置电脑再利用！ - YouTube</a></p>
