@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="RetroArch Starter Guide – Retro Game Corps retroarch是一个模拟器前端，不同的模拟器以core的形式嵌入retro。retroarch相对于单独的模拟器来说好处如下  跨平台。retroarch支持非常多的平台。由于core是动态链接库的形式嵌入retroarch的，相当于解决了不同core的跨平台问题。 支持全局的按键映射。不用为每个模拟器设置手">
+<meta property="og:type" content="article">
+<meta property="og:title" content="retroarch配置">
+<meta property="og:url" content="http://yoursite.com/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="RetroArch Starter Guide – Retro Game Corps retroarch是一个模拟器前端，不同的模拟器以core的形式嵌入retro。retroarch相对于单独的模拟器来说好处如下  跨平台。retroarch支持非常多的平台。由于core是动态链接库的形式嵌入retroarch的，相当于解决了不同core的跨平台问题。 支持全局的按键映射。不用为每个模拟器设置手">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2022-09-28T16:56:52.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:16:19.259Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="retroarch">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>retroarch配置 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          retroarch配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-29 00:56:52" itemprop="dateCreated datePublished" datetime="2022-09-29T00:56:52+08:00">2022-09-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:16:19" itemprop="dateModified" datetime="2022-12-05T22:16:19+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://retrogamecorps.com/2022/02/28/retroarch-starter-guide/" target="_blank" rel="noopener">RetroArch Starter Guide – Retro Game Corps</a></p>
+<p>retroarch是一个模拟器前端，不同的模拟器以core的形式嵌入retro。retroarch相对于单独的模拟器来说好处如下</p>
+<ul>
+<li>跨平台。retroarch支持非常多的平台。由于core是动态链接库的形式嵌入retroarch的，相当于解决了不同core的跨平台问题。</li>
+<li>支持全局的按键映射。不用为每个模拟器设置手柄，快捷键等等配置。</li>
+<li>shader and filters。可以实现一些特别的视觉效果，比如</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.jianshu.com/p/60cc555e9289" target="_blank" rel="noopener">RetroArch街机模拟教程【亲测有效】 - 简书 (jianshu.com)</a><br><a href="https://www.emuelec.cn/85.html" target="_blank" rel="noopener">EmuELEC中文网 - EmuELEC使用指南五之街机模拟器使用简介</a><br><a href="https://www.emuelec.cn/35.html" target="_blank" rel="noopener">EmuELEC中文网 - EmuELEC使用指南一之新手快速上手指南</a></p>
+<h2 id="平台列表"><a href="#平台列表" class="headerlink" title="平台列表"></a>平台列表</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">name_list = [\</span><br><span class="line">    "(1989) NEC - PC Engine",</span><br><span class="line"></span><br><span class="line">    "(1988) Sega - MegaDrive",</span><br><span class="line">    "(1994) Sega - Saturn",</span><br><span class="line">    "(1998) Sega - DreamCast",</span><br><span class="line"></span><br><span class="line">    "(1989) Nintendo - GB",</span><br><span class="line">    "(1998) Nintendo - GBC",</span><br><span class="line">    "(2001) Nintendo - GBA",</span><br><span class="line">    "(2004) Nintendo - NDS",</span><br><span class="line">    "(2011) Nintendo - 3DS",</span><br><span class="line"></span><br><span class="line">    "(1983) Nintendo - FC",</span><br><span class="line">    "(1990) Nintendo - SFC",</span><br><span class="line">    "(1996) Nintendo - N64",</span><br><span class="line">    #(2001) "Nintendo - NGC",</span><br><span class="line">    "(2006) Nintendo - Wii",</span><br><span class="line">    # "(2012) Nintendo - WiiU",</span><br><span class="line"></span><br><span class="line">    "(2004) Sony - PSP",</span><br><span class="line">    # "(2011) Sony - PSV",</span><br><span class="line">    "(1994) Sony - PS1",</span><br><span class="line">    "(2000) Sony - PS2",</span><br><span class="line">    # "(2006) Sony - PS3",</span><br><span class="line">    # "(2013) Sony - PS4",</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>世嘉<a href="https://en.wikipedia.org/wiki/List_of_Sega_video_game_consoles" target="_blank" rel="noopener">List of Sega video game consoles - Wikipedia</a><br>主机</p>
+<ul>
+<li>MD: Mega Drive, 1988</li>
+<li>SS: Sega Saturn, 1994</li>
+<li>DC: Dreamcast, 1998, 6</li>
+</ul>
+<p>索尼<a href="https://en.wikipedia.org/wiki/PlayStation" target="_blank" rel="noopener">PlayStation - Wikipedia</a><br>掌机</p>
+<ul>
+<li>PSP: 2004, 7</li>
+<li>PSV: 2011<br>主机</li>
+<li>PS1: 1994, 5</li>
+<li>PS2: 2000, 6</li>
+<li>PS3: 2006, 7</li>
+<li>PS4: 2013, 8</li>
+</ul>
+<p>任天堂<a href="https://en.wikipedia.org/wiki/Nintendo_video_game_consoles" target="_blank" rel="noopener">Nintendo video game consoles - Wikipedia</a><br>掌机<br>GB(1989), GBC(1998), GBA(2001)</p>
+<p>NDS/DS(2004)<br>3DS(2011)</p>
+<p>主机<br>FC/NES:1983<br>SFC/SNES: 1990<br>N64: 1996<br>NGC/game cube: 2001<br>WII 2006<br>WIIU 2012<br>Switch</p>
+<p><a href="https://en.wikipedia.org/wiki/TurboGrafx-16" target="_blank" rel="noopener">TurboGrafx-16 - Wikipedia</a><br>  NEC 1989<br>  Japan in 1987 and in North America in 1989.</p>
+<p>街机</p>
+<ul>
+<li>neogeo: snk, 拳皇，合金弹头</li>
+<li>cps1,2,3</li>
+<li>mame</li>
+</ul>
+<ul>
+<li><p>oldman</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SFC		201M	x</span><br><span class="line">GBA_499	3.6G</span><br><span class="line"></span><br><span class="line">NGC		15G</span><br><span class="line">Wii		120G</span><br><span class="line"></span><br><span class="line">SS		7.9G</span><br><span class="line">DC		17.3G	x</span><br><span class="line"></span><br><span class="line">PS1		37.1G</span><br><span class="line">PS2		302G&#x2F;20G</span><br><span class="line">PSP		319G&#x2F;10.4G</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>retroarch整合包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">FC		66M	</span><br><span class="line">SFC		619M</span><br><span class="line">GB[C]	100M</span><br><span class="line">GBA		2.26G	</span><br><span class="line">NDS		3.91G</span><br><span class="line">3DS		25.6G</span><br><span class="line">N64		637M</span><br><span class="line">NGC		4.53G</span><br><span class="line">Wii		53.4G</span><br><span class="line">WiiU</span><br><span class="line"></span><br><span class="line">MD		417M</span><br><span class="line">SS		4.73G</span><br><span class="line">DC		22G</span><br><span class="line"></span><br><span class="line">PS1		18.8G</span><br><span class="line">PS2		59.5G</span><br><span class="line">PSP		21.5G</span><br><span class="line"></span><br><span class="line">PCE*	1.49G</span><br><span class="line">3DO		3.56G</span><br><span class="line">Aracade	4.36G</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/retroarch/" rel="tag"># retroarch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/28/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="python正则表达式">
+      <i class="fa fa-chevron-left"></i> python正则表达式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/10/03/%E5%B0%9D%E8%AF%95%E9%9D%9E%E5%AE%98%E6%96%B9openwrt/" rel="next" title="尝试非官方openwrt">
+      尝试非官方openwrt <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#平台列表"><span class="nav-number">2.</span> <span class="nav-text">平台列表</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

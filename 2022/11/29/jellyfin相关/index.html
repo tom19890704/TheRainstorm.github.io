@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="记录jellyfin相关使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jellyfin相关">
+<meta property="og:url" content="http://yoursite.com/2022/11/29/jellyfin%E7%9B%B8%E5%85%B3/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="记录jellyfin相关使用">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221130001933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221130002010.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221130002134.png">
+<meta property="article:published_time" content="2022-11-29T11:08:52.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:14:01.431Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="jellyfin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221130001933.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/11/29/jellyfin%E7%9B%B8%E5%85%B3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>jellyfin相关 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/29/jellyfin%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jellyfin相关
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-29 19:08:52" itemprop="dateCreated datePublished" datetime="2022-11-29T19:08:52+08:00">2022-11-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:14:01" itemprop="dateModified" datetime="2022-12-05T22:14:01+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/11/29/jellyfin%E7%9B%B8%E5%85%B3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/29/jellyfin%E7%9B%B8%E5%85%B3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>记录jellyfin相关使用</p>
+<a id="more"></a>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>使用linuxserver.io打包的docker镜像：<a href="https://docs.linuxserver.io/images/docker-jellyfin" target="_blank" rel="noopener">linuxserver/jellyfin - LinuxServer.io</a></li>
+</ul>
+<h2 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h2><p>刀剑神域无星之夜的咏叹调采用了HEVC main 10的编码</p>
+<p>启用HEVC 10-bit解码后：</p>
+<ul>
+<li>jellyfin使用的ffmpeg命令略有不同：<ul>
+<li>从<code>-vaapi_device /dev/dri/renderD128</code>变为<code>-hwaccel vaapi -hwaccel_output_format vaapi -vaapi_device /dev/dri/renderD128</code></li>
+</ul>
+</li>
+<li>显示的转码帧数降低了</li>
+</ul>
+<ul>
+<li>改变jellyfin转码设置，是立即生效的，无需重启docker<ul>
+<li>GPU编码时</li>
+</ul>
+</li>
+<li>使用CPU编码，会卡很久才能播放<ul>
+<li>CPU编码显示<code>-codec:v:0 libx264</code>，GPU编码显示<code>h264_vaapi</code></li>
+</ul>
+</li>
+<li>实测RX550的薄弱GPU性能，勾选HEVC 10bit解码，反而会拖累编码过程，帧数更低。</li>
+</ul>
+<p>CPU编解码: h265 -&gt; h264</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;lib&#x2F;jellyfin-ffmpeg&#x2F;ffmpeg -f matroska,webm -i file:&#x2F;data&#x2F;Video&#x2F;Movie&#x2F;魁拔之大战元泱界 (2013)&#x2F;魁拔之大战元泱界 (2013) 1080p AAC.mkv -map_metadata -1 -map_chapters -1 -threads 0 -map 0:0 -map 0:1 -map -0:s -codec:v:0 libx264 -pix_fmt yuv420p -preset slow -crf 18 -maxrate 7002717 -bufsize 14005434 -profile:v:0 high -level 41 -x264opts:0 subme&#x3D;0:me_range&#x3D;4:rc_lookahead&#x3D;10:me&#x3D;dia:no_chroma_me:8x8dct&#x3D;0:partitions&#x3D;none -force_key_frames:0 expr:gte(t,0+n_forced*3) -vf scale&#x3D;trunc(min(max(iw\,ih*dar)\,min(1920\,800*dar))&#x2F;2)*2:trunc(min(max(iw&#x2F;dar\,ih)\,min(1920&#x2F;dar\,800))&#x2F;2)*2 -start_at_zero -vsync -1 -codec:a:0 copy -strict -2 -copyts -avoid_negative_ts disabled -max_muxing_queue_size 2048 -f hls -max_delay 5000000 -hls_time 3 -hls_segment_type mpegts -start_number 0 -hls_segment_filename &#x2F;config&#x2F;data&#x2F;transcodes&#x2F;c2dbb5d21984ff62bfdffece47e46613%d.ts -hls_playlist_type vod -hls_list_size 0 -y &#x2F;config&#x2F;data&#x2F;transcodes&#x2F;c2dbb5d21984ff62bfdffece47e46613.m3u8</span><br></pre></td></tr></table></figure>
+
+<p>GPU编解码：h265 -&gt; GPU -&gt; 中间帧 -&gt; GPU -&gt; h254</p>
+<p>GPU编码，CPU解码：h265 10bit -&gt; CPU -&gt; 中间帧 -&gt; GPU -&gt; h254</p>
+<h2 id="硬件加速"><a href="#硬件加速" class="headerlink" title="硬件加速"></a>硬件加速</h2><p>参考：<a href="https://jellyfin.org/docs/general/administration/hardware-acceleration/" target="_blank" rel="noopener">Hardware Acceleration | Jellyfin</a></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Video_Acceleration_API" target="_blank" rel="noopener">VA-API</a> is a Video Acceleration API that uses <a href="https://github.com/intel/libva/blob/master/README.md" target="_blank" rel="noopener">libva</a> to interface with local drivers to provide HWA.</li>
+<li><a href="https://trac.ffmpeg.org/wiki/Hardware/QuickSync" target="_blank" rel="noopener">QSV</a> uses a modified (forked) version of VA-API and interfaces it with <a href="https://github.com/intel/media-driver/blob/master/README.md" target="_blank" rel="noopener">libmfx</a> and their proprietary drivers <a href="https://ark.intel.com/content/www/us/en/ark.html#@Processors" target="_blank" rel="noopener">(list of supported processors for QSV)</a>.</li>
+<li>NVENC</li>
+<li>AMF</li>
+</ul>
+<h3 id="OS和硬件支持的协议"><a href="#OS和硬件支持的协议" class="headerlink" title="OS和硬件支持的协议"></a>OS和硬件支持的协议</h3><p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221130001933.png" alt=""><br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221130002010.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/20221130002134.png" alt=""></p>
+<h3 id="视频编码"><a href="#视频编码" class="headerlink" title="视频编码"></a>视频编码</h3><ul>
+<li>H.264/h264/AVC<ul>
+<li>Profile: High 10 = H.264 10bit<ul>
+<li>目前没有硬件支持h264 10bit解码</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>H.265/HEVC<ul>
+<li>Profile: Main, Main 10</li>
+</ul>
+</li>
+</ul>
+<h3 id="查看GPU支持的编解码格式"><a href="#查看GPU支持的编解码格式" class="headerlink" title="查看GPU支持的编解码格式"></a>查看GPU支持的编解码格式</h3><h2 id="kodi设置"><a href="#kodi设置" class="headerlink" title="kodi设置"></a>kodi设置</h2><ul>
+<li>播放器/语言<ul>
+<li>首选字幕语言</li>
+<li>字幕下载位置<ul>
+<li>与视频同目录：如果是网络目录且不可写的话可能有问题</li>
+<li>自定义目录</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>媒体/资料库<ul>
+<li>添加资料库</li>
+<li>导出资料库</li>
+</ul>
+</li>
+<li>系统/互联网访问<ul>
+<li>设置代理<br>遥控器</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jellyfin/" rel="tag"># jellyfin</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/29/latex/" rel="prev" title="latex">
+      <i class="fa fa-chevron-left"></i> latex
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/12/04/%E5%AE%89%E5%8D%93%E5%88%B7%E6%9C%BA%E5%B9%B6%E5%AE%89%E8%A3%85linux/" rel="next" title="安卓刷机并安装linux">
+      安卓刷机并安装linux <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#记录"><span class="nav-number">2.</span> <span class="nav-text">记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件加速"><span class="nav-number">3.</span> <span class="nav-text">硬件加速</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OS和硬件支持的协议"><span class="nav-number">3.1.</span> <span class="nav-text">OS和硬件支持的协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视频编码"><span class="nav-number">3.2.</span> <span class="nav-text">视频编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看GPU支持的编解码格式"><span class="nav-number">3.3.</span> <span class="nav-text">查看GPU支持的编解码格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kodi设置"><span class="nav-number">4.</span> <span class="nav-text">kodi设置</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

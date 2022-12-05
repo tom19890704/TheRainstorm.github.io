@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="嵌入式技术基础与实践 第五版心得 为什么单片机可以控制灯的亮灭，通用PC却没办法控制灯呢？（因为没有CPU到LED的接口也没有驱动程序）  中断向量机制和MIPS采用的统一入口地址不太一样。中断向量机制硬件产生中断请求时，中断号是确定了的（通过中断控制器发送中断号），软件可以配置对应中断服务程序。而MIPS没有中断号的概念，通过软件检查Stastus寄存器，来确定是哪一个中断，跳转到对应中断服务程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式技术与实践">
+<meta property="og:url" content="http://yoursite.com/2020/01/01/%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="嵌入式技术基础与实践 第五版心得 为什么单片机可以控制灯的亮灭，通用PC却没办法控制灯呢？（因为没有CPU到LED的接口也没有驱动程序）  中断向量机制和MIPS采用的统一入口地址不太一样。中断向量机制硬件产生中断请求时，中断号是确定了的（通过中断控制器发送中断号），软件可以配置对应中断服务程序。而MIPS没有中断号的概念，通过软件检查Stastus寄存器，来确定是哪一个中断，跳转到对应中断服务程">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2019-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:18:03.628Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="嵌入式">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/01/%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E8%B7%B5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>嵌入式技术与实践 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/01/%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          嵌入式技术与实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-01T00:00:00+08:00">2020-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:18:03" itemprop="dateModified" datetime="2022-12-05T22:18:03+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">阅读</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/01/01/%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E8%B7%B5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/01/01/%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E8%B7%B5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="嵌入式技术基础与实践-第五版"><a href="#嵌入式技术基础与实践-第五版" class="headerlink" title="嵌入式技术基础与实践 第五版"></a>嵌入式技术基础与实践 第五版</h1><h2 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h2><ol>
+<li><p>为什么单片机可以控制灯的亮灭，通用PC却没办法控制灯呢？（因为没有CPU到LED的接口也没有驱动程序）</p>
+</li>
+<li><p>中断向量机制和MIPS采用的统一入口地址不太一样。中断向量机制硬件产生中断请求时，中断号是确定了的（通过中断控制器发送中断号），软件可以配置对应中断服务程序。而MIPS没有中断号的概念，通过软件检查Stastus寄存器，来确定是哪一个中断，跳转到对应中断服务程序。</p>
+<p>中断向量机制的CPU通常需要一个中断控制器，连接在总线上。中断控制器会给CPU提供中断号。</p>
+</li>
+<li><p>MCU本质就是一个微型计算机，包含CPU，存储器，I/O接口（控制器模块）。嵌入式开发就是要基于MCU搭建一个硬件系统（通过MCU的I/O接口连接各种需要被控制的外设），并逐层向上编写构件（驱动），最后基于构件编写嵌入式应用，从而完成需要的功能。</p>
+</li>
+<li><p>MCU由于需要通用性，使得用户可以基于MCU去搭建自己的系统，驱动自己的外设，因此每个引脚都复用多个功能。通过配置MCU内对应控制器的寄存器来配置引脚的功能。</p>
+<p>比如MSP432 100个引脚中有84个可以配置成GPIO引脚。只需要将MSP432分配的GPIO寄存器中的PxSEL0, PxSEL1寄存器（x表示端口号，有11个端口P1~P10和PJ）都置为0时，该端口的引脚即为GPIO功能。同样可以通过配置GPIO寄存器控制引脚方向作为输入还是输出，用于点亮LED灯或者接受开关输入。</p>
+<p>再比如MSP432有4个增强型通用串行通信接口模块(eUSCI)，也分配了若干寄存器。通过配置寄存器可以将对应引脚配置为UART的引脚或SPI的引脚。</p>
+<p>但是我们在FPGA上搭建SoC时，开发板上的灯、拨码开关和FGPA芯片的引脚是连好了的（由开发板的提供商基于FPGA芯片搭建），也就是说每个引脚作为输入还是输出是已经确定了的。我们能改变的只是——是否使用该外设。当然，不排除保留了一些引脚被接到扩展插口上（那一排排的黑色插孔）。因此在FPGA上搭建SoC后，实现外设驱动需要对外设的控制器进行配置。而嵌入式开发还多出了配置MCU内用于复用的模块寄存器。</p>
+</li>
+</ol>
+<a id="more"></a>
+
+<p>[TOC]</p>
+<h2 id="第一章：概述"><a href="#第一章：概述" class="headerlink" title="第一章：概述"></a>第一章：概述</h2><ol>
+<li><p>在MCU出现之前，人们必须使用模拟电路、数字电路实现测控系统中的大部分计算与控制功能。</p>
+<p>在MCU出现后，<strong>计算与控制由软件实现</strong>，其它电子线路成为MCU的外围电路，承担输入、输出与执行动作等功能。</p>
+</li>
+<li><p>常用术语</p>
+<ol>
+<li><p>封装(Package)，用塑料、金属或陶瓷材料将集成电路封装在其中。</p>
+</li>
+<li><p>PCB（Printed Circuit Board，印刷电路板）。电路原理图的实物化，实现各元件的布线。</p>
+</li>
+<li><p>常见存储器：RAM, ROM, PROM, EPROM, EEPROM, Flash Memory</p>
+</li>
+<li><p>几种接口发展：UART（异步串行通信接口，通用异步收发器，Universal Asynchronous Receiver Transmitters）-&gt;SPI（串行外设接口，Serial Peripheral Interface）-&gt;I2C（集成电路互联总线，Inter-Integrated Circuit）-&gt;USB（通用串行总线，Universal Serial Bus）</p>
+</li>
+<li><p>边界扫描测试协议JTAG（Joint Test Action Group，国际联合测试行动组）。对芯片进行测试的一种方式，能够获取芯片寄存器的内容，或测试器件间引脚的连接情况。</p>
+<p>-&gt; SWD（Serial wire Debug，串行调试线）。使用更少针脚，是JTAG的高性能替代品。</p>
+</li>
+<li><p>RTOS，实时操作系统</p>
+</li>
+<li><p>看门狗，用于检查程序是否跑分。程序跑飞后，由于无法清除掉看门狗的计时器，因此会导致CPU复位</p>
+</li>
+<li><p>ISR（中断服务程序，Interrupt Service Routine）</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="第二章：ARM-Cortex-M4F处理器"><a href="#第二章：ARM-Cortex-M4F处理器" class="headerlink" title="第二章：ARM Cortex-M4F处理器"></a>第二章：ARM Cortex-M4F处理器</h2><ol>
+<li>ARM Cortex处理器分为M、R、A系列。A：代表应用处理器，用于手机。M代表低功耗。</li>
+<li>ARM v7是32位指令集，ARM v8是64位。Thumb是ARM中一种16位指令集，Thumb2是16/32混合指令集</li>
+<li>MSP432是TI（德州仪器）生产的基于Cortex-M4F处理器的微控制器</li>
+<li>ARM汇编参考《GUN汇编语法》</li>
+</ol>
+<h2 id="第三章：存储映像、中断源与硬件最小系统"><a href="#第三章：存储映像、中断源与硬件最小系统" class="headerlink" title="第三章：存储映像、中断源与硬件最小系统"></a>第三章：存储映像、中断源与硬件最小系统</h2><ol start="2">
+<li>MCU的引脚包含两类，一类是为MCU提供服务的引脚，如电源、复位、晶振等。另一类是MCU对外提供服务的引脚，也称为I/O端口资源类引脚。</li>
+<li>MCU内部包含（1）CPU；（2）SRAM、ROM和Flash作为存储器；（3）I/O接口（控制器），如UART, I2C, SPI通信模块，JTAG和SWD的调试接口。</li>
+<li>MCU已经对地址空间进行了分配。也为每个中断源分配了中断号。</li>
+<li>MCU的硬件最小系统（基于MCU搭建的最小系统）是指可使内部程序运行的、规范的、可复用的核心构件系统。一般包含，电源，晶振，复位，写入调试器接口（如SWD；将程序写入芯片）</li>
+</ol>
+<h2 id="第四章：GPIO及程序框架"><a href="#第四章：GPIO及程序框架" class="headerlink" title="第四章：GPIO及程序框架"></a>第四章：GPIO及程序框架</h2><ol>
+<li>主要介绍了如何编写GPIO的构件(gpio_init(port, pin, IN/OUT, STATUS))，再在此基础上编写控制小灯的构件(light_init(port, pin, ON/OFF))。</li>
+<li>嵌入式项目的标准结构（目录分类），CPU有关，MCU有关（寄存器地址映射），用户构建的电路相关UserBoard（如将LED灯连接到MCU上），顶层应用。</li>
+<li>介绍了链接脚本的内容含义。</li>
+</ol>
+<h2 id="第五章：嵌入式硬件构件与底层驱动构件基本规范"><a href="#第五章：嵌入式硬件构件与底层驱动构件基本规范" class="headerlink" title="第五章：嵌入式硬件构件与底层驱动构件基本规范"></a>第五章：嵌入式硬件构件与底层驱动构件基本规范</h2><ol>
+<li>硬件构件可以分为核心构件，中间构件，终端构件。核心构件只对外提供服务如MCU最小硬件系统，终端构件只对外提出需求如LED构件。</li>
+<li>嵌入式软件构件：<ul>
+<li>面向芯片级的硬件驱动构件。如GPIO构件。</li>
+<li>面向实际应用硬件模块。如Light构件。</li>
+<li>面向算法，如链表、队列、排序算法等。</li>
+</ul>
+</li>
+</ol>
+<h2 id="第六章：串行通信模块及第一个中断程序结构"><a href="#第六章：串行通信模块及第一个中断程序结构" class="headerlink" title="第六章：串行通信模块及第一个中断程序结构"></a>第六章：串行通信模块及第一个中断程序结构</h2><ol>
+<li><p>串行通信接口简称串口，UART或SCI(serial communication interface)。</p>
+</li>
+<li><p>空闲状态是1，发送一个0表示一个字节传输开始，随后是字节数据，最后是1位或2位的停止位。开始位和停止位影响了串口的传输速率。</p>
+</li>
+<li><p>MCU输出的是TTL（晶体管-晶体管逻辑电平，Transistor-Transistor Logic），1和0的特征电压值是2.4V和0V。而RS232标准采用负逻辑（为了传输的更远），-15V到-3V为1，+3V到+15V为0。因此需要电平转换电路。</p>
+</li>
+<li><p>9芯串行接口</p>
+<ul>
+<li><p>接收线信号检测</p>
+</li>
+<li><p>RxD 接收数据线</p>
+</li>
+<li><p>TxD发送数据线</p>
+</li>
+<li><p>DTR数据终端准备就绪</p>
+</li>
+<li><p>SG信号地</p>
+</li>
+<li><p>DSR数据通信设备准备就绪</p>
+</li>
+<li><p>RTS请求发送</p>
+</li>
+<li><p>CTS允许发送</p>
+</li>
+<li><p>振铃提示</p>
+</li>
+</ul>
+<p>常常使用精简的RS232通信，仅使用RxD、TxD和SG。其它为进行远程传输时接调制解调器用，有的也可以作为硬件握手信号（如RTS和CTS）</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" rel="tag"># 嵌入式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/21/mips%E9%9D%9E%E5%AF%B9%E9%BD%90%E6%8C%87%E4%BB%A4%E4%B8%8E%E5%A4%A7%E5%B0%8F%E7%AB%AF/" rel="prev" title="mips非对齐指令与大小端">
+      <i class="fa fa-chevron-left"></i> mips非对齐指令与大小端
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/07/RISC-V-trend/" rel="next" title="RISC-V trend">
+      RISC-V trend <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#嵌入式技术基础与实践-第五版"><span class="nav-number">1.</span> <span class="nav-text">嵌入式技术基础与实践 第五版</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#心得"><span class="nav-number">1.1.</span> <span class="nav-text">心得</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一章：概述"><span class="nav-number">1.2.</span> <span class="nav-text">第一章：概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章：ARM-Cortex-M4F处理器"><span class="nav-number">1.3.</span> <span class="nav-text">第二章：ARM Cortex-M4F处理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三章：存储映像、中断源与硬件最小系统"><span class="nav-number">1.4.</span> <span class="nav-text">第三章：存储映像、中断源与硬件最小系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章：GPIO及程序框架"><span class="nav-number">1.5.</span> <span class="nav-text">第四章：GPIO及程序框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章：嵌入式硬件构件与底层驱动构件基本规范"><span class="nav-number">1.6.</span> <span class="nav-text">第五章：嵌入式硬件构件与底层驱动构件基本规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第六章：串行通信模块及第一个中断程序结构"><span class="nav-number">1.7.</span> <span class="nav-text">第六章：串行通信模块及第一个中断程序结构</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

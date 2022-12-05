@@ -28,10 +28,9 @@
 <meta property="og:description" content="如何实现网络自由:-)这里说的网络自由，是指通过网络工具极大地便利生活的某些方面。这篇文章是我自己对折腾路由器刷机、openwrt、ipv6的总结，并尽量说明了各种玩法的实际用途。其中有些操作确实给我带来了极大便利，比如其中使用iSCSI通过网络挂载其它设备的硬盘，这充分解放了我只有500GB的轻薄本。在上面安装游戏后，又可以实现在不同设备上无缝玩同一个游戏的体验。">
 <meta property="og:locale" content="zh">
 <meta property="article:published_time" content="2022-02-13T17:18:16.000Z">
-<meta property="article:modified_time" content="2022-05-24T08:48:12.597Z">
+<meta property="article:modified_time" content="2022-12-05T12:26:09.948Z">
 <meta property="article:author" content="rain">
-<meta property="article:tag" content="折腾">
-<meta property="article:tag" content="如何实现网络自由">
+<meta property="article:tag" content="数学 计算机 御坂美琴">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2022/02/14/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/">
@@ -122,12 +121,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">16</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">49</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
 
   </li>
   </ul>
@@ -188,8 +192,21 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 20:26:09" itemprop="dateModified" datetime="2022-12-05T20:26:09+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" itemprop="url" rel="index"><span itemprop="name">如何实现网络自由</span></a>
+                </span>
+            </span>
 
           
   
@@ -354,10 +371,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
-              <a href="/tags/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="tag"># 如何实现网络自由</a>
-          </div>
 
         
 
@@ -369,8 +382,8 @@
       <i class="fa fa-chevron-left"></i> openwrt刷机
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/05/24/%E4%BD%BF%E7%94%A8docker%E9%85%8D%E7%BD%AEhexo%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83/" rel="next" title="使用docker配置hexo博客环境">
-      使用docker配置hexo博客环境 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/03/29/iptables/" rel="next" title="iptables">
+      iptables <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -447,14 +460,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">posts</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">106</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

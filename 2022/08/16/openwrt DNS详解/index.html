@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="openwrt DNS说明[OpenWrt Wiki] DNS and DHCP configuration &#x2F;etc&#x2F;config&#x2F;dhcp [OpenWrt Wiki] DNS and DHCP examples  openwrt DNS和DHCP配置均位于&#x2F;etc&#x2F;config&#x2F;dhcp  openwrt使用dnsmasq和odhcpd。它们功能如下：   总结来说：  dnsmasq将自己">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openwrt DNS详解">
+<meta property="og:url" content="http://yoursite.com/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="openwrt DNS说明[OpenWrt Wiki] DNS and DHCP configuration &#x2F;etc&#x2F;config&#x2F;dhcp [OpenWrt Wiki] DNS and DHCP examples  openwrt DNS和DHCP配置均位于&#x2F;etc&#x2F;config&#x2F;dhcp  openwrt使用dnsmasq和odhcpd。它们功能如下：   总结来说：  dnsmasq将自己">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220816220011245.png">
+<meta property="article:published_time" content="2022-08-16T15:23:52.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:19:58.657Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="openwrt">
+<meta property="article:tag" content="dns">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220816220011245.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>openwrt DNS详解 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openwrt DNS详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-16 23:23:52" itemprop="dateCreated datePublished" datetime="2022-08-16T23:23:52+08:00">2022-08-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:19:58" itemprop="dateModified" datetime="2022-12-05T22:19:58+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" itemprop="url" rel="index"><span itemprop="name">如何实现网络自由</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="openwrt-DNS说明"><a href="#openwrt-DNS说明" class="headerlink" title="openwrt DNS说明"></a>openwrt DNS说明</h3><p><a href="https://openwrt.org/docs/guide-user/base-system/dhcp" target="_blank" rel="noopener">[OpenWrt Wiki] DNS and DHCP configuration /etc/config/dhcp</a></p>
+<p><a href="https://openwrt.org/docs/guide-user/base-system/dhcp_configuration" target="_blank" rel="noopener">[OpenWrt Wiki] DNS and DHCP examples</a></p>
+<ul>
+<li><p>openwrt DNS和DHCP配置均位于/etc/config/dhcp</p>
+</li>
+<li><p>openwrt使用dnsmasq和odhcpd。它们功能如下：</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220816220011245.png" alt="image-20220816220011245"></p>
+</li>
+<li><p>总结来说：</p>
+<ul>
+<li>dnsmasq将自己设置为DHCP客户端的DNS</li>
+<li>dnsmasq使用缓存来提升性能。到达的dns请求如果没有命中则转发给<strong>上游DNS</strong></li>
+</ul>
+<blockquote>
+<p>Dnsmasq serves as a downstream caching DNS server advertising itself to DHCP clients. This allows better performance and management of DNS functionality on your local network. Every received DNS query not currently in cache is forwarded to the upstream DNS servers.</p>
+</blockquote>
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="设置dnsmasq上游DNS"><a href="#设置dnsmasq上游DNS" class="headerlink" title="设置dnsmasq上游DNS"></a>设置dnsmasq上游DNS</h3><ul>
+<li><p>openwrt默认使用peer dns作为上游的dns，通常由ISP上游DHCP服务器提供</p>
+</li>
+<li><p>dnsmasq定期查询所有的dns(resolver)，并使用最快的一个</p>
+</li>
+<li><p>多dns provider</p>
+<ul>
+<li><p>更能容忍DoS攻击</p>
+</li>
+<li><p>不同的DNS由于缓存、同步、负载均衡可能返回不同的结果。为了区分正确结果，需要使用DNSSEC，可能会对性能造成损害。</p>
+<blockquote>
+<p>To distinguish between correct and incorrect answers such as false-negatives, you need to utilize DNSSEC which may negatively impact fault tolerance and performance.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="查看上游dns"><a href="#查看上游dns" class="headerlink" title="查看上游dns"></a>查看上游dns</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat &#x2F;tmp&#x2F;resolv.conf.d&#x2F;resolv.conf.auto</span><br><span class="line"># Interface wan</span><br><span class="line">nameserver 192.168.33.1</span><br><span class="line">search lan</span><br><span class="line"># Interface wan6</span><br><span class="line">nameserver 2409:8a38:1610:9a80::1</span><br></pre></td></tr></table></figure>
+
+<h4 id="Luci界面设置"><a href="#Luci界面设置" class="headerlink" title="Luci界面设置"></a>Luci界面设置</h4><p><strong>LuCI → Network → Interfaces → WAN &amp; WAN6 → Edit</strong></p>
+<ul>
+<li>Use DNS servers advertised by peer</li>
+<li>Use custom DNS servers</li>
+</ul>
+<h4 id="Uci命令行设置"><a href="#Uci命令行设置" class="headerlink" title="Uci命令行设置"></a>Uci命令行设置</h4><p>位于network配置文件中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># Configure DNS provider</span><br><span class="line">uci -q delete network.wan.dns</span><br><span class="line">uci add_list network.wan.dns&#x3D;&quot;8.8.8.8&quot;</span><br><span class="line">uci add_list network.wan.dns&#x3D;&quot;8.8.4.4&quot;</span><br><span class="line"> </span><br><span class="line"># Configure IPv6 DNS provider</span><br><span class="line">uci -q delete network.wan6.dns</span><br><span class="line">uci add_list network.wan6.dns&#x3D;&quot;2001:4860:4860::8888&quot;</span><br><span class="line">uci add_list network.wan6.dns&#x3D;&quot;2001:4860:4860::8844&quot;</span><br><span class="line"> </span><br><span class="line"># Disable peer DNS</span><br><span class="line">uci set network.wan.peerdns&#x3D;&quot;0&quot;</span><br><span class="line">uci set network.wan6.peerdns&#x3D;&quot;0&quot;</span><br><span class="line"> </span><br><span class="line"># Save and apply</span><br><span class="line">uci commit network</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;network restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="DHCP选项设置客户端DNS"><a href="#DHCP选项设置客户端DNS" class="headerlink" title="DHCP选项设置客户端DNS"></a>DHCP选项设置客户端DNS</h3><ul>
+<li><p>可以不使用路由器的DNS，让手机等设备直接使用公共DNS如8.8.8.8</p>
+</li>
+<li><p>手动修改每个客户端太麻烦，可以使用DHCP选项自动设置</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># Configure dnsmasq</span><br><span class="line">uci -q delete dhcp.lan.dhcp_option</span><br><span class="line">uci add_list dhcp.lan.dhcp_option&#x3D;&quot;6,8.8.8.8,8.8.4.4&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br><span class="line"> </span><br><span class="line"># Configure odhcpd</span><br><span class="line">uci -q delete dhcp.lan.dns</span><br><span class="line">uci add_list dhcp.lan.dns&#x3D;&quot;2001:4860:4860::8888&quot;</span><br><span class="line">uci add_list dhcp.lan.dns&#x3D;&quot;2001:4860:4860::8844&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;odhcpd restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="DNS转发"><a href="#DNS转发" class="headerlink" title="DNS转发"></a>DNS转发</h3><p><strong>LuCI → Network → DHCP and DNS → General Settings → DNS forwardings</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">uci -q delete dhcp.@dnsmasq[0].server</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server&#x3D;&quot;8.8.8.8&quot;</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server&#x3D;&quot;8.8.4.4&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="调试：开启dns-log"><a href="#调试：开启dns-log" class="headerlink" title="调试：开启dns log"></a>调试：开启dns log</h3><p>开启</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">uci set dhcp.@dnsmasq[0].logqueries&#x3D;&quot;1&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br></pre></td></tr></table></figure>
+
+<p>read</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logread -e dnsmasq</span><br></pre></td></tr></table></figure>
+
+<h3 id="其它DNS-DHCP功能"><a href="#其它DNS-DHCP功能" class="headerlink" title="其它DNS/DHCP功能"></a>其它DNS/DHCP功能</h3><h4 id="DNS过滤-除广告"><a href="#DNS过滤-除广告" class="headerlink" title="DNS过滤(除广告)"></a>DNS过滤(除广告)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># Blacklist</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server&#x3D;&quot;&#x2F;example.com&#x2F;&quot;</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server&#x3D;&quot;&#x2F;example.net&#x2F;&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br><span class="line"> </span><br><span class="line"># Whitelist</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server&#x3D;&quot;&#x2F;example.com&#x2F;#&quot;</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server&#x3D;&quot;&#x2F;example.net&#x2F;#&quot;</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server&#x3D;&quot;&#x2F;#&#x2F;&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br></pre></td></tr></table></figure>
+
+<h4 id="hostname"><a href="#hostname" class="headerlink" title="hostname"></a>hostname</h4><p>LuCI → Network → Hostnames</p>
+<p>Define a custom domain name and the corresponding PTR record - assigns the IPv4 address <code>192.168.1.23</code> and IPv6 address <code>fdce::23</code> to the domain name <code>mylaptop</code> and construct an appropriate reverse records.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">uci add dhcp domain</span><br><span class="line">uci set dhcp.@domain[-1].name&#x3D;&quot;mylaptop&quot;</span><br><span class="line">uci set dhcp.@domain[-1].ip&#x3D;&quot;192.168.1.23&quot;</span><br><span class="line">uci add dhcp domain</span><br><span class="line">uci set dhcp.@domain[-1].name&#x3D;&quot;mylaptop&quot;</span><br><span class="line">uci set dhcp.@domain[-1].ip&#x3D;&quot;fdce::23&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br></pre></td></tr></table></figure>
+
+<h4 id="A-AAAA-CNAME记录"><a href="#A-AAAA-CNAME记录" class="headerlink" title="A, AAAA, CNAME记录"></a>A, AAAA, CNAME记录</h4><p>相当于DNS基本功能</p>
+<ul>
+<li><p>A, AAAA记录用于将域名解析到IP</p>
+<ul>
+<li>下面表示home被解析为10.10.10.1</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">uci add_list dhcp.@dnsmasq[0].address&#x3D;&quot;&#x2F;home&#x2F;10.10.10.1&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>CNAME用于将一个域名解析到另一个域名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">uci add dhcp cname</span><br><span class="line">uci set dhcp.@cname[-1].cname&#x3D;&quot;ftp.example.com&quot;</span><br><span class="line">uci set dhcp.@cname[-1].target&#x3D;&quot;www.example.com&quot;</span><br><span class="line">uci commit dhcp</span><br><span class="line">&#x2F;etc&#x2F;init.d&#x2F;dnsmasq restart</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="PXE网络启动"><a href="#PXE网络启动" class="headerlink" title="PXE网络启动"></a>PXE网络启动</h4><p><a href="https://openwrt.org/docs/guide-user/base-system/dhcp_configuration#multi-arch_tftp_boot" target="_blank" rel="noopener">https://openwrt.org/docs/guide-user/base-system/dhcp_configuration#multi-arch_tftp_boot</a></p>
+<h4 id="DHCP-relay"><a href="#DHCP-relay" class="headerlink" title="DHCP relay"></a>DHCP relay</h4><p><a href="https://openwrt.org/docs/guide-user/base-system/dhcp#dhcp_relay" target="_blank" rel="noopener">https://openwrt.org/docs/guide-user/base-system/dhcp#dhcp_relay</a></p>
+<h3 id="常用网络命令"><a href="#常用网络命令" class="headerlink" title="常用网络命令"></a>常用网络命令</h3><h4 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h4><p>windows <code>ipconfig /all</code>，可以看到DNS</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DHCP 服务器 . . . . . . . . . . . : 192.168.37.1</span><br><span class="line">DHCPv6 IAID . . . . . . . . . . . : 69734824</span><br><span class="line">DHCPv6 客户端 DUID  . . . . . . . : 00-01-00-01-29-89-29-F7-28-11-A8-27-40-3E</span><br><span class="line">DNS 服务器  . . . . . . . . . . . : 2409:8a38:1610:9a80::1</span><br><span class="line">192.168.37.1</span><br></pre></td></tr></table></figure>
+
+<h4 id="nslookup"><a href="#nslookup" class="headerlink" title="nslookup"></a>nslookup</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup www.baidu.com</span><br><span class="line">服务器:  public1.alidns.com</span><br><span class="line">Address:  223.5.5.5</span><br><span class="line"></span><br><span class="line">非权威应答:</span><br><span class="line">名称:    www.a.shifen.com</span><br><span class="line">Addresses:  182.61.200.6</span><br><span class="line">          182.61.200.7</span><br><span class="line">Aliases:  www.baidu.com</span><br></pre></td></tr></table></figure>
+
+<h4 id="dig"><a href="#dig" class="headerlink" title="dig"></a>dig</h4><h4 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -ntlp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>n：使用数值端口</li>
+<li>t：TCP流</li>
+<li>l：显示正在监听的，否则为已经建立连接的</li>
+<li>p：显示对应程序</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/openwrt/" rel="tag"># openwrt</a>
+              <a href="/tags/dns/" rel="tag"># dns</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" rel="prev" title="gcc mpi源码编译">
+      <i class="fa fa-chevron-left"></i> gcc mpi源码编译
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/" rel="next" title="使用openwrt路由器和usb摄像头进行延时摄影">
+      使用openwrt路由器和usb摄像头进行延时摄影 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#openwrt-DNS说明"><span class="nav-number">1.</span> <span class="nav-text">openwrt DNS说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置dnsmasq上游DNS"><span class="nav-number">2.</span> <span class="nav-text">设置dnsmasq上游DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查看上游dns"><span class="nav-number">2.1.</span> <span class="nav-text">查看上游dns</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Luci界面设置"><span class="nav-number">2.2.</span> <span class="nav-text">Luci界面设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Uci命令行设置"><span class="nav-number">2.3.</span> <span class="nav-text">Uci命令行设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DHCP选项设置客户端DNS"><span class="nav-number">3.</span> <span class="nav-text">DHCP选项设置客户端DNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS转发"><span class="nav-number">4.</span> <span class="nav-text">DNS转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调试：开启dns-log"><span class="nav-number">5.</span> <span class="nav-text">调试：开启dns log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它DNS-DHCP功能"><span class="nav-number">6.</span> <span class="nav-text">其它DNS&#x2F;DHCP功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DNS过滤-除广告"><span class="nav-number">6.1.</span> <span class="nav-text">DNS过滤(除广告)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hostname"><span class="nav-number">6.2.</span> <span class="nav-text">hostname</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#A-AAAA-CNAME记录"><span class="nav-number">6.3.</span> <span class="nav-text">A, AAAA, CNAME记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PXE网络启动"><span class="nav-number">6.4.</span> <span class="nav-text">PXE网络启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DHCP-relay"><span class="nav-number">6.5.</span> <span class="nav-text">DHCP relay</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用网络命令"><span class="nav-number">7.</span> <span class="nav-text">常用网络命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ifconfig"><span class="nav-number">7.1.</span> <span class="nav-text">ifconfig</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nslookup"><span class="nav-number">7.2.</span> <span class="nav-text">nslookup</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dig"><span class="nav-number">7.3.</span> <span class="nav-text">dig</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#netstat"><span class="nav-number">7.4.</span> <span class="nav-text">netstat</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

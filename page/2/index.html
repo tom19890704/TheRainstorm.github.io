@@ -119,12 +119,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">16</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">49</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
 
   </li>
   </ul>
@@ -154,7 +159,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/10/%E8%99%9A%E6%8B%9F%E6%B8%B8%E6%88%8F%E6%88%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -168,7 +173,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">openwrt配置</a>
+            <a href="/2022/11/10/%E8%99%9A%E6%8B%9F%E6%B8%B8%E6%88%8F%E6%88%BF/" class="post-title-link" itemprop="url">虚拟游戏房</a>
         </h2>
 
         <div class="post-meta">
@@ -178,15 +183,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
+              <time title="Created: 2022-11-10 13:08:52" itemprop="dateCreated datePublished" datetime="2022-11-10T13:08:52+08:00">2022-11-10</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-11-02 16:31:23" itemprop="dateModified" datetime="2022-11-02T16:31:23+08:00">2022-11-02</time>
+                <time title="Modified: 2022-12-05 22:14:58" itemprop="dateModified" datetime="2022-12-05T22:14:58+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+            </span>
 
           
   
@@ -197,8 +211,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/11/10/%E8%99%9A%E6%8B%9F%E6%B8%B8%E6%88%8F%E6%88%BF/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/10/%E8%99%9A%E6%8B%9F%E6%B8%B8%E6%88%8F%E6%88%BF/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -213,10 +227,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="ipv6"><a href="#ipv6" class="headerlink" title="ipv6"></a>ipv6</h3><p>安装好openwrt(21.02)后，会默认开启并配置ipv6，电脑可以直接访问ipv6。但是该方式只有路由器能得到一个公网ipv6地址，路由器局域网内设备只有本地ipv6地址。类似于Openwrt开启了一层ipv6的NAT。而为了让连上路由器的所有设备获得公网ipv6地址，需要进行以下设置</p>
+          <p>打算弄多个windows虚拟机，分享给guest。</p>
+<p>好处</p>
+<ul>
+<li>pcie 4.0的固态作系统(6000MB的读写）</li>
+<li>Ryzen 5800x + 16GB内存</li>
+<li>共享高性能显卡（目前为1060 3G）</li>
+</ul>
+<p>具体</p>
+<ul>
+<li>所有windows虚拟机的C盘共用一个基本镜像<ul>
+<li>虚拟机的修改关机后不保存</li>
+</ul>
+</li>
+<li>所有windows虚拟机共享2TB的游戏盘<ul>
+<li>普通用户关机后，数据不保存</li>
+<li>管理员虚拟机对其修改可以保存</li>
+</ul>
+</li>
+<li>一个存储盘，50GB。数据私有并进行保存</li>
+</ul>
+<p>实现</p>
+<ul>
+<li>通过COW文件系统的overlay技术，在base镜像上创建一个overlay镜像。之后删除overlay即可回退到基础状态。</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/02/13/openwrt%E9%85%8D%E7%BD%AE/#more" rel="contents">
+              <a class="btn" href="/2022/11/10/%E8%99%9A%E6%8B%9F%E6%B8%B8%E6%88%8F%E6%88%BF/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -240,7 +277,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -254,7 +291,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/" class="post-title-link" itemprop="url">2022-02-13-记录红米AC2100折腾</a>
+            <a href="/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/" class="post-title-link" itemprop="url">VLAN实现单网口软路由</a>
         </h2>
 
         <div class="post-meta">
@@ -264,15 +301,28 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-02-13 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-13T01:18:16+08:00">2022-02-13</time>
+              <time title="Created: 2022-11-08 00:45:20" itemprop="dateCreated datePublished" datetime="2022-11-08T00:45:20+08:00">2022-11-08</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 20:30:43" itemprop="dateModified" datetime="2022-12-05T20:30:43+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" itemprop="url" rel="index"><span itemprop="name">如何实现网络自由</span></a>
+                </span>
+            </span>
 
           
   
@@ -283,8 +333,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -299,11 +349,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>第一次尝试自己刷路由器，网上搜索了很多资料，忙活了2天，期间差点以为将路由器刷成砖了。</p>
-<p>红米AC2100这款路由器确实算是很火，网上有很多资料。刚开始在恩山论坛查找各种资料，但是觉得恩山论坛的帖子有点乱，对新手不太友好。看精华帖时帖子之间的联系性不大，要是有一个板块进行总结性的介绍就好了。</p>
+          <p>起因是发现在原本的两个路由器间架设wireguard隧道，其中一个路由器(小米4A千兆版)遇到了CPU瓶颈，导致带宽只能达到100-200左右。后面研究了市面上的各种路由器的CPU型号，包括矿渣路由器。购买了一个100元的可以刷openwrt的竞斗云2.0，带宽可以达到200-300M，但仍远低于理想的千兆。目前即便是500元以上的高端路由器，其配置仍然只有4核Cortex <a href="mailto:A53@2.0GHz">A53@2.0GHz</a>的水平。</p>
+<p>偶然看到用旧笔记本做软路由的视频，遂萌生了折腾软路由的想法。仔细研究其方案后发现为pppoe拨号上网的方式，不适用于dhcp上网的情况。后偶然发现所购买路由器支持vlan功能（其实后面发现所有openwrt路由器都支持），于是自己独立构思了后面的架构图。并尝试成功(11/5)，最终在红米AX6S+软路由的情况下，达到了500M的带宽，此时AX6S的双核Cortex <a href="mailto:A53@1.2GHz">A53@1.2GHz</a> CPU占用率也达到了100%。</p>
+<p>之后再接再励，将AX6S也配置了vlan，并在旧笔记本实现软路由。最终带宽达到了880Mbps，scp文件达到98MB/s的速率。并且之后还成功配置了Guest WIFI，将其和主网络隔离开来，更加保证了安全性。</p>
+<p>通过本次项目，学会了：</p>
+<ul>
+<li>linux下，ip, netplan创建bridge和vlan</li>
+<li>lxc容器的使用</li>
+<li>openwrt DSA架构配置vlan</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/02/13/%E8%AE%B0%E5%BD%95%E7%BA%A2%E7%B1%B3AC2100%E6%8A%98%E8%85%BE/#more" rel="contents">
+              <a class="btn" href="/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -327,7 +384,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/06/linux%E7%9B%B8%E5%85%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -341,7 +398,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/" class="post-title-link" itemprop="url">小米电视访问电脑视频</a>
+            <a href="/2022/11/06/linux%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">linux相关</a>
         </h2>
 
         <div class="post-meta">
@@ -351,15 +408,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-02-12 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-12T01:18:16+08:00">2022-02-12</time>
+              <time title="Created: 2022-11-06 18:14:50" itemprop="dateCreated datePublished" datetime="2022-11-06T18:14:50+08:00">2022-11-06</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:49:12" itemprop="dateModified" datetime="2022-12-05T21:49:12+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -370,8 +436,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/11/06/linux%E7%9B%B8%E5%85%B3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/06/linux%E7%9B%B8%E5%85%B3/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -386,10 +452,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h3><p>一台电脑上下载了许多视频，如何优雅地在其它设备上（其它电脑、平板、电视）上直接访问播放该视频呢？</p>
+          <p>linux相关</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/02/12/%E5%B0%8F%E7%B1%B3%E7%94%B5%E8%A7%86%E8%AE%BF%E9%97%AE%E7%94%B5%E8%84%91%E8%A7%86%E9%A2%91/#more" rel="contents">
+              <a class="btn" href="/2022/11/06/linux%E7%9B%B8%E5%85%B3/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -413,7 +479,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/06/LXC%E4%BD%BF%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -427,7 +493,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/" class="post-title-link" itemprop="url">网络挂载磁盘(iSCSi)</a>
+            <a href="/2022/11/06/LXC%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">LXC使用</a>
         </h2>
 
         <div class="post-meta">
@@ -437,15 +503,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-02-12 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-12T01:18:16+08:00">2022-02-12</time>
+              <time title="Created: 2022-11-06 16:28:50" itemprop="dateCreated datePublished" datetime="2022-11-06T16:28:50+08:00">2022-11-06</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:37:47" itemprop="dateModified" datetime="2022-12-05T21:37:47+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -456,8 +531,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/11/06/LXC%E4%BD%BF%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/06/LXC%E4%BD%BF%E7%94%A8/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -472,13 +547,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="网络挂载磁盘-iSCSI"><a href="#网络挂载磁盘-iSCSI" class="headerlink" title="网络挂载磁盘(iSCSI)"></a>网络挂载磁盘(iSCSI)</h2><blockquote>
-<p>iSCSI is an IP-based standard for transferring data that supports host access by carrying SCSI commands over IP networks. The iSCSI standard is defined by RFC 3720. (<a href="https://www.ibm.com/docs/en/spectrumvirtualsoftw/8.2.x?topic=planning-iscsi-overview" target="_blank" rel="noopener">iSCSI overview - IBM Documentation</a>)</p>
+          <h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><h3 id="lxc-vs-docker"><a href="#lxc-vs-docker" class="headerlink" title="lxc vs docker"></a>lxc vs docker</h3><p>LXC是一种轻量虚拟机，复用host内核。与docker尽可能每个容器只跑一个应用不同，lxc的思路更接近虚拟机。<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221102112404544.png" alt="image-20221102112404544"></p>
+<blockquote>
+<p>The key networking difference between Docker and LXC is that with LXC one can attach a <em>container</em> to any bridge on the Host. This includes a bridge on the outside interface. Via <strong>transparent bridging</strong> the <em>container</em> can have unfettered access to the existing IPv6 subnet, including picking up Global Unique Addresses (GUAs) without the host having to do router-like functions, such as adding routes, auto propagation of prefixes (with DHCPv6-PD), redistribution of routes, etc. Again, things which Docker doesn’t support.</p>
 </blockquote>
-<p>使用iSCSI可以将远程服务器上的存储设备映射为本地的一个块设备</p>
+<h3 id="lxc-vs-lxd"><a href="#lxc-vs-lxd" class="headerlink" title="lxc vs lxd"></a>lxc vs lxd</h3><p>LXD is actually two parts, the <code>lxd</code> daemon, and the <code>lxc</code> CLI client which makes calls to the <code>lxd</code> daemon</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/02/12/%E7%BD%91%E7%BB%9C%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98(iSCSi)/#more" rel="contents">
+              <a class="btn" href="/2022/11/06/LXC%E4%BD%BF%E7%94%A8/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -502,7 +578,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/11/%E4%B8%8D%E5%90%8C%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -516,7 +592,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/02/11/%E4%B8%8D%E5%90%8C%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="post-title-link" itemprop="url">不同情况下的内网穿透</a>
+            <a href="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/" class="post-title-link" itemprop="url">Wireguard组网</a>
         </h2>
 
         <div class="post-meta">
@@ -526,15 +602,28 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-02-11 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-11T01:18:16+08:00">2022-02-11</time>
+              <time title="Created: 2022-10-31 22:17:42" itemprop="dateCreated datePublished" datetime="2022-10-31T22:17:42+08:00">2022-10-31</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 20:30:48" itemprop="dateModified" datetime="2022-12-05T20:30:48+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" itemprop="url" rel="index"><span itemprop="name">如何实现网络自由</span></a>
+                </span>
+            </span>
 
           
   
@@ -545,8 +634,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2022/02/11/%E4%B8%8D%E5%90%8C%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/11/%E4%B8%8D%E5%90%8C%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -561,18 +650,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="技术说明"><a href="#技术说明" class="headerlink" title="技术说明"></a>技术说明</h4><ul>
-<li><p>ddns：将动态的公网ip地址绑定到一个域名上</p>
-</li>
-<li><p>通过VPN访问内网：在互联网上建立一个隧道，通过隧道可实现访问内网设备</p>
-</li>
-<li><p>端口转发：将发送给A的某个端口的数据转发给B的某个端口。对于访问者来说，访问的是A，实际响应的是B</p>
-</li>
-</ul>
-<h4 id="网络状况"><a href="#网络状况" class="headerlink" title="网络状况"></a>网络状况</h4><p>设备A位于路由器后，设备B想要远程连接A。以下是设备B分别使用ipv4和ipv6访问A时不同情况的处理方式。</p>
+          <p>wireguard是一种基于UDP的隧道协议，可以在不同设备间建立虚拟隧道，从而连接不同子网。本文总结了不同使用场景</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/02/11/%E4%B8%8D%E5%90%8C%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/#more" rel="contents">
+              <a class="btn" href="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -596,7 +677,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/02/11/%E7%A7%BB%E5%8A%A8%E5%85%89%E7%8C%AB%E5%BC%80%E5%90%AFipv6/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/16/linux%E6%97%B6%E9%92%9F%E4%BB%8B%E7%BB%8D/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -610,7 +691,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/02/11/%E7%A7%BB%E5%8A%A8%E5%85%89%E7%8C%AB%E5%BC%80%E5%90%AFipv6/" class="post-title-link" itemprop="url">移动光猫开启ipv6</a>
+            <a href="/2022/10/16/linux%E6%97%B6%E9%92%9F%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">linux时钟介绍</a>
         </h2>
 
         <div class="post-meta">
@@ -620,15 +701,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-02-11 01:18:16" itemprop="dateCreated datePublished" datetime="2022-02-11T01:18:16+08:00">2022-02-11</time>
+              <time title="Created: 2022-10-16 18:14:50" itemprop="dateCreated datePublished" datetime="2022-10-16T18:14:50+08:00">2022-10-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:28:30" itemprop="dateModified" datetime="2022-12-05T21:28:30+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%9A%E5%AE%A2/" itemprop="url" rel="index"><span itemprop="name">博客</span></a>
+                </span>
+            </span>
 
           
   
@@ -639,8 +729,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2022/02/11/%E7%A7%BB%E5%8A%A8%E5%85%89%E7%8C%AB%E5%BC%80%E5%90%AFipv6/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/11/%E7%A7%BB%E5%8A%A8%E5%85%89%E7%8C%AB%E5%BC%80%E5%90%AFipv6/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/10/16/linux%E6%97%B6%E9%92%9F%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/16/linux%E6%97%B6%E9%92%9F%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -655,98 +745,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <ol>
-<li>移动光猫使用桥接模式 + 路由器使用拨号上网</li>
-<li>移动光猫开启ipv6步骤<ol>
-<li>删除原本ipv4的PPPoE</li>
-<li>协议选择ipv4/ipv6，创建新的<strong>PPP</strong>连接</li>
-</ol>
-</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/10/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%B7%AF%E7%94%B1%E5%99%A8%E5%88%B7%E5%87%BA%E9%97%AE%E9%A2%98%E4%BF%AE%E5%A4%8D%E8%BF%87%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
-      <meta itemprop="name" content="rain">
-      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="rain的随笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/10/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%B7%AF%E7%94%B1%E5%99%A8%E5%88%B7%E5%87%BA%E9%97%AE%E9%A2%98%E4%BF%AE%E5%A4%8D%E8%BF%87%E7%A8%8B/" class="post-title-link" itemprop="url">记一次路由器刷出问题修复过程</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-17 01:03:03" itemprop="dateCreated datePublished" datetime="2021-10-17T01:03:03+08:00">2021-10-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2021/10/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%B7%AF%E7%94%B1%E5%99%A8%E5%88%B7%E5%87%BA%E9%97%AE%E9%A2%98%E4%BF%AE%E5%A4%8D%E8%BF%87%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/10/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%B7%AF%E7%94%B1%E5%99%A8%E5%88%B7%E5%87%BA%E9%97%AE%E9%A2%98%E4%BF%AE%E5%A4%8D%E8%BF%87%E7%A8%8B/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>起因是想在openwrt上装上<strong>openclash</strong>插件，但路由器空间不够了（路由器为mi4a千兆版，有一个16M的NOR flash。通过在编译时设置块大小为512KB，成功安装了<code>zerotier</code>,<code>wireguard</code>,<code>python</code>等软件，编译的镜像大小为13,894,754 B），因此参考官方教程：<a href="https://openwrt.org/docs/guide-user/additional-software/saving_space" target="_blank" rel="noopener">[OpenWrt Wiki] Saving firmware space and RAM</a>，在编译时关闭了一些内核相关的选项，并将块大小设置为了1MB。最后成功生成镜像，大小为14,943,330 B。</p>
-<p>可没想到在更新系统后路由器无法正确启动，于是需要先使用小米官方工具恢复，然后再重刷openwrt系统。但考虑到之后如果要多次尝试的话，每次失败都需要先恢复官方系统然后重新刷比较麻烦。于是这一次重装，我选择了刷<strong>breed</strong>引导程序。这样，下次刷失败后便可以通过breed直接重刷固件。</p>
-<p>然而，不知是否是因为操作过程中的一个失误，我使用breed刷openwrt会失败，路由器会无限重启。并且在刷回官方固件后，甚至无法上网。最后，我从原厂固件直接刷回了openwrt，但是却发现openwrt中的<strong>5GHz的无线最大发射功率(Maximum transmit power)居然变为了1mW(3dBm)</strong>，这导致路由器的5G信号非常弱，即使是1m的距离，信号也很弱。于是我各种尝试去修复这个问题，以下是记录的过程。</p>
+          <p>linux中时钟的实现介绍</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/10/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%B7%AF%E7%94%B1%E5%99%A8%E5%88%B7%E5%87%BA%E9%97%AE%E9%A2%98%E4%BF%AE%E5%A4%8D%E8%BF%87%E7%A8%8B/#more" rel="contents">
+              <a class="btn" href="/2022/10/16/linux%E6%97%B6%E9%92%9F%E4%BB%8B%E7%BB%8D/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -770,7 +772,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/09/17/Openwrt%E6%8A%98%E8%85%BE/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/05/tmux/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -784,7 +786,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/17/Openwrt%E6%8A%98%E8%85%BE/" class="post-title-link" itemprop="url">2021-09-17-Openwrt折腾</a>
+            <a href="/2022/10/05/tmux/" class="post-title-link" itemprop="url">tmux</a>
         </h2>
 
         <div class="post-meta">
@@ -794,15 +796,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-09-17 00:15:15" itemprop="dateCreated datePublished" datetime="2021-09-17T00:15:15+08:00">2021-09-17</time>
+              <time title="Created: 2022-10-05 15:49:50" itemprop="dateCreated datePublished" datetime="2022-10-05T15:49:50+08:00">2022-10-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:41:42" itemprop="dateModified" datetime="2022-12-05T21:41:42+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -813,8 +824,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2021/09/17/Openwrt%E6%8A%98%E8%85%BE/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/17/Openwrt%E6%8A%98%E8%85%BE/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/10/05/tmux/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/05/tmux/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -829,10 +840,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>折腾路由器的一些总结，如远程访问，ipv6等</p>
+          <p>tmux</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/17/Openwrt%E6%8A%98%E8%85%BE/">
+              <a class="btn" href="/2022/10/05/tmux/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -856,7 +867,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/06/2021-4-6-ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/03/%E5%B0%9D%E8%AF%95%E9%9D%9E%E5%AE%98%E6%96%B9openwrt/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -870,7 +881,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/04/06/2021-4-6-ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">ucore-mips 代码分析</a>
+            <a href="/2022/10/03/%E5%B0%9D%E8%AF%95%E9%9D%9E%E5%AE%98%E6%96%B9openwrt/" class="post-title-link" itemprop="url">尝试非官方openwrt</a>
         </h2>
 
         <div class="post-meta">
@@ -880,14 +891,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-04-06 22:51:13" itemprop="dateCreated datePublished" datetime="2021-04-06T22:51:13+08:00">2021-04-06</time>
+              <time title="Created: 2022-10-03 15:08:52" itemprop="dateCreated datePublished" datetime="2022-10-03T15:08:52+08:00">2022-10-03</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 22:15:17" itemprop="dateModified" datetime="2022-12-05T22:15:17+08:00">2022-12-05</time>
               </span>
 
           
@@ -899,8 +910,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2021/04/06/2021-4-6-ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/06/2021-4-6-ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/10/03/%E5%B0%9D%E8%AF%95%E9%9D%9E%E5%AE%98%E6%96%B9openwrt/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/03/%E5%B0%9D%E8%AF%95%E9%9D%9E%E5%AE%98%E6%96%B9openwrt/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -915,10 +926,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>分析了ucore mips版代码，主要包括Makefile、启动过程、物理内存管理、虚拟内存管理、进程创建（内核和用户）。不过没有分析文件系统</p>
+          <h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>我的红米ac2100不知道怎么回事，使用自己编译的固件，无法开启5G无线。radio1显示not active，并且为802.11n协议。先后尝试编译22.03-rc6, 21.02稳定版都是如此。（<strong>官方稳定版是有的</strong>）(想到一些第三方的openwrt说针对国内进行了优化，因此想尝试下第三方的openwrt</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/04/06/2021-4-6-ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/">
+              <a class="btn" href="/2022/10/03/%E5%B0%9D%E8%AF%95%E9%9D%9E%E5%AE%98%E6%96%B9openwrt/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -942,7 +953,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/02/08/%E6%9B%B4%E6%96%B0%E5%9B%BA%E6%80%81%E4%B9%8B%E6%97%85/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -956,7 +967,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/02/08/%E6%9B%B4%E6%96%B0%E5%9B%BA%E6%80%81%E4%B9%8B%E6%97%85/" class="post-title-link" itemprop="url">更新固态之旅</a>
+            <a href="/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">retroarch配置</a>
         </h2>
 
         <div class="post-meta">
@@ -966,15 +977,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-02-08 12:02:35" itemprop="dateCreated datePublished" datetime="2021-02-08T12:02:35+08:00">2021-02-08</time>
+              <time title="Created: 2022-09-29 00:56:52" itemprop="dateCreated datePublished" datetime="2022-09-29T00:56:52+08:00">2022-09-29</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 22:16:19" itemprop="dateModified" datetime="2022-12-05T22:16:19+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
 
           
   
@@ -985,8 +1005,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2021/02/08/%E6%9B%B4%E6%96%B0%E5%9B%BA%E6%80%81%E4%B9%8B%E6%97%85/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/08/%E6%9B%B4%E6%96%B0%E5%9B%BA%E6%80%81%E4%B9%8B%E6%97%85/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -1001,32 +1021,111 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>我姐的电脑是15-16年买的，型号为Acer Aspire V15 Nitro Black Edition(暗影骑士2，精确型号为Aspire VN7-592G-58NG)，<a href="http://detail.zol.com.cn/notebook/index1102903.shtml" target="_blank" rel="noopener">ZOL</a>上的商品信息</p>
-<p>不得不说这台电脑确实是非常厉害了，有以下这些亮眼的地方。</p>
+          <p><a href="https://retrogamecorps.com/2022/02/28/retroarch-starter-guide/" target="_blank" rel="noopener">RetroArch Starter Guide – Retro Game Corps</a></p>
+<p>retroarch是一个模拟器前端，不同的模拟器以core的形式嵌入retro。retroarch相对于单独的模拟器来说好处如下</p>
 <ul>
-<li>i5-6300HQ。HQ表示标压-四核。</li>
-<li>NIVIDIA的GTX960M独立显卡。（当时的中端主流显卡）</li>
-</ul>
-<p>下面这些即使是现在也是完全够用的，特别是那个支持2x2 MU-MIMO的无线网卡。</p>
-<ul>
-<li>Realtek 8168/8111 <strong>千兆</strong>以太网卡。</li>
-<li>Qualcommm Atheros NFA344A 无线网卡。（<strong>支持2x2 MU-MIMO</strong>，Wifi4, Wifi5）<a href="https://oemdrivers.com/network-qualcomm-atheros-qca61x4a-wireless" target="_blank" rel="noopener">https://oemdrivers.com/network-qualcomm-atheros-qca61x4a-wireless</a></li>
-<li>1个USB 2.0， <strong>2个</strong>USB 3.0，1个<strong>Thunderbolt 3</strong>接口。s</li>
-</ul>
-<p>而不仅限于此，这台电脑的扩展性是真的非常不错。</p>
-<ul>
-<li>2条内存条插槽。支持最大32G（原装了一条海力士的4GB DDR4 2133MHz 内存条）</li>
-<li>一个m.2插槽，<strong>支持NVMe协议</strong>（PCIe Gen3x4，最高4GB/s）。</li>
-</ul>
-<p>下面是发现这台电脑支持NVMe协议的固态的曲折过程：</p>
-<p>在阅读之前，需要以下知识：</p>
-<ul>
-<li>m.2接口（也叫NGFF(Next Generation Form Factor)）</li>
-<li>NVMe</li>
+<li>跨平台。retroarch支持非常多的平台。由于core是动态链接库的形式嵌入retroarch的，相当于解决了不同core的跨平台问题。</li>
+<li>支持全局的按键映射。不用为每个模拟器设置手柄，快捷键等等配置。</li>
+<li>shader and filters。可以实现一些特别的视觉效果，比如</li>
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/02/08/%E6%9B%B4%E6%96%B0%E5%9B%BA%E6%80%81%E4%B9%8B%E6%97%85/#more" rel="contents">
+              <a class="btn" href="/2022/09/29/retroarch%E9%85%8D%E7%BD%AE/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/28/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/28/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">python正则表达式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-28 18:14:50" itemprop="dateCreated datePublished" datetime="2022-09-28T18:14:50+08:00">2022-09-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 21:07:13" itemprop="dateModified" datetime="2022-12-05T21:07:13+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/09/28/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/28/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>python正则表达式</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/28/python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1049,7 +1148,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1117,14 +1216,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">posts</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">106</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

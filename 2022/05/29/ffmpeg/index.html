@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ffmpeg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ffmpeg">
+<meta property="og:url" content="http://yoursite.com/2022/05/29/ffmpeg/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="ffmpeg">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2022-05-29T10:14:50.000Z">
+<meta property="article:modified_time" content="2022-12-05T13:13:43.839Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="ffmpeg">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2022/05/29/ffmpeg/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>ffmpeg | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/05/29/ffmpeg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ffmpeg
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-05-29 18:14:50" itemprop="dateCreated datePublished" datetime="2022-05-29T18:14:50+08:00">2022-05-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 21:13:43" itemprop="dateModified" datetime="2022-12-05T21:13:43+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/05/29/ffmpeg/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/05/29/ffmpeg/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ffmpeg</p>
+<a id="more"></a>
+
+<ul>
+<li><p>streams种类：video/audio/subtitle/attachment/data</p>
+</li>
+<li><p>options对下一个文件起作用，可以重复相同的选项</p>
+</li>
+<li><p>ffmpeg流程</p>
+<ul>
+<li>decode -&gt; filter -&gt; encode</li>
+<li>使用copy选项时，可以跳过decode</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> _______              ______________</span><br><span class="line">|       |            |              |</span><br><span class="line">| input |  demuxer   | encoded data |   decoder</span><br><span class="line">| file  | ---------&gt; | packets      | -----+</span><br><span class="line">|_______|            |______________|      |</span><br><span class="line">                                           v</span><br><span class="line">                                       _________</span><br><span class="line">                                      |         |</span><br><span class="line">                                      | decoded |</span><br><span class="line">                                      | frames  |</span><br><span class="line">                                      |_________|</span><br><span class="line"> ________             ______________       |</span><br><span class="line">|        |           |              |      |</span><br><span class="line">| output | &lt;-------- | encoded data | &lt;----+</span><br><span class="line">| file   |   muxer   | packets      |   encoder</span><br><span class="line">|________|           |______________|</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>filter</p>
+<ul>
+<li><p>simple filter</p>
+<ul>
+<li>一个输入，一个输出，类型相同</li>
+<li>对每个流使用-filter选项。-vf, -af是video和audio的别名</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> _________                        ______________</span><br><span class="line">|         |                      |              |</span><br><span class="line">| decoded |                      | encoded data |</span><br><span class="line">| frames  |\                   _ | packets      |</span><br><span class="line">|_________| \                  &#x2F;||______________|</span><br><span class="line">             \   __________   &#x2F;</span><br><span class="line">  simple     _\||          | &#x2F;  encoder</span><br><span class="line">  filtergraph   | filtered |&#x2F;</span><br><span class="line">                | frames   |</span><br><span class="line">                |__________|</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Complex filtergraphs are those which cannot be described as simply a linear processing chain applied to one stream.</p>
+<ul>
+<li><p>多个输入或输出</p>
+</li>
+<li><p>使用-filter_complex</p>
+</li>
+<li><p>默认是全局的选项</p>
+</li>
+<li><p>例子</p>
+</li>
+</ul>
+</li>
+<li><p>overlay：将一个视频叠加到另一个视频上</p>
+</li>
+<li><p>-filter_complex filtergraph (<em>global</em>)</p>
+<p>Define a complex filtergraph, i.e. one with arbitrary number of inputs and/or outputs. For simple graphs – those with one input and one output of the same type – see the -filter options. filtergraph is a description of the filtergraph, as described in the “Filtergraph syntax” section of the ffmpeg-filters manual.</p>
+<p>Input link labels must refer to input streams using the <code>[file_index:stream_specifier]</code> syntax (i.e. the same as -map uses). If stream_specifier matches multiple streams, the first one will be used. An unlabeled input will be connected to the first unused input stream of the matching type.</p>
+<p>Output link labels are referred to with -map. Unlabeled outputs are added to the first output file.</p>
+<p>例子</p>
+<ul>
+<li>```<br>ffmpeg -i video.mkv -i image.png -filter_complex ‘[0:v][1:v]overlay[out]’ -map<br>‘[out]’ out.mkv<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">      </span><br><span class="line"></span><br><span class="line">- stream selection</span><br><span class="line"></span><br><span class="line">  - 自动选择</span><br><span class="line">    - 根据output文件的类型，决定是否包含video&#x2F;audio&#x2F;subtitles等各种类型的流</span><br><span class="line">    - 流选择的具体规则</span><br><span class="line">      - for video, it is the stream with the highest resolution,</span><br><span class="line">      - for audio, it is the stream with the most channels,</span><br><span class="line">      - for subtitles, it is the first subtitle stream found but there’s a caveat. The output format’s default subtitle encoder can be either text-based or image-based, and only a subtitle stream of the same type will be chosen.</span><br><span class="line">    </span><br><span class="line">  - map选项</span><br><span class="line">    - -map [-]input_file_id[:stream_specifier][?][,sync_file_id[:stream_specifier]] | [linklabel] (*output*)</span><br><span class="line">    </span><br><span class="line">      Designate one or more input streams as a source for the output file. Each input stream is identified by the input file index input_file_id and the input stream index input_stream_id within the input file. Both indices start at 0. If specified, sync_file_id:stream_specifier sets which input stream is used as a presentation sync reference.</span><br><span class="line">    </span><br><span class="line">    - 例子</span><br><span class="line">    </span><br><span class="line">      For example, to map ALL streams from the first input file to output</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0 output<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">For example, if you have two audio streams in the first input file, these streams are identified by &quot;0:0&quot; and &quot;0:1&quot;. You can use &#96;-map&#96; to select which streams to place in an output file. For example:</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0:1 out.wav<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">will map the input stream in INPUT identified by &quot;0:1&quot; to the (single) output stream in out.wav.</span><br><span class="line">    </span><br><span class="line">For example, to select the stream with index 2 from input file a.mov (specified by the identifier &quot;0:2&quot;), and stream with index 6 from input b.mov (specified by the identifier &quot;1:6&quot;), and copy them to the output file out.mov:</span><br></pre></td></tr></table></figure>
+ffmpeg -i a.mov -i b.mov -c copy -map 0:2 -map 1:6 out.mov<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">To select all video and the third audio stream from an input file:</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0:v -map 0:a:2 OUTPUT<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">To map all the streams except the second audio, use negative mappings</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0 -map -0:a:1 OUTPUT<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">To map the video and audio streams from the first input, and using the trailing &#96;?&#96;, ignore the audio mapping if no audio streams exist in the first input:</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0:v -map 0:a? OUTPUT<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">To pick the English audio stream:</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0:m:language:eng OUTPUT<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">      Note that using this option disables the default mappings for this output file.</span><br><span class="line"></span><br><span class="line">- stream handling</span><br><span class="line"></span><br><span class="line">  - 在stream selection之后进行</span><br><span class="line">  - 使用-codec指定</span><br><span class="line"></span><br><span class="line">- stream specifier</span><br><span class="line"></span><br><span class="line">  - 对于一些针对某个流的选项（如-codec, -bitrate），使用stream specifier来指定针对哪个流</span><br><span class="line">  - 如：</span><br><span class="line">    - -codec: a:1 ac3，指定第**2**个**audio**流的编码</span><br><span class="line">    - -codec:v copy指定复制video流（-codec or -codec:指定复制所有流）</span><br><span class="line"></span><br><span class="line">- 常用选项</span><br><span class="line"></span><br><span class="line">  - -c[:stream_specifier] codec (input&#x2F;output,per-stream)</span><br><span class="line">    -codec[:stream_specifier] codec (input&#x2F;output,per-stream)</span><br><span class="line">    Select an encoder (when used before an output file) or a decoder (when used before an input file) for one or more streams. codec is the name of a decoder&#x2F;encoder or a special value copy (output only) to indicate that the stream is not to be re-encoded.</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0 -c:v libx264 -c:a copy OUTPUT<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line">encodes all video streams with libx264 and copies all audio streams.</span><br><span class="line">  </span><br><span class="line">作用顺序为后者优先</span><br></pre></td></tr></table></figure>
+ffmpeg -i INPUT -map 0 -c copy -c:v:1 libx264 -c:a:137 libvorbis OUTPUT<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line">    will copy all the streams except the second video, which will be encoded with libx264, and the 138th audio, which will be encoded with libvorbis.</span><br><span class="line">  </span><br><span class="line">  - -t duration (*input&#x2F;output*)</span><br><span class="line">  </span><br><span class="line">    When used as an input option (before &#96;-i&#96;), limit the duration of data read from the input file.</span><br><span class="line">  </span><br><span class="line">    When used as an output option (before an output url), stop writing the output after its duration reaches duration.</span><br><span class="line">  </span><br><span class="line">  - -ss position (*input&#x2F;output*)</span><br><span class="line">  </span><br><span class="line">    When used as an input option (before &#96;-i&#96;), seeks in this input file to position. Note that in most formats it is not possible to seek exactly, so &#96;ffmpeg&#96; will seek to the closest seek point before position. When transcoding and -accurate_seek is enabled (the default), this extra segment between the seek point and position will be decoded and discarded. When doing stream copy or when -noaccurate_seek is used, it will be preserved.</span><br><span class="line">  </span><br><span class="line">    When used as an output option (before an output url), decodes but discards input until the timestamps reach position.</span><br><span class="line">  </span><br><span class="line">  - -to position (*input&#x2F;output*)</span><br><span class="line">  </span><br><span class="line">    Stop writing the output or reading the input at position.</span><br><span class="line">  </span><br><span class="line">  - -filter[:stream_specifier] filtergraph (*output,per-stream*)</span><br><span class="line">  </span><br><span class="line">    Create the filtergraph specified by filtergraph and use it to filter the stream.</span><br><span class="line">  </span><br><span class="line">    filtergraph is a description of the filtergraph to apply to the stream, and must have a single input and a single output of the same type of the stream. In the filtergraph, the input is associated to the label &#96;in&#96;, and the output to the label &#96;out&#96;. See the ffmpeg-filters manual for more information about the filtergraph syntax.</span><br><span class="line">  </span><br><span class="line">  - Video相关</span><br><span class="line">  </span><br><span class="line">    - -vn (*input&#x2F;output*)</span><br><span class="line">  </span><br><span class="line">      As an input option, blocks all video streams of a file from being filtered or being automatically selected or mapped for any output. See &#96;-discard&#96; option to disable streams individually.</span><br><span class="line">  </span><br><span class="line">      As an output option, disables video recording i.e. automatic selection or mapping of any video stream. For full manual control see the &#96;-map&#96; option.</span><br><span class="line">  </span><br><span class="line">    - **-vcodec** codec **(***output***)**</span><br><span class="line">  </span><br><span class="line">    - -vf filtergraph (*output*)</span><br><span class="line">  </span><br><span class="line">      Create the filtergraph specified by filtergraph and use it to filter the stream.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 转码</span><br><span class="line"></span><br><span class="line">CRF</span><br><span class="line"></span><br><span class="line">- h264, h265中</span><br><span class="line"></span><br><span class="line">  &gt; Use this rate control mode if you want to keep the best quality and care less about the file size. This is the recommended rate control mode for most uses.</span><br><span class="line"></span><br><span class="line">- 值</span><br><span class="line"></span><br><span class="line">  &gt; The range of the CRF scale is 0–51, where 0 is lossless (for 8 bit only, for 10 bit use -qp 0), **23 is the default**, and 51 is worst quality possible. A lower value generally leads to higher quality, and a subjectively sane range is 17–28. Consider **17 or 18 to be visually lossless** or nearly so; it should look the same or nearly the same as the input but it isn&#39;t technically lossless.</span><br><span class="line">  &gt;</span><br><span class="line">  &gt; The range is exponential, so **increasing the CRF value +6 results in roughly half the bitrate &#x2F; file size**, while -6 leads to roughly twice the bitrate.</span><br><span class="line">  &gt;</span><br><span class="line">  &gt; Choose the highest CRF value that still provides an acceptable quality. If the output looks good, then try a higher value. If it looks bad, choose a lower value.</span><br><span class="line">  &gt;</span><br><span class="line">  &gt; **Note:** The 0–51 CRF quantizer scale mentioned on this page only applies to 8-bit x264. When compiled with 10-bit support, x264&#39;s quantizer scale is 0–63 (internally in x264 itself it is from -12 to 51 [https:&#x2F;&#x2F;code.videolan.org&#x2F;videolan&#x2F;x264&#x2F;-&#x2F;blob&#x2F;master&#x2F;x264.c#L733](https:&#x2F;&#x2F;code.videolan.org&#x2F;videolan&#x2F;x264&#x2F;-&#x2F;blob&#x2F;master&#x2F;x264.c#L733) but ffmpeg libx264 wrapper shifted it, so that 0 is lossless, but only in supported profiles, High 10 does not support lossless). You can see what you are using by referring to the &#96;ffmpeg&#96; console output during encoding (&#96;yuv420p&#96; or similar for 8-bit, and &#96;yuv420p10le&#96; or similar for 10-bit). 8-bit is more common among distributors.</span><br><span class="line"></span><br><span class="line">- preset</span><br><span class="line"></span><br><span class="line">  &gt; - &#96;ultrafast&#96;</span><br><span class="line">  &gt; - &#96;superfast&#96;</span><br><span class="line">  &gt; - &#96;veryfast&#96;</span><br><span class="line">  &gt; - &#96;faster&#96;</span><br><span class="line">  &gt; - &#96;fast&#96;</span><br><span class="line">  &gt; - &#96;medium&#96; – default preset</span><br><span class="line">  &gt; - &#96;slow&#96;</span><br><span class="line">  &gt; - &#96;slower&#96;</span><br><span class="line">  &gt; - &#96;veryslow&#96;</span><br><span class="line">  &gt; - &#96;placebo&#96; – ignore this as it is not useful (see [FAQ](https:&#x2F;&#x2F;trac.ffmpeg.org&#x2F;wiki&#x2F;Encode&#x2F;H.264#FAQ))</span><br><span class="line"></span><br><span class="line">#### h264</span><br><span class="line"></span><br><span class="line">[Encode&#x2F;H.264 – FFmpeg](https:&#x2F;&#x2F;trac.ffmpeg.org&#x2F;wiki&#x2F;Encode&#x2F;H.264)</span><br></pre></td></tr></table></figure>
+ffmpeg -i input -c:v libx264 -preset slow -crf 22 -c:a copy output.mkv<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">我使用这段参数转码h265的男子高中生S01E01，从514-&gt;320MB，结果质量很差</span><br><span class="line"></span><br><span class="line">差：</span><br><span class="line"></span><br><span class="line">ffmpeg.exe -i video.mkv -map 0 -c:v libx264 -crf 18 out-h264-cpu.mkv</span><br><span class="line"></span><br><span class="line">#### h265</span><br><span class="line"></span><br><span class="line">[Encode&#x2F;H.265 – FFmpeg](https:&#x2F;&#x2F;trac.ffmpeg.org&#x2F;wiki&#x2F;Encode&#x2F;H.265)</span><br><span class="line"></span><br><span class="line">- Choose a CRF. CRF affects the quality. The default is 28, and it should visually correspond to libx264 video at CRF 23, but result in about half the file size. CRF works just like in x264, so choose the highest value that provides an acceptable quality.</span><br><span class="line"></span><br><span class="line">- Choose a preset. The default is &#96;medium&#96;. The preset determines compression efficiency and therefore affects encoding speed. Valid presets are &#96;ultrafast&#96;, &#96;superfast&#96;, &#96;veryfast&#96;, &#96;faster&#96;, &#96;fast&#96;, &#96;medium&#96;, &#96;slow&#96;, &#96;slower&#96;, &#96;veryslow&#96;, and &#96;placebo&#96;. Use the slowest preset you have patience for. Ignore &#96;placebo&#96; as it provides insignificant returns for a significant increase in encoding time.</span><br><span class="line"></span><br><span class="line">- Choose a tune (optional). By default, this is disabled, and it is generally not required to set a tune option. x265 supports the following &#96;-tune&#96; options: &#96;psnr&#96;, &#96;ssim&#96;, &#96;grain&#96;, &#96;zerolatency&#96;, &#96;fastdecode&#96;. They are explained in the [H.264 guide](https:&#x2F;&#x2F;trac.ffmpeg.org&#x2F;wiki&#x2F;Encode&#x2F;H.264#crf).</span><br><span class="line"></span><br><span class="line">#### av1</span><br><span class="line"></span><br><span class="line">[Encode&#x2F;AV1 – FFmpeg](https:&#x2F;&#x2F;trac.ffmpeg.org&#x2F;wiki&#x2F;Encode&#x2F;AV1)</span><br><span class="line"></span><br><span class="line">Constant Quality：</span><br><span class="line"></span><br><span class="line">libaom-av1 has a constant quality (CQ) mode (like CRF in x264 and x265) which will ensure that *every frame gets the number of bits it deserves to achieve a certain (perceptual) quality level*, rather than encoding each frame to meet a bit rate target. This results in better overall quality. **If you do not need to achieve a fixed target file size, this should be your method of choice.**</span><br></pre></td></tr></table></figure>
+ffmpeg -i input.mp4 -c:v libaom-av1 -crf 30 -b:v 0 av1_test.mkv<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">慢到不可用！！！</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### GPU</span><br><span class="line"></span><br><span class="line">https:&#x2F;&#x2F;trac.ffmpeg.org&#x2F;wiki&#x2F;Hardware&#x2F;VAAPI</span><br><span class="line"></span><br><span class="line">https:&#x2F;&#x2F;wiki.libav.org&#x2F;Hardware&#x2F;vaapi</span><br><span class="line"></span><br><span class="line">https:&#x2F;&#x2F;www.hardening-consulting.com&#x2F;en&#x2F;posts&#x2F;20170625-using-vaapi-with-ffmpeg.html</span><br><span class="line"></span><br><span class="line">### 基本</span><br><span class="line"></span><br><span class="line">参考：[FFmpeg 视频处理入门教程 - 阮一峰的网络日志 (ruanyifeng.com)](https:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;blog&#x2F;2020&#x2F;01&#x2F;ffmpeg.html)</span><br><span class="line"></span><br><span class="line">#### 命令格式</span><br></pre></td></tr></table></figure>
+$ ffmpeg <br>[全局参数] <br>[输入文件参数] \</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>i [输入文件] <br>[输出文件参数] <br>[输出文件]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如下面的命令将 mp4 文件转成 webm 文件，这两个都是容器格式。输入的 mp4 文件的音频编码格式是 aac，视频编码格式是 H.264；输出的 webm 文件的视频编码格式是 VP9，音频格式是 Vorbis。</span><br></pre></td></tr></table></figure>
+<p>$ ffmpeg \</p>
+</li>
+<li><p>y \ # 全局参数</p>
+</li>
+<li><p>c:a libfdk_aac -c:v libx264 \ # 输入文件参数</p>
+</li>
+<li><p>i input.mp4 \ # 输入文件</p>
+</li>
+<li><p>c:v libvpx-vp9 -c:a libvorbis \ # 输出文件参数<br>output.webm # 输出文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### 常用参数</span><br></pre></td></tr></table></figure></li>
+<li><p>c：指定编码器</p>
+</li>
+<li><p>c copy：直接复制，不经过重新编码（这样比较快）</p>
+</li>
+<li><p>c:v：指定视频编码器</p>
+</li>
+<li><p>c:a：指定音频编码器</p>
+</li>
+<li><p>i：指定输入文件</p>
+</li>
+<li><p>an：去除音频流</p>
+</li>
+<li><p>vn： 去除视频流</p>
+</li>
+<li><p>preset：指定输出的视频质量，会影响文件的生成速度，有以下几个可用的值 ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### 查看支持的编码器</span><br></pre></td></tr></table></figure>
+<p>~ ffmpeg.exe -encoders |grep av1<br>V….. libaom-av1           libaom AV1 (codec av1)<br>V….D librav1e             librav1e AV1 (codec av1)<br>V….. libsvtav1            SVT-AV1(Scalable Video Technology for AV1) encoder (codec av1)</p>
+</li>
+</ul>
+<p>~ ffmpeg.exe -encoders |grep HEVC<br> V….. libx265              libx265 H.265 / HEVC (codec hevc)<br> V….D hevc_amf             AMD AMF HEVC encoder (codec hevc)<br> V….D hevc_mf              HEVC via MediaFoundation (codec hevc)</p>
+<p>~ ffmpeg.exe -encoders |grep h264<br>V….. libx264              libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (codec h264)<br> V….. libx264rgb           libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 RGB (codec h264)<br> V….. libopenh264          OpenH264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (codec h264)<br> V….D h264_amf             AMD AMF H.264 Encoder (codec h264)<br> V….D h264_mf              H264 via MediaFoundation (codec h264)<br> V….D h264_nvenc           NVIDIA NVENC H.264 encoder (codec h264)<br> V….. h264_qsv             H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (Intel Quick Sync Video acceleration) (codec h264)<br> V….. nvenc                NVIDIA NVENC H.264 encoder (codec h264)<br> V….. nvenc_h264           NVIDIA NVENC H.264 encoder (codec h264)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 常用命令</span><br><span class="line"></span><br><span class="line">#### 查看文件元信息</span><br></pre></td></tr></table></figure>
+<p>ffmpeg -i input.mp4 -hide_banner</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### 提取音频</span><br></pre></td></tr></table></figure>
+<p>$ ffmpeg <br>-i input.mp4 <br>-vn -c:a copy <br>output.aac</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">或</span><br></pre></td></tr></table></figure>
+<p>$ ffmpeg -i input -map 0:a output</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### 截图</span><br></pre></td></tr></table></figure>
+<p>$ ffmpeg <br>-i input.mp4 <br>-ss 00:01:24 -t 00:00:01 <br>output_%3d.jpg</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#96;-vframes 1&#96;指定只截取一帧，&#96;-q:v 2&#96;表示输出的图片质量，一般是1到5之间（1 为质量最高）。</span><br></pre></td></tr></table></figure>
+<p>$ ffmpeg <br>-ss 01:23:45 <br>-i input <br>-vframes 1 -q:v 2 <br>output.jpg</p>
+<pre><code></code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/24/%E4%BD%BF%E7%94%A8docker%E9%85%8D%E7%BD%AEhexo%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83/" rel="prev" title="使用docker配置hexo博客环境">
+      <i class="fa fa-chevron-left"></i> 使用docker配置hexo博客环境
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/01/%E5%AE%9E%E9%AA%8C%E5%AE%A4%E7%BD%91%E7%BB%9C%E9%A3%8E%E6%B3%A2/" rel="next" title="实验室网络风波">
+      实验室网络风波 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

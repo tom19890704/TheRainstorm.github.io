@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="linux系统迁移买了一条三星的PM9A1 SSD，想要把原本的linux迁移到新的固态上。 系统信息 原本的系统（windows和ubuntu双系统）安装在固态上，包含EFI分区。  系统引导方式：EFI&#x2F;GPT（其它方式有BIOS&#x2F;MBR, BIOS&#x2F;GPT）  BIOS system On a BIOS&#x2F;GPT system there is no MBR and therefore no">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux系统迁移">
+<meta property="og:url" content="http://yoursite.com/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="linux系统迁移买了一条三星的PM9A1 SSD，想要把原本的linux迁移到新的固态上。 系统信息 原本的系统（windows和ubuntu双系统）安装在固态上，包含EFI分区。  系统引导方式：EFI&#x2F;GPT（其它方式有BIOS&#x2F;MBR, BIOS&#x2F;GPT）  BIOS system On a BIOS&#x2F;GPT system there is no MBR and therefore no">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2022-07-22T05:40:52.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:19:21.905Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="系统迁移">
+<meta property="article:tag" content="rsync">
+<meta property="article:tag" content="fstab">
+<meta property="article:tag" content="grub">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>linux系统迁移 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux系统迁移
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-22 13:40:52" itemprop="dateCreated datePublished" datetime="2022-07-22T13:40:52+08:00">2022-07-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:19:21" itemprop="dateModified" datetime="2022-12-05T22:19:21+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="linux系统迁移"><a href="#linux系统迁移" class="headerlink" title="linux系统迁移"></a>linux系统迁移</h2><p>买了一条三星的PM9A1 SSD，想要把原本的linux迁移到新的固态上。</p>
+<h3 id="系统信息"><a href="#系统信息" class="headerlink" title="系统信息"></a>系统信息</h3><ul>
+<li><p>原本的系统（windows和ubuntu双系统）安装在固态上，包含EFI分区。</p>
+</li>
+<li><p>系统引导方式：EFI/GPT（其它方式有BIOS/MBR, BIOS/GPT）</p>
+<blockquote>
+<p>BIOS system</p>
+<p>On a BIOS/GPT system there is no MBR and therefore no place to store the loader. The GPT partition specification allows for an unformatted partition of the BIOS boot partition type (0xEF02). The size of this partition can be as small as 1 mebibyte. The Calamares installer uses a fixed size of 32 mebibyte. On a BIOS/MBR system a part of the bootloader is written to the Master Boot Record for the primary disk.</p>
+</blockquote>
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><h4 id="格式化磁盘"><a href="#格式化磁盘" class="headerlink" title="格式化磁盘"></a>格式化磁盘</h4><p>在固态上创建两个分区</p>
+<ul>
+<li>EFI分区，100MB，格式化为FAT32<ul>
+<li>gparted可以设置分区名称命名为EFI</li>
+<li>设置标志为”boot esp”</li>
+</ul>
+</li>
+<li>系统根目录分区，剩余空间，格式化为ext4</li>
+</ul>
+<h4 id="挂载磁盘"><a href="#挂载磁盘" class="headerlink" title="挂载磁盘"></a>挂载磁盘</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir &#x2F;mnt&#x2F;ubuntu</span><br><span class="line">sudo mount &#x2F;dev&#x2F;nvme0np2 &#x2F;mnt&#x2F;ubuntu</span><br></pre></td></tr></table></figure>
+
+<h4 id="备份-复制文件"><a href="#备份-复制文件" class="headerlink" title="备份/复制文件"></a>备份/复制文件</h4><p>可以将系统根目录（需要排除一些目录）打包压缩成一个备份文件，然后解压到新固态根目录分区中。好处是以后可以再次从备份中恢复。</p>
+<p>也可以直接将系统复制到新的固态上</p>
+<h5 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h5><p>参考<a href="https://rovo98.github.io/posts/3babee60/" target="_blank" rel="noopener">https://rovo98.github.io/posts/3babee60/</a></p>
+<h5 id="rsync"><a href="#rsync" class="headerlink" title="rsync"></a>rsync</h5><p>rsync用于在两台机器间复制文件，会比较源目录和目的目录内的文件，避免复制重复的文件</p>
+<p>不用cp主要是cp排除目录不太方便。并且万一出现问题需要重新复制，需要重新复制覆盖之前复制过的文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rsync -aP --delete --exclude=&#123;<span class="string">"/dev/*"</span>,<span class="string">"/proc/*"</span>,<span class="string">"/sys/*"</span>,<span class="string">"/tmp/*"</span>,<span class="string">"/run/*"</span>,<span class="string">"/mnt/*"</span>,<span class="string">"/media/*"</span>,<span class="string">"/lost+found"</span>,<span class="string">"/swapfile"</span>,<span class="string">"/home/yfy/D/*"</span>,<span class="string">"/home/yfy/Disk/*"</span>&#125; / /mnt/ubuntu/ | tee /tmp/rsync_backup.log</span><br></pre></td></tr></table></figure>
+
+<p>选项说明</p>
+<ul>
+<li>-a：保持文件属性</li>
+<li>-P：显示进度条</li>
+<li>–delete：删除目的目录比源目录多出的文件</li>
+<li>–exclude：排除文件列表。”/dev/*”中的”*“用于在目的目录中保留空的dev目录<ul>
+<li>排除项中间<code>,</code>不能接空格，否则格式错误</li>
+<li>排除项表示匹配模式。<a href="https://unix.stackexchange.com/questions/83394/rsync-exclude-directory-not-working" target="_blank" rel="noopener">rsync exclude directory not working - Unix &amp; Linux Stack Exchange</a><ul>
+<li>根目录是transfer root作为根目录</li>
+<li>不从根目录开始，则会排除所有同名的目录</li>
+</ul>
+</li>
+<li>坑：如果–exclude只用于排除一个项的话，不要用花括号。</li>
+</ul>
+</li>
+<li>有无斜线：src dst/表示将src目录自身复制到dst目录下，src/ dst/则将src目录下内容复制到dst目录下</li>
+<li>建议使用 –dry-run先看看会复制什么</li>
+</ul>
+<p>建议阅读man rsync下面两个部分</p>
+<p>INCLUDE/EXCLUDE PATTERN RULES</p>
+<p>ANCHORING INCLUDE/EXCLUDE PATTERNS</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">ANCHORING INCLUDE&#x2F;EXCLUDE PATTERNS</span><br><span class="line">       As mentioned earlier, global include&#x2F;exclude patterns are anchored at the &quot;root of the transfer&quot; (as opposed to per-directory patterns, which are</span><br><span class="line">       anchored  at  the  merge-file&#39;s  directory).  If you think of the transfer as a subtree of names that are being sent from sender to receiver, the</span><br><span class="line">       transfer-root is where the tree starts to be duplicated in the destination directory.  This root governs where  patterns  that  start  with  a  &#x2F;</span><br><span class="line">       match.</span><br><span class="line"></span><br><span class="line">       Because the matching is relative to the transfer-root, changing the trailing slash on a source path or changing your use of the --relative option</span><br><span class="line">       affects the path you need to use in your matching (in addition to changing how much of the file tree is duplicated on the destination host).  The</span><br><span class="line">       following examples demonstrate this.</span><br><span class="line"></span><br><span class="line">       Let&#39;s  say  that  we want to match two source files, one with an absolute path of &quot;&#x2F;home&#x2F;me&#x2F;foo&#x2F;bar&quot;, and one with a path of &quot;&#x2F;home&#x2F;you&#x2F;bar&#x2F;baz&quot;.</span><br><span class="line">       Here is how the various command choices differ for a 2-source transfer:</span><br><span class="line"></span><br><span class="line">           Example cmd: rsync -a &#x2F;home&#x2F;me &#x2F;home&#x2F;you &#x2F;dest</span><br><span class="line">           +&#x2F;- pattern: &#x2F;me&#x2F;foo&#x2F;bar</span><br><span class="line">           +&#x2F;- pattern: &#x2F;you&#x2F;bar&#x2F;baz</span><br><span class="line">           Target file: &#x2F;dest&#x2F;me&#x2F;foo&#x2F;bar</span><br><span class="line">           Target file: &#x2F;dest&#x2F;you&#x2F;bar&#x2F;baz</span><br><span class="line"></span><br><span class="line">           Example cmd: rsync -a &#x2F;home&#x2F;me&#x2F; &#x2F;home&#x2F;you&#x2F; &#x2F;dest</span><br><span class="line">           +&#x2F;- pattern: &#x2F;foo&#x2F;bar               (note missing &quot;me&quot;)</span><br><span class="line">           +&#x2F;- pattern: &#x2F;bar&#x2F;baz               (note missing &quot;you&quot;)</span><br><span class="line">           Target file: &#x2F;dest&#x2F;foo&#x2F;bar</span><br><span class="line">           Target file: &#x2F;dest&#x2F;bar&#x2F;baz</span><br><span class="line"></span><br><span class="line">           Example cmd: rsync -a --relative &#x2F;home&#x2F;me&#x2F; &#x2F;home&#x2F;you &#x2F;dest</span><br><span class="line">           +&#x2F;- pattern: &#x2F;home&#x2F;me&#x2F;foo&#x2F;bar       (note full path)</span><br><span class="line">           +&#x2F;- pattern: &#x2F;home&#x2F;you&#x2F;bar&#x2F;baz      (ditto)</span><br><span class="line">           Target file: &#x2F;dest&#x2F;home&#x2F;me&#x2F;foo&#x2F;bar</span><br><span class="line">           Target file: &#x2F;dest&#x2F;home&#x2F;you&#x2F;bar&#x2F;baz</span><br><span class="line"></span><br><span class="line">           Example cmd: cd &#x2F;home; rsync -a --relative me&#x2F;foo you&#x2F; &#x2F;dest</span><br><span class="line">           +&#x2F;- pattern: &#x2F;me&#x2F;foo&#x2F;bar      (starts at specified path)</span><br><span class="line">           +&#x2F;- pattern: &#x2F;you&#x2F;bar&#x2F;baz     (ditto)</span><br><span class="line">           Target file: &#x2F;dest&#x2F;me&#x2F;foo&#x2F;bar</span><br><span class="line">           Target file: &#x2F;dest&#x2F;you&#x2F;bar&#x2F;baz</span><br></pre></td></tr></table></figure>
+
+<h4 id="mount-EFI"><a href="#mount-EFI" class="headerlink" title="mount EFI"></a>mount EFI</h4><p>之后需要修改efi分区，先将分区挂载到备份系统对应目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount &#x2F;dev&#x2F;nvme0np1 &#x2F;mnt&#x2F;ubuntu&#x2F;boot&#x2F;efi</span><br></pre></td></tr></table></figure>
+
+<h4 id="chroot"><a href="#chroot" class="headerlink" title="chroot"></a>chroot</h4><p>chroot后新的进程以及子进程都只能访问新的根文件系统内的文件。不知道chroot被发明的原本目的是什么，但是现在我们可以很方便切换到备份的系统中，进行修改。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chroot &#x2F;mnt&#x2F;ubuntu</span><br></pre></td></tr></table></figure>
+
+<h5 id="mount-proc-sys-etc"><a href="#mount-proc-sys-etc" class="headerlink" title="mount proc,sys etc"></a>mount proc,sys etc</h5><p>在chroot的系统中，执行以下命令，否则无法执行程序以及一些操作，更具体的作用还不清楚。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">cd &#x2F;mnt&#x2F;arch # or where you are preparing the chroot dir</span><br><span class="line">mount -t proc &#x2F;proc proc&#x2F;</span><br><span class="line">mount --rbind &#x2F;sys sys&#x2F;</span><br><span class="line">mount --rbind &#x2F;dev dev&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h4 id="修复fstab"><a href="#修复fstab" class="headerlink" title="修复fstab"></a>修复fstab</h4><p>修改fstab文件中根目录和EFI目录挂载点设备的UUID为新固态的UUID</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;fstab</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>通过blkid查看UUID</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">blkid</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="修复grub"><a href="#修复grub" class="headerlink" title="修复grub"></a>修复grub</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo update-grub</span><br></pre></td></tr></table></figure>
+
+<p>如果遇到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EFI variables are not supported on this system.</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>退出chroot</p>
+</li>
+<li><p>load efi filesystem</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">modprobe efivarfs</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入chroot, mount the efi filesystem</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t efivarfs efivarfs &#x2F;sys&#x2F;firmware&#x2F;efi&#x2F;efivars</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls &#x2F;sys&#x2F;firmware&#x2F;efi</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h4><h5 id="启动进入grub命令行"><a href="#启动进入grub命令行" class="headerlink" title="启动进入grub命令行"></a>启动进入grub命令行</h5><p>刚开始重启后，会进入grub&gt;命令行，而非grub菜单。搜索后知道这是grub没有找到grub.cfg文件（但是明明是有的）</p>
+<blockquote>
+<p> When you boot up your system and it stops at the <code>grub&gt;</code> prompt, that is the full GRUB 2 command shell.  That means GRUB 2 started normally and loaded the <code>normal.mod</code> module (and other modules which are located in <code>/boot/grub/[arch]/</code>), but it didn’t find your <code>grub.cfg</code> file. If you see <code>grub rescue&gt;</code> that means it couldn’t find <code>normal.mod</code>, so it probably couldn’t find any of your boot files.</p>
+</blockquote>
+<p>可以手动引导进入系统</p>
+<ol>
+<li><p>找到系统位置。可以通过ls知道有哪些磁盘和分区。然后再通过列出目录内容判断，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls (hdd1,gpt5)&#x2F;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置prefix，root</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set prefix&#x3D;(hd1,gpt5)&#x2F;boot&#x2F;grub</span><br><span class="line">set root&#x3D;(hd1,gpt5)&#x2F;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">normal</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>进入系统后再重新修复grub</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><p>使用tar迁移系统：<a href="https://rovo98.github.io/posts/3babee60/#%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F" target="_blank" rel="noopener">https://rovo98.github.io/posts/3babee60/#%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F</a></p>
+</li>
+<li><p>启动进入grub cmdline：</p>
+<ul>
+<li><a href="https://unix.stackexchange.com/questions/329926/grub-starts-in-command-line-after-reboot" target="_blank" rel="noopener">https://unix.stackexchange.com/questions/329926/grub-starts-in-command-line-after-reboot</a></li>
+<li><a href="https://www.linuxfoundation.org/blog/classic-sysadmin-how-to-rescue-a-non-booting-grub-2-on-linux/" target="_blank" rel="noopener">https://www.linuxfoundation.org/blog/classic-sysadmin-how-to-rescue-a-non-booting-grub-2-on-linux/</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" rel="tag"># 系统迁移</a>
+              <a href="/tags/rsync/" rel="tag"># rsync</a>
+              <a href="/tags/fstab/" rel="tag"># fstab</a>
+              <a href="/tags/grub/" rel="tag"># grub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/19/vnc%E5%92%8Crdp%E8%BF%9C%E7%A8%8B/" rel="prev" title="vnc和rdp远程">
+      <i class="fa fa-chevron-left"></i> vnc和rdp远程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" rel="next" title="gcc mpi源码编译">
+      gcc mpi源码编译 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#linux系统迁移"><span class="nav-number">1.</span> <span class="nav-text">linux系统迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统信息"><span class="nav-number">1.1.</span> <span class="nav-text">系统信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#步骤"><span class="nav-number">1.2.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#格式化磁盘"><span class="nav-number">1.2.1.</span> <span class="nav-text">格式化磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#挂载磁盘"><span class="nav-number">1.2.2.</span> <span class="nav-text">挂载磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#备份-复制文件"><span class="nav-number">1.2.3.</span> <span class="nav-text">备份&#x2F;复制文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tar"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">tar</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rsync"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">rsync</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mount-EFI"><span class="nav-number">1.2.4.</span> <span class="nav-text">mount EFI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#chroot"><span class="nav-number">1.2.5.</span> <span class="nav-text">chroot</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mount-proc-sys-etc"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">mount proc,sys etc</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修复fstab"><span class="nav-number">1.2.6.</span> <span class="nav-text">修复fstab</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修复grub"><span class="nav-number">1.2.7.</span> <span class="nav-text">修复grub</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遇到问题"><span class="nav-number">1.2.8.</span> <span class="nav-text">遇到问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#启动进入grub命令行"><span class="nav-number">1.2.8.1.</span> <span class="nav-text">启动进入grub命令行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">1.3.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

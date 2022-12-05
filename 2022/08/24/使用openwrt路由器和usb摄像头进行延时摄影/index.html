@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作用放在楼顶，拍摄一天24h的户外录像、延时摄影。像超级小桀每天的直播录屏p1那样。  可以远程通过网页实时查看摄像头直播画面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用openwrt路由器和usb摄像头进行延时摄影">
+<meta property="og:url" content="http://yoursite.com/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="作用放在楼顶，拍摄一天24h的户外录像、延时摄影。像超级小桀每天的直播录屏p1那样。  可以远程通过网页实时查看摄像头直播画面">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220814120138521.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE(224).png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220814223205817.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220814192037749.png">
+<meta property="article:published_time" content="2022-08-24T06:13:52.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:17:21.528Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="openwrt">
+<meta property="article:tag" content="usb摄像头">
+<meta property="article:tag" content="延时摄影">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220814120138521.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>使用openwrt路由器和usb摄像头进行延时摄影 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用openwrt路由器和usb摄像头进行延时摄影
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-24 14:13:52" itemprop="dateCreated datePublished" datetime="2022-08-24T14:13:52+08:00">2022-08-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:17:21" itemprop="dateModified" datetime="2022-12-05T22:17:21+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>放在楼顶，拍摄一天24h的户外录像、延时摄影。像超级小桀每天的直播录屏p1那样。</p>
+<ul>
+<li>可以远程通过网页实时查看摄像头直播画面</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>树莓派+usb摄像头手动DIY？<ul>
+<li>能否旧手机改造（摄像头画质秒杀）</li>
+<li>能否使用路由器替代树莓派（有一个闲置的小米路由器3G，带USB 3.0口）<ul>
+<li><a href="https://www.youtube.com/watch?v=KlfS-oO_2Sw" target="_blank" rel="noopener">USB camera on router with OpenWrt and MJPG-Streamer and shinobi cctv on docker in your home network - YouTube</a></li>
+<li>MIPS mtk7261串流，CPU性能是否足够（MIPS® 1004KEc™ dual-core CPU @880MHz）<ul>
+<li><a href="https://forum.archive.openwrt.org/viewtopic.php?id=60201&p=1#p296414" target="_blank" rel="noopener">OpenWrt Forum Archive</a>：<ul>
+<li>TL-MR3020: MIPS 24kc@400MHz</li>
+<li>720p@30下CPU负载19-32%</li>
+</ul>
+</li>
+<li><a href="https://deviwiki.com/wiki/MIPS32#MIPS32_Classic_Processor_Cores" target="_blank" rel="noopener">MIPS32 - DeviWiki (ex WikiDevi)</a><ul>
+<li>24kc: 3.1coremark/MHz</li>
+<li>1004KEc: 3.05 coremark/MHz</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>好奇淘宝上169的网络监控摄像头产品内部使用的是什么CPU<ul>
+<li>可以手机app远程查看</li>
+<li><strong>有云台</strong>，可以调整视角</li>
+<li>居然还有太阳能供电版本，功耗很低？</li>
+</ul>
+</li>
+<li>超级小桀那样的画面需要多高分辨率（<strong>需要怎样的摄像头</strong>）<ul>
+<li>不知道拍天空户外，普通的监控摄像头画面效果</li>
+<li>是否需要广角摄像头</li>
+</ul>
+</li>
+<li>能否集成温度，湿度监控。或者如何通过网络获取，显示在画面左上角。</li>
+</ul>
+<h3 id="了解"><a href="#了解" class="headerlink" title="了解"></a>了解</h3><ul>
+<li>usb摄像头，很便宜（淘宝20元）<ul>
+<li>需要支持UVC免驱</li>
+</ul>
+</li>
+<li>openwrt使用kmod-video-uvc驱动usb摄像头。串流<ul>
+<li>MJPG-Streamer</li>
+<li>ffmpeg/ffserver</li>
+<li>gstreamer</li>
+</ul>
+</li>
+<li>usb摄像头支持什么格式编码<ul>
+<li>YUY2：没压缩，对上位机性能要求高</li>
+<li>MJPEG 带宽要求高 1080p@30 1680 - 2700 kB/s</li>
+</ul>
+</li>
+<li>webcam含义<ul>
+<li><a href="https://en.wikipedia.org/wiki/Webcam" target="_blank" rel="noopener">Webcam - Wikipedia</a></li>
+<li>早期表示低成本的低端的摄像头，如笔记本前置摄像头。但如今基本都为720p以上了</li>
+<li>90度FOV用于家庭和直播足够。更大的适合中大型会议室</li>
+</ul>
+</li>
+</ul>
+<h3 id="摄像头"><a href="#摄像头" class="headerlink" title="摄像头"></a>摄像头</h3><ul>
+<li><p>笔记本摄像头效果：1280x720 </p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220814120138521.png" alt="image-20220814120138521"></p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE(224).png" alt="屏幕截图(224)"></p>
+</li>
+<li><p>69 1080p摄像头</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220814223205817.png" alt="image-20220814223205817"></p>
+</li>
+<li><p><a href="http://joancharmant.com/blog/review-of-the-elp-usbfhd01m-camera/" target="_blank" rel="noopener">Review of the ELP-USBFHD01M camera (joancharmant.com)</a></p>
+</li>
+<li><p>罗技C920: 400。直播摄像头，1080p，300万</p>
+</li>
+<li><p>罗技C270i: 100。日常视频。720p</p>
+</li>
+<li><p>elgato: <a href="https://www.bilibili.com/video/BV1gY411s7zH" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1gY411s7zH</a></p>
+</li>
+<li><p><a href="https://www.bilibili.com/video/BV1WN4y157hA" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1WN4y157hA</a></p>
+</li>
+</ul>
+<h3 id="基本方案"><a href="#基本方案" class="headerlink" title="基本方案"></a>基本方案</h3><ul>
+<li><p>host：mi r3g</p>
+</li>
+<li><p>usb摄像头：</p>
+</li>
+<li><p>usb摄像头模块</p>
+<ul>
+<li><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220814192037749.png" alt="image-20220814192037749"></li>
+</ul>
+</li>
+</ul>
+<p>软件</p>
+<ul>
+<li>openwrt:<a href="https://openwrt.org/docs/guide-user/hardware/video/usb.video" target="_blank" rel="noopener">[OpenWrt Wiki] USB Video Support</a><ul>
+<li>motion: <a href="https://motion-project.github.io/index.html" target="_blank" rel="noopener">Motion (motion-project.github.io)</a><ul>
+<li>live stream</li>
+<li>timelapse video</li>
+<li>many type device<ul>
+<li>network camera via RTSP, RTMP, HTTP</li>
+<li>V4L2 webcams</li>
+<li>Video capture cards</li>
+<li>Existing movie files</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
+<li>640x480@30 BW=25Mb, CPU 单核&lt;10%，3线程总&lt;20%，待机6%</li>
+<li>1080p @30 BW=53Mb, CPU单核22%, 总 44%，待机20%</li>
+<li><strong>1280x720 @30 BW=36Mb，CPU 30%，待机10%</strong><ul>
+<li>画面还行，比较合适</li>
+</ul>
+</li>
+</ul>
+<h3 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h3><p><a href="https://zhuanlan.zhihu.com/p/37515369" target="_blank" rel="noopener">如何选择安防监控摄像机？ - 知乎 (zhihu.com)</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/openwrt/" rel="tag"># openwrt</a>
+              <a href="/tags/usb%E6%91%84%E5%83%8F%E5%A4%B4/" rel="tag"># usb摄像头</a>
+              <a href="/tags/%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/" rel="tag"># 延时摄影</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/" rel="prev" title="openwrt DNS详解">
+      <i class="fa fa-chevron-left"></i> openwrt DNS详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/" rel="next" title="Openwrt Mesh和快速漫游配置">
+      Openwrt Mesh和快速漫游配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#了解"><span class="nav-number">3.</span> <span class="nav-text">了解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#摄像头"><span class="nav-number">4.</span> <span class="nav-text">摄像头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本方案"><span class="nav-number">5.</span> <span class="nav-text">基本方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">6.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控"><span class="nav-number">7.</span> <span class="nav-text">监控</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

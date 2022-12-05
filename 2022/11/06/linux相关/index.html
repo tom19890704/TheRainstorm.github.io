@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="linux相关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux相关">
+<meta property="og:url" content="http://yoursite.com/2022/11/06/linux%E7%9B%B8%E5%85%B3/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="linux相关">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2022-11-06T10:14:50.000Z">
+<meta property="article:modified_time" content="2022-12-05T13:49:12.951Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="virtualbox">
+<meta property="article:tag" content="tty">
+<meta property="article:tag" content="sed">
+<meta property="article:tag" content="awk">
+<meta property="article:tag" content="wifi">
+<meta property="article:tag" content="fdisk">
+<meta property="article:tag" content="parted">
+<meta property="article:tag" content="mount">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2022/11/06/linux%E7%9B%B8%E5%85%B3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>linux相关 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/06/linux%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux相关
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-06 18:14:50" itemprop="dateCreated datePublished" datetime="2022-11-06T18:14:50+08:00">2022-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 21:49:12" itemprop="dateModified" datetime="2022-12-05T21:49:12+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/11/06/linux%E7%9B%B8%E5%85%B3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/06/linux%E7%9B%B8%E5%85%B3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>linux相关</p>
+<a id="more"></a>
+
+<h1 id="linux科普"><a href="#linux科普" class="headerlink" title="linux科普"></a>linux科普</h1><h2 id="tty-pts"><a href="#tty-pts" class="headerlink" title="tty, pts"></a>tty, pts</h2><ul>
+<li>tty表示终端(terminal or console)的统称。tty(tele typerwriter)电传打字机为早期电脑的输入输出设备，后面被显示器和键盘取代。<ul>
+<li>ctrl alt + F1-F6对应6个终端</li>
+<li>ctrl alt + F7对应图形化界面</li>
+</ul>
+</li>
+<li>pts(pseudo terminal slave)表示伪终端。是一个程序（终端仿真器teminal emulators）<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">who <span class="comment">#查看当前所有登录用户及终端</span></span><br><span class="line">➜  ~ who</span><br><span class="line">yfy      :1           2022-10-24 14:26 (:1)</span><br><span class="line">yfy      pts/1        2022-10-16 15:36 (tmux(1158265).%0)</span><br><span class="line">yfy      pts/2        2022-10-24 14:43 (192.168.1.180)</span><br><span class="line">yfy      pts/3        2022-10-23 18:57 (tmux(1158265).%5)</span><br><span class="line">yfy      pts/4        2022-10-16 15:37 (tmux(1158265).%2)</span><br><span class="line">yfy      pts/6        2022-10-16 15:38 (tmux(1158265).%3)</span><br><span class="line">yfy      pts/7        2022-10-16 15:38 (tmux(1158265).%4)</span><br><span class="line">yfy      pts/12       2022-10-24 00:36 (tmux(1158265).%0)</span><br><span class="line">who -m <span class="comment">#产看当前用户</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"hello"</span> &gt; /dev/pty/x   <span class="comment">#直接给对应终端发送消息</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h1><p>linux命令option通用格式</p>
+<ul>
+<li>POSIX-styled的option由一个dash和一个字符组成</li>
+<li>GNU-style的long option由两个dash和一个关键字(keyword)组成<ul>
+<li>关键字能被缩写，只要足够区分不同关键字</li>
+<li>如果关键字需要一个参数(argument)，可以在关键字后紧跟一个等号=，然后紧跟着关键字的值。或者将关键字和值用空白字符(whitespace)分隔开。</li>
+<li>如果关键字被多次赋值，则以最后一次的为准</li>
+</ul>
+</li>
+</ul>
+<h2 id="cp注意"><a href="#cp注意" class="headerlink" title="cp注意"></a>cp注意</h2><ul>
+<li>cp file1 file2 … dir</li>
+<li>cp -r dir1 dir2<ul>
+<li>如果dir2存在，则将dir1复制到dir2内，即dir2/dir1</li>
+<li>如果dir2不存在，则将dir1复制为dir2</li>
+</ul>
+</li>
+<li>cp dir1/* dir2<ul>
+<li>将dir1下所有文件复制到dir2内，如果dir1存在目录，则应添加-r选项</li>
+</ul>
+</li>
+</ul>
+<h2 id="sed-awk-grep"><a href="#sed-awk-grep" class="headerlink" title="sed, awk, grep"></a>sed, awk, grep</h2><p>这些命令要深入研究的话，内容都很多。比如awk可以算是一种用于处理文本的解释型编程语言。因此，比较好的方法是从需求出发，看看在linux下一般有哪些文字处理的需求，再看使用哪种工具比较方便简单。</p>
+<h4 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">grep [option] pattern file</span><br><span class="line"></span><br><span class="line">sed [options] &#39;command&#39; file(s)</span><br><span class="line">sed [options] -f scriptfile file(s)</span><br><span class="line"></span><br><span class="line">awk [options] &#39;pattern &#123;action&#125;&#39; [file]</span><br></pre></td></tr></table></figure>
+
+<h4 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h4><blockquote>
+<p> 基本正则表达式（Basic Regular Expressions）和扩展正则表达式（Extended Regular Expressions）是两种 POSIX 正则表达式风格。</p>
+<p>BRE 可能是如今最老的正则风格了，对于部分特殊字符（如 <code>+</code>, <code>?</code>, <code>|</code>, <code>{</code>）需要加上转义符 <code>\</code> 才能表达其特殊含义。</p>
+<p>ERE 与如今的现代正则风格较为一致，相比 BRE，上述特殊字符默认发挥特殊作用，加上 <code>\</code> 之后表达普通含义。</p>
+</blockquote>
+<h4 id="常见需求"><a href="#常见需求" class="headerlink" title="常见需求"></a>常见需求</h4><ul>
+<li><p>修改文件中某部分内容。一般可以使用正则表达式，匹配到对应位置，然后进行修改。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//将文件中所有的key=xxx，修改为key=<span class="variable">$&#123;val&#125;</span></span><br><span class="line">//-i表示在原文件上修改，去掉后会将结果输出到命令行</span><br><span class="line">sed -i <span class="string">'s/key=[0-9]+/'</span><span class="string">"key=<span class="variable">$&#123;val&#125;</span>/g"</span></span><br></pre></td></tr></table></figure>
+
+<p>sed其它命令:</p>
+<ul>
+<li>s 替换</li>
+<li>d 删除</li>
+<li>c 选定行改成新文本</li>
+<li>a 当前行下插入文本</li>
+<li>i 当前行上插入文本<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//找到某一行，然后整行替换</span><br><span class="line">sed -i <span class="string">"/config_pio_local_num_iotasks/ c\config_pio_local_num_iotasks = 3"</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><h2 id="连接wifi"><a href="#连接wifi" class="headerlink" title="连接wifi"></a>连接wifi</h2><h2 id="wifi"><a href="#wifi" class="headerlink" title="wifi"></a>wifi</h2><p>tag: linux 命令行 wifi<br>linux命令行设置wifi</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">iwlist wlan0 scan |grep ESSID    # 列出wifi</span><br><span class="line"></span><br><span class="line"># netplan yaml</span><br><span class="line">network:</span><br><span class="line">  version: 2</span><br><span class="line">  renderer: networkd</span><br><span class="line">  wifis:</span><br><span class="line">      wlan0:</span><br><span class="line">        dhcp4: true</span><br><span class="line">        dhcp6: true</span><br><span class="line">        access-points:</span><br><span class="line">          &quot;ustcnet&quot;: &#123;&#125;   # 没有密码</span><br><span class="line">          &quot;ssid2&quot;:</span><br><span class="line">            password: &quot;aaa&quot;</span><br></pre></td></tr></table></figure>
+
+<p>通过iwconfig查看是否连接成功，穿线ESSID则为成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ iwconfig wlan0</span><br><span class="line">wlan0     IEEE 802.11  ESSID:&quot;P2W_5G&quot;</span><br><span class="line">          Mode:Managed  Frequency:5.745 GHz  Access Point: 1C:40:E8:11:89:CF</span><br><span class="line">          Bit Rate&#x3D;234 Mb&#x2F;s   Tx-Power&#x3D;22 dBm</span><br><span class="line">          Retry short limit:7   RTS thr:off   Fragment thr:off</span><br><span class="line">          Power Management:on</span><br><span class="line">          Link Quality&#x3D;70&#x2F;70  Signal level&#x3D;-35 dBm</span><br><span class="line">          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0</span><br><span class="line">          Tx excessive retries:0  Invalid misc:7   Missed beacon:0</span><br></pre></td></tr></table></figure>
+
+<h2 id="sudoer设置"><a href="#sudoer设置" class="headerlink" title="sudoer设置"></a>sudoer设置</h2><h3 id="添加"><a href="#添加" class="headerlink" title="添加"></a>添加</h3><p>添加到admin或sudo用户组即可</p>
+<h3 id="免密码"><a href="#免密码" class="headerlink" title="免密码"></a>免密码</h3><p><code>/etc/sudoers</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yfy ALL&#x3D;(ALL) NOPASSWD: NOPASSWD: ALL</span><br></pre></td></tr></table></figure>
+
+<h2 id="linux-sshd设置"><a href="#linux-sshd设置" class="headerlink" title="linux sshd设置"></a>linux sshd设置</h2><h3 id="允许ssh登录root"><a href="#允许ssh登录root" class="headerlink" title="允许ssh登录root"></a>允许ssh登录root</h3><p>先改为yes，然后ssh-copy-id后，改为禁用密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PermitRootLogin prohibit-password</span><br><span class="line">#PermitRootLogin yes</span><br></pre></td></tr></table></figure>
+
+<h3 id="禁用密码登录"><a href="#禁用密码登录" class="headerlink" title="禁用密码登录"></a>禁用密码登录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PasswordAuthentication no</span><br></pre></td></tr></table></figure>
+
+<h2 id="linux分区"><a href="#linux分区" class="headerlink" title="linux分区"></a>linux分区</h2><h3 id="使用fdisk给磁盘分区并挂载"><a href="#使用fdisk给磁盘分区并挂载" class="headerlink" title="使用fdisk给磁盘分区并挂载"></a>使用fdisk给磁盘分区并挂载</h3><p>列出磁盘信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l [device]</span><br></pre></td></tr></table></figure>
+
+<p>进入交互模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk [device]</span><br><span class="line"></span><br><span class="line">m	#帮助</span><br><span class="line">p	#打印当前分区表</span><br><span class="line">g	#创建gpt分区表</span><br><span class="line">n	#创建分区</span><br></pre></td></tr></table></figure>
+
+<p>fdisk创建分区后</p>
+<ul>
+<li>通过<code>mkfs.ext4 /dev/sdb1</code>创建文件ext4系统（<em>p.s. 注意：不要使用sdb，而是sdb1指定分区</em>）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.bfs     mkfs.cramfs  mkfs.ext2    mkfs.ext3    mkfs.ext4    mkfs.fat     mkfs.minix   mkfs.msdos   mkfs.ntfs    mkfs.vfat</span><br></pre></td></tr></table></figure></li>
+<li>通过<code>lsblk -f</code>显示UUID<ul>
+<li><code>-f</code>表示打印文件系统</li>
+</ul>
+</li>
+<li>在<code>/etc/fstab</code>中添加挂载条目，然后<code>mount -a</code>表示挂载fstab中的所有条目<br>示例<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UUID&#x3D;b7ee63d0-6cea-4615-b7ec-63449c8fa566 &#x2F;mnt&#x2F;Disk1    ext4    defaults 0 0</span><br></pre></td></tr></table></figure></li>
+<li>修改挂载点目录权限，默认只有root用户可以访问</li>
+</ul>
+<h3 id="parted"><a href="#parted" class="headerlink" title="parted"></a>parted</h3><h4 id="fdisk-vs-parted"><a href="#fdisk-vs-parted" class="headerlink" title="fdisk vs parted"></a>fdisk vs parted</h4><p>推荐使用fdisk，因为fdisk在执行w前都不会真正修改，可以撤销修改，这点非常有用。</p>
+<ul>
+<li>相比于fdisk, gdisk，parted更新。<ul>
+<li>原本fdisk只支持msdos分区表格式，现在也支持GPT分区表</li>
+</ul>
+</li>
+<li>文件系统<ul>
+<li><strong>fdisk只负责分区（创建分区表，分区），之后需要mkfs.ext4等工具创建文件系统。</strong></li>
+<li>parted分区时会选择文件系统。</li>
+</ul>
+</li>
+<li>UUID：parted不知为何创建后分区没有UUID。</li>
+<li>写入<ul>
+<li><strong>fdisk执行后需要执行w才会真正进行修改</strong></li>
+<li>parted创建分区时直接修改</li>
+</ul>
+</li>
+<li>显示单位<ul>
+<li>fdisk默认单位为扇区，<strong>分区时会自动提示起始结束位置</strong>。</li>
+<li>parted默认单位为MB，可以通过unit s设置为扇区</li>
+</ul>
+</li>
+<li>组合使用：fdisk创建分区，parted修改分区名，标记</li>
+</ul>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install parted</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>gparted是另一个图形界面软件</li>
+</ul>
+<p>简单使用：列出磁盘信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo parted -l</span><br></pre></td></tr></table></figure>
+
+<h4 id="交互模式"><a href="#交互模式" class="headerlink" title="交互模式"></a>交互模式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo parted [device]	#默认使用第一个主分区</span><br></pre></td></tr></table></figure>
+
+<p>#打印所有设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(parted) p devices</span><br><span class="line">&#x2F;dev&#x2F;sda (2000GB)</span><br><span class="line">&#x2F;dev&#x2F;nvme0n1 (500GB)</span><br></pre></td></tr></table></figure>
+
+<p>#选择设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(parted) select &#x2F;dev&#x2F;sda</span><br><span class="line">使用 &#x2F;dev&#x2F;sda</span><br></pre></td></tr></table></figure>
+
+<p>#创建分区表，当创建了一个新的分区表时，所有分区都会被删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mklabel gpt</span><br><span class="line">#mklabel msdos</span><br></pre></td></tr></table></figure>
+
+<p>#设置显示单位，并打印设备分区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">(parted) unit s</span><br><span class="line">(parted) p free</span><br><span class="line">型号：ATA WDC WD20EJRX-89A (scsi)</span><br><span class="line">磁盘 &#x2F;dev&#x2F;sda: 3907029168s</span><br><span class="line">扇区大小 (逻辑&#x2F;物理)：512B&#x2F;4096B</span><br><span class="line">分区表：gpt</span><br><span class="line">磁盘标志：</span><br><span class="line"></span><br><span class="line">编号  起始点       结束点       大小         文件系统  名称                          标志</span><br><span class="line"> 1    34s          32767s       32734s                 Microsoft reserved partition  msftres</span><br><span class="line"> 2    32768s       2858450943s  2858418176s  ntfs      Basic data partition          msftdata</span><br><span class="line">      2858450944s  3907029134s  1048578191s  可用空间</span><br></pre></td></tr></table></figure>
+
+<p>#创建分区（<strong>立即生效</strong>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">(parted) mkpart</span><br><span class="line">分区名称？  []? Vault</span><br><span class="line">文件系统类型？  [ext2]? ext4</span><br><span class="line">起始点？ 2858450944s</span><br><span class="line">结束点？ 3907029134s</span><br><span class="line">(parted) p</span><br><span class="line">型号：ATA WDC WD20EJRX-89A (scsi)</span><br><span class="line">磁盘 &#x2F;dev&#x2F;sda: 3907029168s</span><br><span class="line">扇区大小 (逻辑&#x2F;物理)：512B&#x2F;4096B</span><br><span class="line">分区表：gpt</span><br><span class="line">磁盘标志：</span><br><span class="line"></span><br><span class="line">编号  起始点       结束点       大小         文件系统  名称                          标志</span><br><span class="line"> 1    34s          32767s       32734s                 Microsoft reserved partition  msftres</span><br><span class="line"> 2    32768s       2858450943s  2858418176s  ntfs      Basic data partition          msftdata</span><br><span class="line"> 3    2858450944s  3907029134s  1048578191s  ext4      Vault</span><br></pre></td></tr></table></figure>
+
+<p>#删除分区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm NUMBER                                删除编号为 NUMBER 的分区</span><br></pre></td></tr></table></figure>
+
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><h4 id="扩展分区"><a href="#扩展分区" class="headerlink" title="扩展分区"></a>扩展分区</h4><p><del>貌似就是fdisk先删除，再创建，保证起始位置一样。</del></p>
+<p>尝试发现并不行，fdisk时确实会提示已经有ext4信息了，fdisk后也不用重新创建文件系统，但是mount时会报错。重新创建文件系统后文件便没了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  &#x2F;mnt sudo mount -a</span><br><span class="line">mount: &#x2F;mnt&#x2F;Disk2: wrong fs type, bad option, bad superblock on &#x2F;dev&#x2F;sdb1, missing codepage or helper program, or other error.</span><br></pre></td></tr></table></figure>
+
+<h4 id="Virtualbox将fix磁盘转换成动态磁盘"><a href="#Virtualbox将fix磁盘转换成动态磁盘" class="headerlink" title="Virtualbox将fix磁盘转换成动态磁盘"></a>Virtualbox将fix磁盘转换成动态磁盘</h4><ul>
+<li><p>Virtualbox命令行支持转换</p>
+</li>
+<li><p>转换后，更改磁盘大小后，发现未分配空间在磁盘中间。原因是，分区表是dos格式，产生了扩展分区。直接使用gparted扩展即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">编号  起始点  结束点  大小    类型      文件系统  标志</span><br><span class="line"> 1    1049kB  538MB   537MB   primary   fat32     启动</span><br><span class="line"> 2    539MB   53.7GB  53.1GB  extended</span><br><span class="line"> 5    539MB   53.7GB  53.1GB  logical   ext4</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="mount"><a href="#mount" class="headerlink" title="mount"></a>mount</h3><p><a href="https://help.ubuntu.com/community/Fstab" target="_blank" rel="noopener">Fstab - Community Help Wiki (ubuntu.com)</a></p>
+<h4 id="普通用户访问"><a href="#普通用户访问" class="headerlink" title="普通用户访问"></a>普通用户访问</h4><p>mount只能由root用户操作，导致mount的目录所有者为root，普通用户无法访问</p>
+<p>ext4 mount选项中也没有指定uid的方式挂载。<a href="https://man7.org/linux/man-pages/man5/ext4.5.html#Mount_options_for_ext4" target="_blank" rel="noopener">ext4(5) - Linux manual page (man7.org)</a></p>
+<p>解决办法是，mount之后使用chown命令将挂载的目录改为普通用户。由于用户信息是写入文件系统的，所以之后挂载时文件权限仍然是普通用户。</p>
+<h2 id="音乐"><a href="#音乐" class="headerlink" title="音乐"></a>音乐</h2><p><a href="https://www.reddit.com/r/VFIO/comments/q0oq9e/usb_bluetooth_passthrough_kvm/" target="_blank" rel="noopener">USB Bluetooth passthrough KVM : VFIO (reddit.com)</a><br><a href="https://www.tecmint.com/command-line-music-players-for-linux/" target="_blank" rel="noopener">The 5 Best Command Line Music Players for Linux (tecmint.com)</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install cmus</span><br><span class="line">cmus</span><br><span class="line"></span><br><span class="line">5 # 浏览当前文件夹</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/virtualbox/" rel="tag"># virtualbox</a>
+              <a href="/tags/tty/" rel="tag"># tty</a>
+              <a href="/tags/sed/" rel="tag"># sed</a>
+              <a href="/tags/awk/" rel="tag"># awk</a>
+              <a href="/tags/wifi/" rel="tag"># wifi</a>
+              <a href="/tags/fdisk/" rel="tag"># fdisk</a>
+              <a href="/tags/parted/" rel="tag"># parted</a>
+              <a href="/tags/mount/" rel="tag"># mount</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/06/LXC%E4%BD%BF%E7%94%A8/" rel="prev" title="LXC使用">
+      <i class="fa fa-chevron-left"></i> LXC使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/08/VLAN%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BD%91%E5%8F%A3%E8%BD%AF%E8%B7%AF%E7%94%B1/" rel="next" title="VLAN实现单网口软路由">
+      VLAN实现单网口软路由 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux科普"><span class="nav-number">1.</span> <span class="nav-text">linux科普</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tty-pts"><span class="nav-number">1.1.</span> <span class="nav-text">tty, pts</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本命令"><span class="nav-number">2.</span> <span class="nav-text">基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cp注意"><span class="nav-number">2.1.</span> <span class="nav-text">cp注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed-awk-grep"><span class="nav-number">2.2.</span> <span class="nav-text">sed, awk, grep</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#命令格式"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">命令格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正则表达式"><span class="nav-number">2.2.0.2.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常见需求"><span class="nav-number">2.2.0.3.</span> <span class="nav-text">常见需求</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作"><span class="nav-number">3.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#连接wifi"><span class="nav-number">3.1.</span> <span class="nav-text">连接wifi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wifi"><span class="nav-number">3.2.</span> <span class="nav-text">wifi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sudoer设置"><span class="nav-number">3.3.</span> <span class="nav-text">sudoer设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加"><span class="nav-number">3.3.1.</span> <span class="nav-text">添加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#免密码"><span class="nav-number">3.3.2.</span> <span class="nav-text">免密码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-sshd设置"><span class="nav-number">3.4.</span> <span class="nav-text">linux sshd设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#允许ssh登录root"><span class="nav-number">3.4.1.</span> <span class="nav-text">允许ssh登录root</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁用密码登录"><span class="nav-number">3.4.2.</span> <span class="nav-text">禁用密码登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux分区"><span class="nav-number">3.5.</span> <span class="nav-text">linux分区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用fdisk给磁盘分区并挂载"><span class="nav-number">3.5.1.</span> <span class="nav-text">使用fdisk给磁盘分区并挂载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parted"><span class="nav-number">3.5.2.</span> <span class="nav-text">parted</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fdisk-vs-parted"><span class="nav-number">3.5.2.1.</span> <span class="nav-text">fdisk vs parted</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">3.5.2.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交互模式"><span class="nav-number">3.5.2.3.</span> <span class="nav-text">交互模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">3.5.3.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展分区"><span class="nav-number">3.5.3.1.</span> <span class="nav-text">扩展分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Virtualbox将fix磁盘转换成动态磁盘"><span class="nav-number">3.5.3.2.</span> <span class="nav-text">Virtualbox将fix磁盘转换成动态磁盘</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mount"><span class="nav-number">3.5.4.</span> <span class="nav-text">mount</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#普通用户访问"><span class="nav-number">3.5.4.1.</span> <span class="nav-text">普通用户访问</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#音乐"><span class="nav-number">3.6.</span> <span class="nav-text">音乐</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

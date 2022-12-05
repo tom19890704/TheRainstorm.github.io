@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一个内核由：负责响应中断的中断服务程序，负责多个程序分享处理器时间的进程调度程序，负责管理进程地址空间的内存管理程序和网络、进程间通信等系统服务程序组成。  应用程序通过系统调用访问内核，内核运行于进程上下文中。（不同进程运行同样的内核代码，上下文不同，因此有不同效果）  对于中断来说，内核运行于中断上下文   单内核和微内核。linux汲取了微内核的优点：linux是模块化的，多线程的以及内核">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux内核!!!">
+<meta property="og:url" content="http://yoursite.com/2021/01/01/linux%E5%86%85%E6%A0%B8!!!/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="一个内核由：负责响应中断的中断服务程序，负责多个程序分享处理器时间的进程调度程序，负责管理进程地址空间的内存管理程序和网络、进程间通信等系统服务程序组成。  应用程序通过系统调用访问内核，内核运行于进程上下文中。（不同进程运行同样的内核代码，上下文不同，因此有不同效果）  对于中断来说，内核运行于中断上下文   单内核和微内核。linux汲取了微内核的优点：linux是模块化的，多线程的以及内核">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2020-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:18:10.100Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="kernel">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/01/01/linux%E5%86%85%E6%A0%B8!!!/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>linux内核!!! | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/01/linux%E5%86%85%E6%A0%B8!!!/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux内核!!!
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2021-01-01T00:00:00+08:00">2021-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:18:10" itemprop="dateModified" datetime="2022-12-05T22:18:10+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">阅读</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/01/01/linux%E5%86%85%E6%A0%B8!!!/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/01/linux%E5%86%85%E6%A0%B8!!!/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><p>一个内核由：负责响应中断的中断服务程序，负责多个程序分享处理器时间的进程调度程序，负责管理进程地址空间的内存管理程序和网络、进程间通信等系统服务程序组成。</p>
+</li>
+<li><p>应用程序通过系统调用访问内核，内核运行于进程上下文中。（不同进程运行同样的内核代码，上下文不同，因此有不同效果）</p>
+<ul>
+<li>对于中断来说，内核运行于中断上下文</li>
+</ul>
+</li>
+<li><p>单内核和微内核。linux汲取了微内核的优点：linux是模块化的，多线程的以及内核本身可调度的。</p>
+</li>
+<li><p>inline函数必须用static修饰，涉及到编译，因为inline的含义有点像宏。而如果不用static修饰，那么其他文件的函数也可以调用它，那么就会导致不得不建立一个符号表项。因此声明为static实现起来更简单。</p>
+</li>
+<li><p>内核使用的C语言用到了ISO99和GUN C扩展特性，其中几个用的比较广的GUN C扩展特性</p>
+<ul>
+<li>内联函数</li>
+<li>内联汇编</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><ul>
+<li><p>每个CPU都有单独的运行队列runqueue，每个runqueue实际包含两个prio_array结构的数据active, expire。active记录时间片还没有运行完的进程，expire则是运行完的。prio_array包含一个bitmap和实际的对应不同优先级的进程链表struct list_head queue（queue[MAX_PRIO]），调度时schedule():/kernel/sched.c更具bitmap找到非空的最高优先级的链表的第一个进程作为全局优先级最高的进程。</p>
+</li>
+<li><p>重新分配时间片，task_timeslice()根据任务的静态优先级（用户指定的nice值）分配时间片。默认nice为0为100ms。</p>
+</li>
+<li><p>降低交互进程响应时间：每个定时器中断会调用scheduler_tick()，该函数减少任务的时间片，如果减为0了，则判断该进程是否为交互性进程，如果不是，则添加到expired队列中，如果是且没有发生expired队列饥饿时，继续添加到active队列</p>
+</li>
+<li><p>schedule选择了下一个进程后，便通过contex_switch完成上下文交换。该函数通过则进一步通过以下两个函数实现</p>
+<ul>
+<li>asm/mmu_contex.h:switch_mm：切换虚拟内存</li>
+<li>asm/system.h:switch_to：实现处理器状态切换</li>
+</ul>
+</li>
+<li><p><strong>什么时候调用sechdule</strong></p>
+<ul>
+<li><p>内核通过need_resched标志来表明是否需要重新执行一次调度。</p>
+<ul>
+<li>当时间片耗尽时scheduler_tick设置</li>
+<li>当更高优先级的进程进入可执行状态时，try_to_wake_up设置</li>
+</ul>
+</li>
+<li><p><strong>用户抢占</strong></p>
+<p>当内核即将返回到用户空间时，如果need_resched被设置，那么就会<strong>调用schedule</strong>，从而发生用户抢占</p>
+</li>
+<li><p>内核抢占</p>
+<p>linux实现了内核抢占。在不支持内核抢占的系统中，内核代码可以一直执行。</p>
+</li>
+<li><p>实时</p>
+<p>linux支持SCHED_FIFO和SCHED_RR两种试试调度策略。FIFO不适用时间片，会比任何SCHED_NORMAL的进程都先得到调度。一旦一个SCHED_FIFO处于执行状态就会一直执行，直到显示释放处理器为止。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h3><ul>
+<li>系统调用应该提供机制(mechanism)（需要提供什么功能）而不是策略(policy)（怎么使用这些功能）（驱动设计也应该这样）</li>
+<li>系统调用内核实现，<strong>需要在函数前添加asmlinkage限定词</strong>，告诉编译器仅从栈中提取该函数的参数。<ul>
+<li>在内陷到内核空间之前，需要将系统调用号和参数都放到寄存器里（多于5个则传递一个用户空间指针），然后触发软中断(int $0x80)，执行128号异常处理程序。该程序对应<strong>系统调用处理程序system_call</strong>，在entry.S中用汇编实现。system_call再将参数（从寄存器中获得）传递给真正的系统调用函数sys_xxx。</li>
+<li>在看过的mips ucore中实现中，system_call不是用汇编实现的，已经是C了。参数之类的都放在中断帧（内核栈中一个数据结构）里（包含各种寄存器）</li>
+<li>x86-64中添加了sysenter的指令</li>
+</ul>
+</li>
+<li>copy_to_user和copy_from_user</li>
+<li>即使添加了自己的系统调用，由于libc库没有进行wrap，因此用户程序需要通过汇编进行系统调用。linux提供了相关宏——<code>_syscalln</code>，简化了该步骤</li>
+</ul>
+<h3 id="中断处理程序"><a href="#中断处理程序" class="headerlink" title="中断处理程序"></a>中断处理程序</h3><ul>
+<li><p>中断上下文：</p>
+<p>当执行系统调用或运行内核线程时，内核处于进程上下文。而当内核执行中断处理程序时，内核处于中断上下文。</p>
+<p>中断栈：曾今，中断处理程序共享被中断进程的内核栈。2.6版本后，中断处理程序有了自己的栈，大小为1个页，即4KB。</p>
+</li>
+<li><p>中断处理程序不再进程上下文中运行，因此不能阻塞</p>
+</li>
+<li><p>过程</p>
+<ul>
+<li><p>注册中断</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">request_irq</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> irq,</span></span></span><br><span class="line">				irqreturn_t (*handler)(int, void *, struct pt_regs *)),</span><br><span class="line">				<span class="keyword">unsigned</span> <span class="keyword">long</span> irqflags,</span><br><span class="line">				<span class="keyword">const</span> <span class="keyword">char</span> *devname,</span><br><span class="line">				<span class="keyword">void</span> *dev_id)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>irq为要分配的中断号，对于传统PC设备，该值通常是预先定义的</p>
+</li>
+<li><p>handler为中断处理程序</p>
+</li>
+<li><p>irqflags</p>
+<ul>
+<li>SA_INTERRUPT：快速中断，在禁止本地CPU上的所有中断情况下运行。</li>
+<li>SA_SHIRQ：共享中断线</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>处理器某管脚接收到设备中断信号，关闭中断系统，跳转到中断程序<strong>入口点</strong>开始执行</p>
+<p>注：x86中，对于每个中断号都会跳转到不同入口点</p>
+</li>
+<li><p>入口点代码将中断号压栈，存放寄存器，然后调用do_IRQ()</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">do_IRQ</span><span class="params">(struct pt_regs regs)</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>do_IRQ判断中断线上是否有注册的中断处理程序，并调用handle_IRQ_event进行处理。</p>
+<p>注1：前面说到，CPU接收到中断后，关闭了中断系统。在这里，如果IRQ类型不是SA_INTERRUPT，则会重新打开中断。</p>
+<p>注2：共享中断线的中断处理程序：依次调用在该中断线上注册的每一个程序。中断处理程序需要判断是否自己注册的设备产生了中断（通过检查硬件状态寄存器）</p>
+</li>
+<li><p>没有或者处理完后，则调用ret_from_intr()进行中断返回。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="下半部"><a href="#下半部" class="headerlink" title="下半部"></a>下半部</h3><ul>
+<li><p>上半部和下半部</p>
+<ul>
+<li><p>一个中断处理程序正在执行时，同一个中断线在所有处理器上都会被频闭掉。</p>
+</li>
+<li><p><strong>因此同一个中断程序不会被嵌套调用</strong>，从而简化了中断处理程序的编写。</p>
+</li>
+<li><p>对于SA_INTERRUPT类型中断，本地处理器的所有中断被禁用</p>
+</li>
+<li><p>缩短中断被屏蔽时间对系统响应时间和性能很重要</p>
+</li>
+</ul>
+</li>
+<li><p>中断处理程序必须尽可能快速的完成，因此整个中断处理流程被分为了上下两部分。应尽可能将任务放到下半部执行，除了以下情况：</p>
+<ul>
+<li>对时间非常敏感</li>
+<li>和硬件相关</li>
+<li>要保证不被其他中断打断</li>
+</ul>
+</li>
+<li><p>内核实现下半部的方式：</p>
+<ul>
+<li>软中断(2.3)</li>
+<li>tasklet(2.3)</li>
+<li>workqueue(2.5)</li>
+</ul>
+</li>
+<li><p>软中断</p>
+<ul>
+<li>一个32个表项数组用于注册软中断。</li>
+<li>do_softirq()</li>
+<li>什么时候触发软中断<ul>
+<li>中断处理程序退出前</li>
+<li>在ksoftirq/n内核线程中</li>
+</ul>
+</li>
+<li>避免加锁来提高性能</li>
+<li><strong>相同类别的软中断可能在不同处理器上同时执行</strong></li>
+</ul>
+</li>
+<li><p>tasklet</p>
+<ul>
+<li><p>基于软中断实现</p>
+</li>
+<li><p>不同类型的tasklet：HI_SOFTIRQ, TASKLET_SOFTIRQ。</p>
+</li>
+<li><p>相同类别的tasklet不能同时执行，不同类型tasklet可以同时执行</p>
+</li>
+<li><p>避免软中断处理函数有触发软中断，导致用户空间进程饥饿。引入ksoftirq，当大量软中断出现时，内核唤醒一组内核线程来处理这些负载，运行在最低优先级（nice值为19），保证最终肯定会被执行。</p>
+</li>
+</ul>
+</li>
+<li><p>workqueue</p>
+<ul>
+<li>可以阻塞</li>
+<li>由内核线程代为执行（一般使用默认的，也可以自己创建），可以调度</li>
+</ul>
+</li>
+</ul>
+<h3 id="内核同步介绍"><a href="#内核同步介绍" class="headerlink" title="内核同步介绍"></a>内核同步介绍</h3><ul>
+<li><p>用户程序并发执行情形</p>
+<ul>
+<li>伪并发：进程被抢占，并重新调度。在被抢占期间，另一个进程可能访问临界区</li>
+<li>多核处理器，进程并行执行（真并发）</li>
+</ul>
+</li>
+<li><p>内核并发执行情形</p>
+<ul>
+<li>内核也支持抢占调度（换句话说，如果内核不支持抢占，那么单核情况，内核正常情况就不会遇到并发问题）</li>
+<li>中断</li>
+<li>SMP</li>
+</ul>
+</li>
+<li><p>在写代码时就需要考虑加锁，而不是写完了之后再加锁</p>
+</li>
+<li><p>中断安全代码</p>
+</li>
+<li><p>SMP安全代码</p>
+</li>
+<li><p>抢占安全代码</p>
+</li>
+<li><p>刚开始锁的粒度都很粗，但是当锁的竞争变得严重时，设计就向更精细的加锁方向进化</p>
+</li>
+</ul>
+<h3 id="内核同步实现"><a href="#内核同步实现" class="headerlink" title="内核同步实现"></a>内核同步实现</h3><ul>
+<li><p>原子操作</p>
+<ul>
+<li>原子操作，比如atomic_inc()需要将内存中一个变量加1。原子操作需要硬件支持</li>
+<li>原子性和顺序性：原子性表示操作是不可分割的，要么执行完要么不执行。而同步性表示多条指令即使执行在多个核上，他们间的顺序也依然要保持。通过屏障(barrier)实现</li>
+</ul>
+</li>
+<li><p>锁</p>
+<ul>
+<li><p>临界区要进行的操作可能非常复杂，因此无法仅使用简单的原子操作。此时便需要引入锁的机制。</p>
+</li>
+<li><p>自旋锁spinlock：</p>
+<ul>
+<li><p>自旋锁最多只能被一个线程持有</p>
+</li>
+<li><p>当一个线程试图获得一个已经被持有的锁时，就会进入循环忙等待，直到锁被释放。</p>
+</li>
+<li><p>适用于小的临界区</p>
+</li>
+<li><p>可以在中断处理程序中使用（不会进入睡眠）</p>
+</li>
+<li><p><strong>中断处理程序获取自旋锁之前，需要禁止本地中断</strong>。否则，其它中断处理程序可能打断当前代码，并试图去获得已经被持有的锁，造成死锁。</p>
+<ul>
+<li><pre><code>spin_lock_irqsave(&amp;mr_lock, flags)
+...//临界区
+spin_unlock_irqrestore(&amp;mr_lock, flags)
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - 读&#x2F;共享&#x2F;S 锁，写&#x2F;排它&#x2F;X 锁</span><br><span class="line"></span><br><span class="line">    当有大量读锁被占有时，可能导致写者饥饿</span><br><span class="line"></span><br><span class="line">- 信号量</span><br><span class="line"></span><br><span class="line">  - 一个任务试图获得一个被占用的信号量时，信号量将其推进一个等待队列，然后让其睡眠。当持有信号量的进程将信号量释放后，将等待队列中的任务唤醒，并获得该信号量</span><br><span class="line">  - 信号量支持多个进程持有同一个信号量，在声明信号量时指定，称为使用者数量。为1时则是二值信号量</span><br><span class="line">  - 信号量支持两个原子操作，P(), V()，来自荷兰语Proberen(探查), Vershogen(增加)。linux中叫做down()和up()。</span><br><span class="line"></span><br><span class="line">- seq锁：读之前保存一个序列值，读操作之后再检查以下序列值是否变化。没变化则说明临界区时没有写操作发生，否则循环重新读取。对写者有利。</span><br><span class="line"></span><br><span class="line">  - &#96;&#96;&#96;c</span><br><span class="line">    write_seqlock(&amp;sl)</span><br><span class="line">    ...</span><br><span class="line">    write_sequnlock(&amp;sl)</span><br><span class="line">    </span><br><span class="line">    do&#123;</span><br><span class="line">    	seq &#x3D; read_seqbegin(&amp;sl)</span><br><span class="line">    	...</span><br><span class="line">    &#125;while(read_seqretry(&amp;sl, seq))</span><br></pre></td></tr></table></figure></code></pre></li>
+</ul>
+</li>
+<li><p>代码位于include/linux/seqlock.h</p>
+</li>
+<li><p>write_seqlock和write_sequnlock都会将sl内部的seq增加1</p>
+</li>
+<li><p>对于写者来说，可以直接进入临界区</p>
+</li>
+<li><p>对于读者来说，如果第一次读取到的seq是奇数，则说明有写者进入了临界区，需要重新读。或者第一次读取到的seq和第二次读取到的不一致，说明。在读者进入临界区后，有写者进入了临界区，也需要重新读。</p>
+</li>
+<li><p>为了防止有多个写者进入临界区，write_seqlock中也使用了自选锁实现。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>代码：</p>
+<ul>
+<li>原子整数操作：arch/*/include/atomic.h</li>
+<li>自旋锁：spinlock.h</li>
+<li>信号量：semaphore.h，rwsem.h</li>
+</ul>
+</li>
+</ul>
+<h3 id="定时器和时间管理"><a href="#定时器和时间管理" class="headerlink" title="定时器和时间管理"></a>定时器和时间管理</h3><ul>
+<li><p>系统定时器：为内核提供一个周期性的时钟中断，节拍可以设置</p>
+<ul>
+<li><strong>节拍</strong>(tick)，节拍率(tick rate)也叫HZ</li>
+<li>节拍率一般为1000（早期为100），不同体系结构也不一样</li>
+<li>节拍率更高可以提高时间驱动事件的解析度resultion（感觉可以理解为粒度），单也会导致时钟中断负载变大。</li>
+<li>不使用周期时钟？有人尝试使用动态编程定时器来驱动一些事件（设定多少时间后触发中断）</li>
+</ul>
+</li>
+<li><p>RTC实时时钟：记录墙上时间，用于系统启动时初始化xtime变量</p>
+<ul>
+<li><p>当前实际时间（墙上时间）存储在xtime变量中，定义于kernel/timer.c。timespec定义在&lt;linux/time.h&gt;中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timespec</span> <span class="title">xtime</span></span></span><br><span class="line"><span class="class"><span class="title">struct</span> <span class="title">timepsec</span>&#123;</span></span><br><span class="line">	<span class="keyword">time_t</span> tv_sec;</span><br><span class="line">	<span class="keyword">long</span> tv_nsec;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>时钟中断处理程序</p>
+<ul>
+<li>分为体系结构相关部分和无关部分(do_timer)两部分</li>
+<li>do_timer需要<ul>
+<li>对jiffies_64加1</li>
+<li>执行到期的动态定时器</li>
+<li>scheduler_tick()</li>
+</ul>
+</li>
+<li>根据中断发生在用户空间还是内核空间，将任务的用户时间和系统时间增加1。然而由于在一个节拍期间可能多次进入和退出内核，因此实际上并不足够精确。</li>
+</ul>
+</li>
+<li><p>通过sys_gettimeofday系统调用获得墙上时间</p>
+</li>
+<li><p>定时器（内核定时器）(kernel/timer.c)</p>
+<ul>
+<li><pre><code class="c"><span class="class"><span class="keyword">struct</span> <span class="title">timer_list</span> <span class="title">my_timer</span>;</span>
+
+init_timer(&amp;my_timer);
+
+my_timer.expires = jiffies + <span class="built_in">delay</span>;
+my_timer.data = <span class="number">0</span>;
+my_timer.function = my_function;
+
+add_timer(&amp;my_timer);
+
+mod_timer(&amp;my_timer, jiffies+new_delay);
+del_timer(&amp;my_timer);
+
+&lt;!--￼<span class="number">4</span>--&gt;
+  <span class="function"><span class="keyword">void</span> <span class="title">run_local_timers</span><span class="params">()</span></span>{
+      raise_softirq(TIMER_SOFTIRQ);
+  }
+  &lt;!--￼<span class="number">5</span>--&gt;
+
+- C编译器通常只会将变量load一次，这样的话上面的代码使用的jiffies就不对（jiffies在后台随时钟中断不断被更新）。因此需要使用<span class="keyword">volatile</span>，**关键字<span class="keyword">volatile</span>指示编译器在每次访问变量时都重新重内存中读取。**</code></pre>
+</li>
+<li><p>短延迟</p>
+<ul>
+<li><p>如果需要延迟的时间短于一个节拍</p>
+</li>
+<li><p>内核中提供延迟微秒和毫秒的函数udelay和mdelay（linux/delay.h）</p>
+</li>
+<li><p>udelay通过<strong>执行数次循环</strong>实现，而不是jiffies</p>
+</li>
+<li><p><strong>BogoMIPS</strong></p>
+<ul>
+<li><p>内核在启动时利用calibrate_delay计算loops_per_jiffy，位于init/main.c</p>
+</li>
+<li><p>BogoMIPS表示处理器执行空循环时，执行指令的速度（相当于CPU频率），单位：百万/s</p>
+<p>因此：BogoMIPS = loops_per_jiffy * HZ / 500000。因为一个loop需要两条指令。</p>
+</li>
+</ul>
+</li>
+<li><p>现在一般使用硬件定时器实现，更加精确。（CPU频率会变化）</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><ul>
+<li><p>struct page: &lt;linux/mm.h&gt;</p>
+<p>内核给每个物理页都分配一个page结构体。虽然看上去很消耗内存，但是实际上不到1/100，并且是值得的。</p>
+</li>
+<li><p>struct zone: &lt;linux/mmzone.h&gt;</p>
+<ul>
+<li>不同体系结构zone的划分不一样</li>
+<li>ZONE_NORMAL</li>
+<li>ZONE_DMA：DMA可以使用的</li>
+<li>ZONE_HIGHMEM：无法永久映射到内核地址空间</li>
+</ul>
+</li>
+<li><p>内核启动时初始化：mm/page_alloc.c</p>
+</li>
+<li><p>请求内存的底层机制，以页为单位请求内存：&lt;linux/gfp.h&gt;</p>
+<p>分配2^order个连续的物理页，并返回第一个页对应page指针</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct page * <span class="title">alloc_pages</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> gfp_mask, <span class="keyword">unsigned</span> <span class="keyword">int</span> order)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>把给定的页转换成逻辑地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">page_address</span><span class="params">(struct page *page)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>直接返回请求的第一个页的逻辑地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> __get_free_pages(<span class="keyword">unsigned</span> <span class="keyword">int</span> gfp_mask, <span class="keyword">unsigned</span> <span class="keyword">int</span> order)</span><br></pre></td></tr></table></figure>
+
+<p>获得一个页</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct page*<span class="title">alloc_page</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> gfp_mask)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>释放</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> __free_pages(struct page *page, <span class="keyword">unsigned</span> <span class="keyword">int</span> order)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free_pages</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> addr, <span class="keyword">unsigned</span> <span class="keyword">int</span> order)</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free_page</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> addr)</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>kmalloc：&lt;linux/slab.h&gt;</p>
+<ul>
+<li><pre><code class="c"><span class="function"><span class="keyword">void</span> *<span class="title">kmallock</span><span class="params">(<span class="keyword">size_t</span> <span class="built_in">size</span>, <span class="keyword">int</span> flags)</span></span>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - 获得以字节为单位的一块**连续的**内核内存</span><br><span class="line"></span><br><span class="line">  - flag</span><br><span class="line"></span><br><span class="line">    - 行为修饰符：如不能睡眠</span><br><span class="line">    - 区修饰符</span><br><span class="line"></span><br><span class="line">  - kfree：释放不是kmalloc分配的或则已经被释放的内存可能导致严重的后果</span><br><span class="line"></span><br><span class="line">- vmalloc</span><br><span class="line"></span><br><span class="line">  - 虚拟地址是连续的，而物理地址无需连续。</span><br><span class="line">  - vmalloc一般在获得大块内存时使用：需要建立页表项，性能低</span><br><span class="line"></span><br><span class="line">- slab分配器</span><br><span class="line"></span><br><span class="line">  - 作用：避免频繁分配和释放页。</span><br><span class="line"></span><br><span class="line">    - slab负责底层的对齐、着色、分配、释放等等</span><br><span class="line">    - **如果需要频繁创建很多相同类型的对象，应该使用slab，而不是自己创建空闲链表。**</span><br><span class="line">  </span><br><span class="line">  - 比较特殊的几点</span><br><span class="line"></span><br><span class="line">    - 让部分缓存专属于单个处理器，那么分配和释放就可以在不加SMP锁的情况下进行</span><br><span class="line">    - 对存放的对象进行着色(colored)，可以防止多个对象映射到相同的cache line</span><br><span class="line">  </span><br><span class="line">  - 原理：</span><br><span class="line">  </span><br><span class="line">    - 频繁使用的数据结构会被频繁分配和释放，因此需要缓存它们。</span><br><span class="line">    - 使用不同的cache来缓存不同的对象，如用于存放进程描述符，索引节点的对象</span><br><span class="line">    - cache由若干个slab组成，一个slab包含若干个连续的物理页</span><br><span class="line">    - slab可能为处于：满，部分满，空三种状态之一。优先在部分满的slab中分配对象。</span><br><span class="line">  </span><br><span class="line">  - 接口</span><br><span class="line">  </span><br><span class="line">    - 创建一个cache</span><br><span class="line">      &#96;&#96;&#96;c</span><br><span class="line">      kmem_cache_t *kmem_cache_create(const char *name, size_t size,</span><br><span class="line">                                      size_t align, unsigned long flags,</span><br><span class="line">                                      void (*ctor)(void *, kmem_cache_t *, unsigned long),</span><br><span class="line">                                      void (*ctor)(void *, kmem_cache_t *, unsigned long))</span><br></pre></td></tr></table></figure>
+
+  - <span class="built_in">size</span>为对象的大小
+
+  - align为第一个对象的偏移，通常为<span class="number">0</span>
+
+  - flags
+
+    - SLAB_HWCACHE_ALGIN：命令slab层把每一个对象按cache <span class="built_in">line</span>对齐，防止两个对象地址不同但映射到相同的cache <span class="built_in">line</span>
+
+      注：不太明白，cache <span class="built_in">line</span>大小对齐不仍然会映射冲突吗？
+
+    - SLAB_POISON：使用已知的值填充slab
+
+    - SLAB_PANIC：分配失败时体形slab层。在要求分配必须成功时有用，比如系统启动时分配VMA结构的cache。
+
+- 创建cache后，获得一个对象
+
+  &lt;!--￼<span class="number">12</span>--&gt;
+
+  如果cache中所有slab都没有空闲的对象，则通过kmem_getpages获取新的页。
+
+  &lt;!--￼<span class="number">13</span>--&gt;</code></pre>
+</li>
+<li><p>内核栈</p>
+<ul>
+<li>不像用户进程，栈的大小可以动态增长，内核栈的大小是固定的。</li>
+<li>每个进程都有一个内核栈（内核运行在进程上下文），内核栈的大小一般是两个页。（可以编译时配置为1个页）</li>
+<li>在过去，中断处理程序和被中断进程共享内核栈，之后引入了中断栈，每个进程有一个中断栈</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h3><ul>
+<li><p>复习</p>
+<ul>
+<li>磁盘结构<ul>
+<li>CHS geometry</li>
+<li>Logic Block Address</li>
+</ul>
+</li>
+<li>分区格式：MBR, GPT<ul>
+<li>MBR分区格式在fdisk, parted等工具中一般标记为dos格式</li>
+<li>MBR(Master boot record)位于第一个扇区，因此分区表不能太大，最多支持4个primary分区，如果需要多于4个分区，则需要使用extend分区+logic分区的方式。</li>
+<li>MBR也限制了最大只能支持2TB的磁盘</li>
+</ul>
+</li>
+<li>文件系统</li>
+</ul>
+</li>
+<li><p>VFS作用：提供统一接口，支持不同文件系统</p>
+</li>
+<li><p><strong>Unix文件系统采用了面向对象设计风格，使用了4中不同数据结构：超级块、索引节点、目录项、文件对象</strong>，每种数据结构都包含对其进行操作的函数</p>
+<ul>
+<li>其中超级块、索引节点在Unix风格的文件系统中有对应的磁盘数据结构</li>
+<li>如果要支持非Unix风格的文件系统，则仍然需要在内存中构造响应数据结构</li>
+<li>内存中的数据结构相比磁盘中的会多一些控制信息</li>
+</ul>
+</li>
+<li><p>超级块：包含文件系统的控制信息。也叫文件系统控制块。</p>
+<ul>
+<li>当一个<strong>文件系统</strong>被挂载到一个<strong>目录</strong>时，内核通过alloc_super创建超级块，并填充相关数据（从磁盘读取）</li>
+</ul>
+</li>
+<li><p>索引节点inode</p>
+<ul>
+<li><p>索引节点存储文件的元数据（如控制权限，大小，拥有者，创建时间）</p>
+<ul>
+<li>Unix将文件信息和文件本身分别存储</li>
+</ul>
+</li>
+<li><p>Unix风格的文件系统中，索引节点存储在磁盘单独的块中</p>
+<ul>
+<li>没有索引节点的文件系统通常将信息作为文件的一部分存储起来</li>
+</ul>
+</li>
+<li><p>目录被当作一种特殊的文件，可以像文件一样进行操作</p>
+</li>
+<li><p>查找文件</p>
+<blockquote>
+<p>It starts at the beginning of the path name and looks up the inode of the first directory in the path. Then it uses that inode to look up the next directory in the path. When it reachs the end, it has found the inode of the file or directory it is trying to look up. But since it needs an <code>inode</code> to get started, how <strong>does</strong> it get started with the first lookup? There is an inode pointer kept in the superblock called <code>s_mounted</code> which points at an inode structure for the filesystem. T</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>目录项dentry</p>
+<ul>
+<li>指向一个inode</li>
+</ul>
+</li>
+<li><p>目录项缓存dcache</p>
+<ul>
+<li>用于快速路径解析</li>
+</ul>
+</li>
+<li><p>文件对象</p>
+<ul>
+<li>进程打开一个文件时创建，包含文件当前位置、访问模式等信息。</li>
+<li>现在还不清楚，文件对象是不是每个进程私有的。</li>
+<li><strong>实现文件共享</strong>：不同进程的文件对象可以指向相同的dentry和inode</li>
+</ul>
+</li>
+</ul>
+<h3 id="块I-O层"><a href="#块I-O层" class="headerlink" title="块I/O层"></a>块I/O层</h3><ul>
+<li>字符设备太简单，因此没有子系统。而块设备有</li>
+<li>扇区是块设备的最小寻址单元，通常为512字节。<ul>
+<li>可以叫做：设备块</li>
+</ul>
+</li>
+<li>块是文件系统的最小寻址单元，通常为512B, 1KB或4KB。<ul>
+<li>可以叫做：文件块，I/O块</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程地址空间"><a href="#进程地址空间" class="headerlink" title="进程地址空间"></a>进程地址空间</h3><p>Linux内核完全注释-0.12-v5.0-赵炯</p>
+<ul>
+<li>汇编中任何一个地址引用都可表示为该文件中{区地址 + 偏移}或者绝对地址。前一种有利于链接时的重定位</li>
+<li><blockquote>
+<p>程序员使用符号来命名对象，链接器使用符号进行链接操作，而调试器利用符号进行调试</p>
+</blockquote>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kernel/" rel="tag"># kernel</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/11/%E5%AE%89%E8%A3%85linux%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE/" rel="prev" title="安装linux后的配置">
+      <i class="fa fa-chevron-left"></i> 安装linux后的配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/08/%E6%9B%B4%E6%96%B0%E5%9B%BA%E6%80%81%E4%B9%8B%E6%97%85/" rel="next" title="更新固态之旅">
+      更新固态之旅 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程调度"><span class="nav-number">1.</span> <span class="nav-text">进程调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统调用"><span class="nav-number">2.</span> <span class="nav-text">系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断处理程序"><span class="nav-number">3.</span> <span class="nav-text">中断处理程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下半部"><span class="nav-number">4.</span> <span class="nav-text">下半部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核同步介绍"><span class="nav-number">5.</span> <span class="nav-text">内核同步介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核同步实现"><span class="nav-number">6.</span> <span class="nav-text">内核同步实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定时器和时间管理"><span class="nav-number">7.</span> <span class="nav-text">定时器和时间管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理"><span class="nav-number">8.</span> <span class="nav-text">内存管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟文件系统"><span class="nav-number">9.</span> <span class="nav-text">虚拟文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#块I-O层"><span class="nav-number">10.</span> <span class="nav-text">块I&#x2F;O层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程地址空间"><span class="nav-number">11.</span> <span class="nav-text">进程地址空间</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

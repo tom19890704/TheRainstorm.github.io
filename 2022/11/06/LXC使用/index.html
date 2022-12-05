@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="说明lxc vs dockerLXC是一种轻量虚拟机，复用host内核。与docker尽可能每个容器只跑一个应用不同，lxc的思路更接近虚拟机。  The key networking difference between Docker and LXC is that with LXC one can attach a container to any bridge on the Host. Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LXC使用">
+<meta property="og:url" content="http://yoursite.com/2022/11/06/LXC%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="说明lxc vs dockerLXC是一种轻量虚拟机，复用host内核。与docker尽可能每个容器只跑一个应用不同，lxc的思路更接近虚拟机。  The key networking difference between Docker and LXC is that with LXC one can attach a container to any bridge on the Host. Th">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221102112404544.png">
+<meta property="og:image" content="https://www.cyberciti.biz/media/new/faq/2020/04/Set-up-and-configure-LXD-networking-and-storage-options.png">
+<meta property="article:published_time" content="2022-11-06T08:28:50.000Z">
+<meta property="article:modified_time" content="2022-12-05T13:37:47.305Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="lxc">
+<meta property="article:tag" content="lxd">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221102112404544.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/11/06/LXC%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>LXC使用 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/06/LXC%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LXC使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-06 16:28:50" itemprop="dateCreated datePublished" datetime="2022-11-06T16:28:50+08:00">2022-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 21:37:47" itemprop="dateModified" datetime="2022-12-05T21:37:47+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/11/06/LXC%E4%BD%BF%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/06/LXC%E4%BD%BF%E7%94%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><h3 id="lxc-vs-docker"><a href="#lxc-vs-docker" class="headerlink" title="lxc vs docker"></a>lxc vs docker</h3><p>LXC是一种轻量虚拟机，复用host内核。与docker尽可能每个容器只跑一个应用不同，lxc的思路更接近虚拟机。<br><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20221102112404544.png" alt="image-20221102112404544"></p>
+<blockquote>
+<p>The key networking difference between Docker and LXC is that with LXC one can attach a <em>container</em> to any bridge on the Host. This includes a bridge on the outside interface. Via <strong>transparent bridging</strong> the <em>container</em> can have unfettered access to the existing IPv6 subnet, including picking up Global Unique Addresses (GUAs) without the host having to do router-like functions, such as adding routes, auto propagation of prefixes (with DHCPv6-PD), redistribution of routes, etc. Again, things which Docker doesn’t support.</p>
+</blockquote>
+<h3 id="lxc-vs-lxd"><a href="#lxc-vs-lxd" class="headerlink" title="lxc vs lxd"></a>lxc vs lxd</h3><p>LXD is actually two parts, the <code>lxd</code> daemon, and the <code>lxc</code> CLI client which makes calls to the <code>lxd</code> daemon</p>
+<a id="more"></a>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>ubuntu安装lxd会使用snap。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install lxd</span><br></pre></td></tr></table></figure>
+<p>要想使用lxd时非管理员，需要将用户添加到lxd组<br><em>p.s 现在安装时已经自动添加到lxd组了</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser &#123;USERNameHere&#125; lxd</span><br></pre></td></tr></table></figure>
+<p>第一次使用lxd，需要进行初始化：<code>sudo lxd init</code>。初始化会设置网络和存储<br><img src="https://www.cyberciti.biz/media/new/faq/2020/04/Set-up-and-configure-LXD-networking-and-storage-options.png" alt="lxd init"><br>可以手动查看初始化结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lxc profile list  </span><br><span class="line">lxc profile show default  </span><br><span class="line">lxc network list</span><br><span class="line">lxc storage list</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h3><p>通过网站查看：<a href="https://images.linuxcontainers.org" target="_blank" rel="noopener">Linux Containers - Image server</a><br>或命令行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lxc image list images: |grep ubuntu #查看官方lxc镜像</span><br></pre></td></tr></table></figure>
+
+<h3 id="容器管理"><a href="#容器管理" class="headerlink" title="容器管理"></a>容器管理</h3><h4 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lxc launch images:&#123;**distro**&#125;&#x2F;&#123;**version**&#125;&#x2F;&#123;**arch**&#125; &#123;**container-name-here**&#125;  #创建容器</span><br><span class="line">lxc launch -p default -p extbridge images:ubuntu&#x2F;jammy ubuntu22</span><br><span class="line">lxc launch -p default -p extbridge images:debian&#x2F;10 debian10</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lxc init local:openwrt-x86 openwrt</span><br><span class="line">lxc config edit openwrt #之后再进行修改，比如修改其中的profile</span><br></pre></td></tr></table></figure>
+
+<h4 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lxc list&#x2F;ls</span><br><span class="line"></span><br><span class="line">lxc start&#x2F;stop&#x2F;restart&#x2F;delete &#123;container-name&#125;</span><br><span class="line"></span><br><span class="line">lxc info &#123;container-name&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="编辑"><a href="#编辑" class="headerlink" title="编辑"></a>编辑</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lxc config edit &lt;instance_name&gt;</span><br><span class="line">lxc config show &lt;instance_name&gt; --expaned</span><br><span class="line"></span><br><span class="line">lxc config device add &lt;instance_name&gt; &lt;device_name&gt; nic nictype&#x3D;&lt;nic_type&gt; ...   #添加一个设备</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lxc exec containerName -- command  </span><br><span class="line">lxc exec containerName -- &#x2F;path&#x2F;to&#x2F;script  </span><br><span class="line">lxc exec containerName --env EDITOR&#x3D;&#x2F;usr&#x2F;bin&#x2F;vim -- command</span><br><span class="line"></span><br><span class="line">lxc exec &#123;container-name&#125; &#123;shell-name&#125;     #获得shell</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件移动"><a href="#文件移动" class="headerlink" title="文件移动"></a>文件移动</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lxc file pull &#123;continer-nane&#125;&#x2F;&#123;path&#x2F;to&#x2F;file&#125; &#123;&#x2F;path&#x2F;to&#x2F;local&#x2F;dest&#125;</span><br><span class="line">lxc file push &#123;&#x2F;path&#x2F;to&#x2F;file&#125; &#123;continer-nane&#125;&#x2F;path&#x2F;to&#x2F;dest&#x2F;dir&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h3 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lxc snapshot debian docker_base_image</span><br><span class="line">lxc publish debian&#x2F;docker_base_image --alias docker_image       # publish image to local:</span><br><span class="line"></span><br><span class="line"># start a lxc&#x2F;docker container called docker1</span><br><span class="line">lxc launch -p default -p extbridge local:docker_image docker1</span><br></pre></td></tr></table></figure>
+
+<h2 id="lxd-dashboard"><a href="#lxd-dashboard" class="headerlink" title="lxd-dashboard"></a>lxd-dashboard</h2><ul>
+<li><a href="https://hub.docker.com/r/lxdware/dashboard" target="_blank" rel="noopener">lxdware/dashboard - Docker Image | Docker Hub</a><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">version: &quot;2.1&quot;</span><br><span class="line">services:</span><br><span class="line">  lxd-dashboard:</span><br><span class="line">    image: lxdware&#x2F;dashboard:latest</span><br><span class="line">    container_name: lxd-dashboard</span><br><span class="line">    environment:</span><br><span class="line">      - PUID&#x3D;1000</span><br><span class="line">      - PGID&#x3D;1000</span><br><span class="line">      - TZ&#x3D;Asia&#x2F;Shanghai</span><br><span class="line">      - ADMIN_PASS&#x3D;lxdware</span><br><span class="line">    volumes:</span><br><span class="line">      - &#x2F;mnt&#x2F;Disk2&#x2F;lxdware:&#x2F;var&#x2F;lxdware</span><br><span class="line">    ports:</span><br><span class="line">      - 9002:80</span><br><span class="line">    restart: unless-stopped</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#lxd开启http API</span><br><span class="line">lxc config set core.https_address [::]</span><br><span class="line"></span><br><span class="line">#从浏览器复制证书到lxc host</span><br><span class="line">lxc config trust add lxdware.crt</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>ubuntu安装LXC教程: <a href="https://www.cyberciti.biz/faq/install-lxd-on-ubuntu-20-04-lts-using-apt/" target="_blank" rel="noopener">How To Install LXD on Ubuntu 20.04 LTS using apt - nixCraft (cyberciti.biz)</a></li>
+<li>在树莓派上使用LXC: <a href="http://www.makikiweb.com/Pi/lxc_on_the_pi.html" target="_blank" rel="noopener">www.makikiweb.com/Pi/lxc_on_the_pi.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/lxc/" rel="tag"># lxc</a>
+              <a href="/tags/lxd/" rel="tag"># lxd</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/31/Wireguard%E7%BB%84%E7%BD%91/" rel="prev" title="Wireguard组网">
+      <i class="fa fa-chevron-left"></i> Wireguard组网
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/06/linux%E7%9B%B8%E5%85%B3/" rel="next" title="linux相关">
+      linux相关 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lxc-vs-docker"><span class="nav-number">1.1.</span> <span class="nav-text">lxc vs docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lxc-vs-lxd"><span class="nav-number">1.2.</span> <span class="nav-text">lxc vs lxd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像"><span class="nav-number">3.1.</span> <span class="nav-text">镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器管理"><span class="nav-number">3.2.</span> <span class="nav-text">容器管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建容器"><span class="nav-number">3.2.1.</span> <span class="nav-text">创建容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#管理"><span class="nav-number">3.2.2.</span> <span class="nav-text">管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编辑"><span class="nav-number">3.2.3.</span> <span class="nav-text">编辑</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行命令"><span class="nav-number">3.3.</span> <span class="nav-text">执行命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件移动"><span class="nav-number">3.4.</span> <span class="nav-text">文件移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快照"><span class="nav-number">3.5.</span> <span class="nav-text">快照</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lxd-dashboard"><span class="nav-number">4.</span> <span class="nav-text">lxd-dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

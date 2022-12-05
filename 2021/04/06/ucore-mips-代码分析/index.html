@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="分析了ucore mips版代码，主要包括Makefile、启动过程、物理内存管理、虚拟内存管理、进程创建（内核和用户）。不过没有分析文件系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ucore-mips 代码分析">
+<meta property="og:url" content="http://yoursite.com/2021/04/06/ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="分析了ucore mips版代码，主要包括Makefile、启动过程、物理内存管理、虚拟内存管理、进程创建（内核和用户）。不过没有分析文件系统">
+<meta property="og:locale" content="zh">
+<meta property="article:published_time" content="2021-04-06T14:51:13.000Z">
+<meta property="article:modified_time" content="2022-12-05T11:51:36.710Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="mips">
+<meta property="article:tag" content="ucore">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/04/06/ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>ucore-mips 代码分析 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/06/ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ucore-mips 代码分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-06 22:51:13" itemprop="dateCreated datePublished" datetime="2021-04-06T22:51:13+08:00">2021-04-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 19:51:36" itemprop="dateModified" datetime="2022-12-05T19:51:36+08:00">2022-12-05</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/04/06/ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/06/ucore-mips-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">分析了ucore mips版代码，主要包括Makefile、启动过程、物理内存管理、虚拟内存管理、进程创建（内核和用户）。不过没有分析文件系统</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[TOC]</p>
+<h3 id="1-Makefile"><a href="#1-Makefile" class="headerlink" title="1. Makefile"></a>1. Makefile</h3><ol>
+<li><code>boot/loader.bin</code>基本就是一个读取elf的函数，我们上板使用pmon加载ucore，因此用不到。</li>
+<li><code>obj/ucore-kernel-initrd</code>是一个elf文件，特殊之处在于，它的data段包含<code>user/_archive</code>目录下的文件（包含一个test.txt）和<code>$(USER_APP_BINS)</code>（如sh, ls等用户程序）的内容。<strong>将内核和文件系统打包到了一起</strong>。</li>
+</ol>
+<h3 id="2-kernel-entry"><a href="#2-kernel-entry" class="headerlink" title="2. kernel_entry"></a>2. kernel_entry</h3><p>kern/init/entry.S</p>
+<ol>
+<li><p>设置了$gp</p>
+<p>定义在链接脚本里，可以通过<code>readelf obj/ucore-kernel-initrd -a|grep _gp</code>来查看其值。参考值（修改了代码编译出的值可能不一样）<code>0x800c7f40</code></p>
+</li>
+<li><p>设置了$sp，启动时用的栈，栈大小为<code>KSTACKSIZE</code>，8KB</p>
+<p>参考值：<code>bootstacktop(0x80068730)</code>，<code>bootstack(0x80066730)</code></p>
+</li>
+<li><p>设置了Ebase为<code>__exception_vector</code>。参考值：<code>0x8002b000</code>。__exception_vector包含了各异常向量地址的入口。</p>
+</li>
+</ol>
+<h3 id="3-kern-init"><a href="#3-kern-init" class="headerlink" title="3. kern_init"></a>3. kern_init</h3><p>kern/int/init.c</p>
+<h4 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a>杂项</h4><h5 id="tlb-invalidate-all"><a href="#tlb-invalidate-all" class="headerlink" title="tlb_invalidate_all"></a>tlb_invalidate_all</h5><p>定义于kern/include/thumips_tlb.h和kern/mm/thumips_tlb.c</p>
+<p>tlb_invalidata_all循环调用write_one_tlb清空tlb表项<br><strong>默认tlb有128项</strong>，虽然不会导致错误，但是可以优化</p>
+<h5 id="pic-init"><a href="#pic-init" class="headerlink" title="pic_init"></a>pic_init</h5><p>定义于kern/driver/picirq.c<br>pic_init -&gt; write_c0_status<br>将Statu中的IM域全置0，关闭所有中断。<br>之后可以通过pic_enable(int irq)或pic_disable(int irq)开关中断</p>
+<h5 id="cons-init-amp-clock-init"><a href="#cons-init-amp-clock-init" class="headerlink" title="cons_init &amp; clock_init"></a>cons_init &amp; clock_init</h5><p>一个初始化串口，一个初始化时钟中断。</p>
+<p>相关宏定义于/kern/include/thumips.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COM1_IRQ        3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIMER0_IRQ       7</span></span><br></pre></td></tr></table></figure>
+
+<p>clock需要用到<code>cp0_count</code>和<code>cp0_compare</code><br>设置clock中断后，每<code>clock.c::TIMER0_INTERVAL</code>=1000000后会产生一个时钟中断</p>
+<h5 id="check-initrd"><a href="#check-initrd" class="headerlink" title="check_initrd"></a>check_initrd</h5><p>检查内核是否有initrd，通过判断是否_initrd_begin == _initrd_end)</p>
+<h4 id="kprintf"><a href="#kprintf" class="headerlink" title="kprintf"></a>kprintf</h4><p>内核第一次输出信息</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *message = <span class="string">"(THU.CST) os is loading ...\n\n"</span>;</span><br><span class="line">kprintf(message);</span><br></pre></td></tr></table></figure>
+
+<p>kprintf函数最后调用串口的cons_putc输出字符。串口输出字符采用忙等待方式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kern/lib/stdio.c::kprintf -&gt; kern/lib/stdio.c::vkprintf -&gt; kern/lib/printfmt.c::vprintfmt(cputch, ...)</span><br><span class="line"></span><br><span class="line">kern/lib/stdio.c::cputch -&gt; kern/driver/console.c::cons_putc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#!kern/driver/console.c</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">serial_putc_sub(<span class="keyword">int</span> c) &#123;</span><br><span class="line">    <span class="keyword">while</span> (!(inb(COM1 + COM_LSR) &amp; COM_LSR_TXRDY)) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    outb(COM1 + COM_TX, c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>作为对比，用户程序cprintf</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">user/lib/stdio.c::cprintf -&gt; user/lib/stdio.c::vcprintf -&gt; user/lib/stdio.c::vprintfmt(cputch, ...)</span><br><span class="line">user/lib/stdio.c::cputch -&gt; user/lib/syscall.c::sys_putc -&gt; syscall(SYS_putc, )</span><br><span class="line">系统调用，进入内核</span><br><span class="line">异常处理程序调用kern/syscall/syscall.c::sys_putc -&gt; kern/lib/stdio.c::kputchar -&gt; cons_putc</span><br></pre></td></tr></table></figure>
+
+<p><strong>用户程序输出每一个字符都会触发一次系统调用</strong></p>
+<h4 id="pmm-init"><a href="#pmm-init" class="headerlink" title="pmm_init"></a>pmm_init</h4><h5 id="page结构体"><a href="#page结构体" class="headerlink" title="page结构体"></a>page结构体</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Page</span> &#123;</span></span><br><span class="line">    <span class="keyword">atomic_t</span> ref;                   <span class="comment">// page frame's reference counter</span></span><br><span class="line">    <span class="keyword">uint32_t</span> flags;                 <span class="comment">// array of flags that describe the status of the page frame</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> property;          <span class="comment">// used in buddy system, stores the order (the X in 2^X) of the continuous memory block</span></span><br><span class="line">    <span class="keyword">int</span> zone_num;                   <span class="comment">// used in buddy system, the No. of zone which the page belongs to</span></span><br><span class="line">    <span class="keyword">list_entry_t</span> page_link;         <span class="comment">// free list link</span></span><br><span class="line"><span class="comment">//    swap_entry_t index;             // stores a swapped-out page identifier</span></span><br><span class="line">    <span class="keyword">list_entry_t</span> swap_link;         <span class="comment">// swap hash link</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>ucore将物理内存划分成一个一个的页，并使用Page结构体数组来管理。一个Page项对应一个物理页。</p>
+<p>参考pmm.c::page_init代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">kprintf(<span class="string">"memory map:\n"</span>);</span><br><span class="line">kprintf(<span class="string">"    ["</span>);</span><br><span class="line">printhex(KERNBASE);</span><br><span class="line">kprintf(<span class="string">", "</span>);</span><br><span class="line">printhex(KERNTOP);</span><br><span class="line">kprintf(<span class="string">"]\n\n"</span>);</span><br><span class="line"></span><br><span class="line">maxpa = KERNTOP;</span><br><span class="line">npage = KMEMSIZE &gt;&gt; PGSHIFT;</span><br><span class="line"></span><br><span class="line"><span class="comment">// end address of kernel</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> <span class="built_in">end</span>[];</span><br><span class="line"><span class="comment">// put page structure table at the end of kernel</span></span><br><span class="line">pages = (struct Page *)ROUNDUP_2N((<span class="keyword">void</span> *)<span class="built_in">end</span>, PGSHIFT);</span><br></pre></td></tr></table></figure>
+
+<p><code>KMEMSIZE</code>代表内核管理的物理内存的大小，npage计算出来为物理页的个数。</p>
+<p>end在链接脚本中定义，为ucore-kernel-initrd的结尾。即ucore在内核的结尾分配了（直接写）Page数组的空间，pages为数组的起始地址。</p>
+<p>此时page项可以和物理页一一对应起来了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">ppn_t</span></span><br><span class="line">page2ppn(struct Page *page) &#123;</span><br><span class="line">    <span class="keyword">return</span> page - pages;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">uintptr_t</span></span><br><span class="line">page2pa(struct Page *page) &#123;</span><br><span class="line">    <span class="keyword">return</span> KERNBASE + (page2ppn(page) &lt;&lt; PGSHIFT);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="class"><span class="keyword">struct</span> <span class="title">Page</span> *</span></span><br><span class="line"><span class="class"><span class="title">pa2page</span>(<span class="title">uintptr_t</span> <span class="title">pa</span>) &#123;</span></span><br><span class="line">    <span class="keyword">if</span> (PPN(pa) &gt;= npage) &#123;</span><br><span class="line">        panic(<span class="string">"pa2page called with invalid pa"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &amp;pages[PPN(pa)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">void</span> *</span><br><span class="line">page2kva(struct Page *page) &#123;</span><br><span class="line">    <span class="keyword">return</span> KADDR(page2pa(page));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里强调一下<code>page2kva</code>中<code>KADDR</code>的作用，事实上如果看其定义的话，KADDR(pa)的值和pa是一样的，如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* *</span></span><br><span class="line"><span class="comment"> * PADDR - takes a kernel virtual address (an address that points above KERNBASE),</span></span><br><span class="line"><span class="comment"> * where the machine's maximum 256MB of physical memory is mapped and returns the</span></span><br><span class="line"><span class="comment"> * corresponding physical address.  It panics if you pass it a non-kernel virtual address.</span></span><br><span class="line"><span class="comment"> * */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PADDR(kva) (&#123;                                                   \</span></span><br><span class="line">            <span class="keyword">uintptr_t</span> __m_kva = (<span class="keyword">uintptr_t</span>)(kva);                       \</span><br><span class="line">            <span class="keyword">if</span> (__m_kva &lt; KERNBASE) &#123;                                   \</span><br><span class="line">                panic(<span class="string">"PADDR called with invalid kva %08lx"</span>, __m_kva);  \</span><br><span class="line">            &#125;                                                           \</span><br><span class="line">            __m_kva ;                                         \</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/* *</span></span><br><span class="line"><span class="comment"> * KADDR - takes a physical address and returns the corresponding kernel virtual</span></span><br><span class="line"><span class="comment"> * address. It panics if you pass an invalid physical address.</span></span><br><span class="line"><span class="comment"> * */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KADDR(pa) (&#123;                                                    \</span></span><br><span class="line">            <span class="keyword">uintptr_t</span> __m_pa = (pa);                                    \</span><br><span class="line">            <span class="keyword">size_t</span> __m_ppn = PPN(__m_pa);                               \</span><br><span class="line">            <span class="keyword">if</span> (__m_ppn &gt;= npage) &#123;                                     \</span><br><span class="line">                panic(<span class="string">"KADDR called with invalid pa %08lx"</span>, __m_pa);    \</span><br><span class="line">            &#125;                                                           \</span><br><span class="line">            (<span class="keyword">void</span> *) (__m_pa);                               \</span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>而之所以需要进行一次转换，主要是保持逻辑上的一致性。因为CPU直接发出的地址都是虚拟地址，会经过MMU进行虚拟地址转换（一般基于TLB，而TLB基于操作系统管理的页表）。整个转换过程是硬件自动完成的，因此软件基本不用和物理地址打交道（操作系统中涉及到和硬件软硬件协同的部分会涉及到物理地址，如页表中存储的地址是物理地址，当MIPS中tlb refill异常时，便会读取页表项加载到TLB表项中）</p>
+<p>因而我们在代码中访问数据时都要使用虚拟地址。</p>
+<p>因为这里的整个内核虚拟空间（<code>[KERNBASE, KERNBASE+KMEMSIZE]=[0x8000_0000, 0x8200_0000)</code>）都位于MIPS中的kseg0段，而该段采用固定地址映射的方式，而不使用TLB，因此内核访问整个内核虚拟地址空间丝毫不用担心。</p>
+<h6 id="这里应该有一个错误"><a href="#这里应该有一个错误" class="headerlink" title="这里应该有一个错误"></a>这里应该有一个错误</h6><p>按照定义来说，page2pa就应该是(page2ppn(page) &lt;&lt; PGSHIFT)，加了KERNBASE后反而是虚拟地址了。</p>
+<p>不过因为KADDR也错了，因此当我们分配了一个空闲物理页page后，要获得其虚拟地址</p>
+<p><code>KADDR(page2pa(page))</code>反而没错了</p>
+<h5 id="空闲页"><a href="#空闲页" class="headerlink" title="空闲页"></a>空闲页</h5><p>空闲地址开始于Page数组之后。init_memmap会调用pmm_manager的init_memmap函数，用于记录哪些页是空闲的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uintptr_t</span> freemem = PADDR((<span class="keyword">uintptr_t</span>)pages + <span class="keyword">sizeof</span>(struct Page) * npage);</span><br><span class="line">PRINT_HEX(<span class="string">"freemem start at: "</span>, freemem);</span><br><span class="line"></span><br><span class="line"><span class="keyword">uint32_t</span> mbegin = ROUNDUP_2N(freemem, PGSHIFT);</span><br><span class="line"><span class="keyword">uint32_t</span> mend = ROUNDDOWN_2N(KERNTOP, PGSHIFT);</span><br><span class="line">assert( mbegin &lt; mend );</span><br><span class="line">init_memmap(pa2page(mbegin), (mend - mbegin) &gt;&gt; PGSHIFT );</span><br><span class="line">PRINT_HEX(<span class="string">"free pages: "</span>, (mend-mbegin)&gt;&gt;PGSHIFT);</span><br><span class="line">PRINT_HEX(<span class="string">"## "</span>, <span class="keyword">sizeof</span>(struct Page));</span><br></pre></td></tr></table></figure>
+
+<h5 id="pmm-manager"><a href="#pmm-manager" class="headerlink" title="pmm_manager"></a>pmm_manager</h5><p>物理内存管理其实就是要实现<strong>物理空闲页</strong>的分配和回收，ucore定义了pmm_manager的结构体，可以认为C中实现的类。</p>
+<p>关键的两个函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Page</span> *(*<span class="title">alloc_pages</span>)(<span class="title">size_t</span> <span class="title">n</span>);</span></span><br><span class="line"><span class="keyword">void</span> (*free_pages)(struct Page *base, <span class="keyword">size_t</span> n);</span><br></pre></td></tr></table></figure>
+
+<p>alloc_pages从空闲页中分配了一段连续的空闲页</p>
+<p>而free_pages则将指定的一段连续的页重新回收为空闲页</p>
+<p>ucore代码实现了伙伴分配系统(buddy system)，可以参考其具体实现</p>
+<h5 id="页表相关函数"><a href="#页表相关函数" class="headerlink" title="页表相关函数"></a>页表相关函数</h5><p>ucore实现了二级页表</p>
+<p>关键函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">pte_t</span> *<span class="title">get_pte</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, <span class="keyword">uintptr_t</span> la, <span class="keyword">bool</span> create)</span></span>;</span><br><span class="line"><span class="function">struct Page *<span class="title">get_page</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, <span class="keyword">uintptr_t</span> la, <span class="keyword">pte_t</span> **ptep_store)</span></span>;	<span class="comment">//根据pte的值获得对应的page</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">page_remove</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, <span class="keyword">uintptr_t</span> la)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">page_insert</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, struct Page *page, <span class="keyword">uintptr_t</span> la, <span class="keyword">uint32_t</span> perm)</span></span>;</span><br><span class="line"><span class="function">struct Page * <span class="title">pgdir_alloc_page</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, <span class="keyword">uintptr_t</span> la, <span class="keyword">uint32_t</span> perm)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h6 id="get-pte"><a href="#get-pte" class="headerlink" title="get_pte"></a>get_pte</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">pte_t</span> *<span class="title">get_pte</span><span class="params">(<span class="keyword">pde_t</span> * pgdir, <span class="keyword">uintptr_t</span> la, <span class="keyword">bool</span> create)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>函数作用：给定页目录表的虚拟地址，查找虚拟地址la对应的页表项pte。（只要la在一个页内，返回的pte是相同的）<br>    注：获得的是pte项的<strong>虚拟地址</strong><br>过程：</p>
+<ol>
+<li><p>先计算页目录表中对应pde表项的虚拟地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pdep = pgdir + PDX(la)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果pde项有效，即<code>((*pdep)&amp;PTE_P) == 0</code>。直接访问pde获得la对应二级页表的物理地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PDE_ADDR(*pdep)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计算二级页表中对应页表项pte的<strong>物理</strong>地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">pte_t</span>*)(    PDE_ADDR(*pdep)   ) + PTX(la)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>转换成虚拟地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">pte_t</span>*)KADDR(   (<span class="keyword">uintptr_t</span>)(  (<span class="keyword">pte_t</span>*)(PDE_ADDR(*pdep))+PTX(la)  )  )</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果02中无效，则需要根据create决定是否创建二级页表。（下面代码只考虑了创建情形，并为了突出重点，删减了许多有用的代码）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Page</span>* <span class="title">new_pte</span> = <span class="title">alloc_page</span>();</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">uintptr_t</span> pa = (<span class="keyword">uintptr_t</span>)page2kva(new_pte);</span><br><span class="line">*pdep = PADDR(pa);</span><br></pre></td></tr></table></figure>
+
+<p>最后一行，页表中存储的是物理地址。然而根据之前的分析，我们知道上面代码中的PADDR(pa)实际上是虚拟地址。然而我们发现在这样设置之后，下次调用get_pte时，获得的pte的地址确实是虚拟地址（KADDR不产生作用）。</p>
+</li>
+</ol>
+<h6 id="page-insert"><a href="#page-insert" class="headerlink" title="page_insert"></a>page_insert</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">page_insert</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, struct Page *page, <span class="keyword">uintptr_t</span> la, <span class="keyword">uint32_t</span> perm)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>作用：将虚拟地址la映射到page对应的物理页上</p>
+<p>步骤：</p>
+<ol>
+<li><p>根据虚拟地址la查找到二级页表项ptep</p>
+</li>
+<li><p>如果原本ptep已经映射到另一个物理页上了，则删除该映射（有可能导致回收物理页）</p>
+</li>
+<li><p>设置ptep映射到新物理页</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*ptep &#x3D; page2pa(page) | PTE_P | perm;</span><br></pre></td></tr></table></figure>
+
+<p>由以上代码，可以看到二级页表项中存储的地址其实是虚拟地址。</p>
+</li>
+</ol>
+<h6 id="page-remove"><a href="#page-remove" class="headerlink" title="page_remove"></a>page_remove</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">page_remove</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, <span class="keyword">uintptr_t</span> la)</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<p>作用：解除pgdir中虚拟地址la的映射</p>
+<p>步骤：</p>
+<ol>
+<li><p>获得pte</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pte_t</span> *ptep = get_pte(pgdir, la, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果<code>ptep != NULL</code>且<code>*ptep &amp; PTE_P</code>，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Page</span> *<span class="title">page</span> = <span class="title">pte2page</span>(*<span class="title">ptep</span>);</span></span><br><span class="line">page_ref_dec(page);</span><br><span class="line"><span class="comment">// and free it when reach 0</span></span><br><span class="line"><span class="keyword">if</span>(page_ref(page) == <span class="number">0</span>)&#123;</span><br><span class="line">    free_page(page);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>清除映射</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*ptep = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h6 id="pgdir-alloc-page"><a href="#pgdir-alloc-page" class="headerlink" title="pgdir_alloc_page"></a>pgdir_alloc_page</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct Page * <span class="title">pgdir_alloc_page</span><span class="params">(<span class="keyword">pde_t</span> *pgdir, <span class="keyword">uintptr_t</span> la, <span class="keyword">uint32_t</span> perm)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>作用：该函数分配一个物理页，并将la对应的虚拟页，映射到该物理页</p>
+<h5 id="check"><a href="#check" class="headerlink" title="check"></a>check</h5><h6 id="check-pgdir"><a href="#check-pgdir" class="headerlink" title="check_pgdir"></a>check_pgdir</h6><ol>
+<li>将虚拟地址0x0映射到一个物理页(随便分配一个page, p1)上。</li>
+<li>将虚拟地址0x1000(PAGESIZE)映射到一个物理页(随便分配一个page, p2)。</li>
+<li>将0x1000重新映射到p1.<br>……<br>主要是检查了page_insert, page_remove等函数的正确性。</li>
+</ol>
+<h6 id="check-boot-pgdir（tlb-refill处理"><a href="#check-boot-pgdir（tlb-refill处理" class="headerlink" title="check_boot_pgdir（tlb refill处理)"></a>check_boot_pgdir（tlb refill处理)</h6><ol>
+<li><p>分配一个物理页，并写入初始值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Page</span> *<span class="title">p</span>;</span></span><br><span class="line">p = alloc_page();</span><br><span class="line">*(<span class="keyword">int</span>*)(page2kva(p) + <span class="number">0x100</span>) = <span class="number">0x1234</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将两个虚拟页映射到该物理页上</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">assert(page_insert(boot_pgdir, p, <span class="number">0x100</span>, PTE_W) == <span class="number">0</span>);</span><br><span class="line">assert(page_ref(p) == <span class="number">1</span>);</span><br><span class="line">assert(page_insert(boot_pgdir, p, <span class="number">0x100</span> + PGSIZE, PTE_W) == <span class="number">0</span>);</span><br><span class="line">assert(page_ref(p) == <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>直接使用虚拟地址访问该物理页，引发tlb refill异常</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assert(*(<span class="keyword">int</span>*)<span class="number">0x100</span> == <span class="number">0x1234</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入对应异常处理程序</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handle_tlbmiss</span><span class="params">(struct trapframe* tf, <span class="keyword">int</span> <span class="built_in">write</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> in_kernel = trap_in_kernel(tf);</span><br><span class="line">  assert(current_pgdir != <span class="literal">NULL</span>);</span><br><span class="line">  <span class="keyword">uint32_t</span> badaddr = tf-&gt;tf_vaddr;</span><br><span class="line">  <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">pte_t</span> *pte = get_pte(current_pgdir, tf-&gt;tf_vaddr, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span>(pte==<span class="literal">NULL</span> || ptep_invalid(pte))&#123;   <span class="comment">//PTE miss, pgfault</span></span><br><span class="line">      kprintf(<span class="string">"## pagefault in kernel, badaddr: 0x%x\n"</span>, badaddr);</span><br><span class="line">    <span class="comment">//tlb will not be refill in do_pgfault,</span></span><br><span class="line">    <span class="comment">//so a vmm pgfault will trigger 2 exception</span></span><br><span class="line">    <span class="comment">//permission check in tlb miss</span></span><br><span class="line">    ret = pgfault_handler(tf, badaddr, get_error_code(<span class="built_in">write</span>, pte));</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123; <span class="comment">//tlb miss only, reload it</span></span><br><span class="line">    <span class="comment">/* refill two slot */</span></span><br><span class="line">    <span class="comment">/* check permission */</span></span><br><span class="line">    <span class="keyword">if</span>(in_kernel)&#123;</span><br><span class="line">      kprintf(<span class="string">"## tlb refill in kernel, badaddr: 0x%x\n"</span>, badaddr);</span><br><span class="line">      tlb_refill(badaddr, pte); </span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="keyword">if</span>(!ptep_u_read(pte))&#123;</span><br><span class="line">        ret = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">goto</span> <span class="built_in">exit</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span>(<span class="built_in">write</span> &amp;&amp; !ptep_u_write(pte))&#123;</span><br><span class="line">        ret = <span class="number">-2</span>;</span><br><span class="line">        <span class="keyword">goto</span> <span class="built_in">exit</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    <span class="comment">//kprintf("## refill U %d %08x\n", write, badaddr);</span></span><br><span class="line">      tlb_refill(badaddr, pte);</span><br><span class="line">      <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span>:</span><br><span class="line">  <span class="keyword">if</span>(ret)&#123;</span><br><span class="line">    print_trapframe(tf);</span><br><span class="line">    <span class="keyword">if</span>(in_kernel)&#123;</span><br><span class="line">      panic(<span class="string">"unhandled pgfault"</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      do_exit(-E_KILLED);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>首先判断是否在内核中发生了异常，这里通过Status.KSU位来判断，2’b00表示kernel mode，2’b10表示user mode。</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span></span><br><span class="line">trap_in_kernel(struct trapframe *tf) &#123;</span><br><span class="line">  <span class="keyword">return</span> !(tf-&gt;tf_status &amp; KSU_USER);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后获得pte</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pte_t</span> *pte = get_pte(current_pgdir, tf-&gt;tf_vaddr, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>之后进入tlb_refill函数, tlb_refill执行tlbwr，从pte读取映射的物理页号写入到tlb项中。（一次映射两页）</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tlb_replace_random(<span class="number">0</span>, badaddr &amp; THUMIPS_TLB_ENTRYH_VPN2_MASK, </span><br><span class="line">      pte2tlblow(*pte), pte2tlblow(*(pte+<span class="number">1</span>)));</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ol>
+<p>终端输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">## tlb refill in kernel, badaddr: 0x100</span><br><span class="line">check_boot_pgdir() succeeded!</span><br></pre></td></tr></table></figure>
+
+<h5 id="kmalloc"><a href="#kmalloc" class="headerlink" title="kmalloc"></a>kmalloc</h5><p>pmm_init中还调用了kmalloc_init。</p>
+<p>kmalloc中主要实现了以下关键函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">kmalloc</span><span class="params">(<span class="keyword">size_t</span> n)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">kfree</span><span class="params">(<span class="keyword">void</span> *objp)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到kmalloc函数的参数为字节数，返回值为分配的物理内存的虚拟起始地址。</p>
+<p>kmalloc利用到了slab机制</p>
+<blockquote>
+<p>slab是Linux操作系统的一种内存分配机制。其工作是针对一些经常分配并释放的对象，如进程描述符等，这些对象的大小一般比较小，如果直接采用伙伴系统来进行分配和释放，不仅会造成大量的内存碎片，而且处理速度也太慢。而slab分配器是基于对象进行管理的，相同类型的对象归为一类(如进程描述符就是一类)，每当要申请这样一个对象，slab分配器就从一个slab列表中分配一个这样大小的单元出去，而当要释放时，将其重新保存在该列表中，而不是直接返回给伙伴系统，从而避免这些内碎片。</p>
+</blockquote>
+<h4 id="vmm-init"><a href="#vmm-init" class="headerlink" title="vmm_init"></a>vmm_init</h4><p>通过内存地址虚拟化，可以使得软件在没有访问某虚拟内存地址时不分配具体的物理理内存，而只有在实际访问某虚拟内存地址时，操作系统再动态地分配物理内存，建立虚拟内存到物理理内存的页映射关系，这种技术称为按需分页（demand paging）。把不不经常访问的数据所占的内存空间临时写到硬盘上，这样可以腾出更更多的空闲内存空间<br>给经常访问的数据；当CPU访问到不不经常访问的数据时，再把这些数据从硬盘读入到内存中。这种技术称为页换入换出(page in/out)</p>
+<h5 id="vma-struct"><a href="#vma-struct" class="headerlink" title="vma_struct"></a>vma_struct</h5><p>vma用于描述进程对虚拟内存的需求</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vma_struct</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">vm_mm</span>;</span> <span class="comment">// the set of vma using the same PDT </span></span><br><span class="line">    <span class="keyword">uintptr_t</span> vm_start;      <span class="comment">//	start addr of vma	</span></span><br><span class="line">    <span class="keyword">uintptr_t</span> vm_end;        <span class="comment">// end addr of vma</span></span><br><span class="line">    <span class="keyword">uint32_t</span> vm_flags;       <span class="comment">// flags of vma</span></span><br><span class="line">    <span class="keyword">list_entry_t</span> list_link;  <span class="comment">// linear list link which sorted by start addr of vma</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>vma指示了一段连续的虚拟内存空间，不同vma通过list_link相连，共同表示一个进程的虚拟内存空间。</p>
+<h5 id="mm-struct"><a href="#mm-struct" class="headerlink" title="mm_struct"></a>mm_struct</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">list_entry_t</span> mmap_list;        <span class="comment">// linear list link which sorted by start addr of vma</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">vma_struct</span> *<span class="title">mmap_cache</span>;</span> <span class="comment">// current accessed vma, used for speed purpose</span></span><br><span class="line">    <span class="keyword">pde_t</span> *pgdir;                  <span class="comment">// the PDT of these vma</span></span><br><span class="line">    <span class="keyword">int</span> map_count;                 <span class="comment">// the count of these vma</span></span><br><span class="line">	<span class="keyword">void</span> *sm_priv;				   <span class="comment">// the private data for swap manager</span></span><br><span class="line">	<span class="keyword">atomic_t</span> mm_count;</span><br><span class="line">	<span class="keyword">semaphore_t</span> mm_sem;</span><br><span class="line">	<span class="keyword">int</span> locked_by;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>mm_struct用于管理一系列使用同一个页目录表的vma的集合。</p>
+<p>进程控制块中包含一个mm_struct的指针，用于管理该进程的虚拟内存空间</p>
+<h6 id="关键函数"><a href="#关键函数" class="headerlink" title="关键函数"></a>关键函数</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct vma_struct *<span class="title">find_vma</span><span class="params">(struct mm_struct *mm, <span class="keyword">uintptr_t</span> addr)</span></span>;</span><br><span class="line"><span class="function">struct vma_struct *<span class="title">vma_create</span><span class="params">(<span class="keyword">uintptr_t</span> vm_start, <span class="keyword">uintptr_t</span> vm_end, <span class="keyword">uint32_t</span> vm_flags)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert_vma_struct</span><span class="params">(struct mm_struct *mm, struct vma_struct *vma)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="check-pgfault（pagefault的处理）"><a href="#check-pgfault（pagefault的处理）" class="headerlink" title="check_pgfault（pagefault的处理）"></a>check_pgfault（pagefault的处理）</h5><ol>
+<li><p>创建mm_struct</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">check_mm_struct = mm_create();</span><br></pre></td></tr></table></figure>
+
+<p> 这里的<code>check_mm_struct</code>为全局变量</p>
+</li>
+<li><p>分配[0, PTSIZE]的虚拟内存</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vma_struct</span> *<span class="title">vma</span> = <span class="title">vma_create</span>(0, <span class="title">PTSIZE</span>, <span class="title">VM_WRITE</span>);</span> <span class="comment">//如果该成VM_READ，之后在do_pgfault便会通不过权限检查。</span></span><br><span class="line">insert_vma_struct(mm, vma);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问0x100</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uintptr_t</span> addr = <span class="number">0x100</span>;</span><br><span class="line">assert(find_vma(mm, addr) == vma);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> i, sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i ++) &#123;</span><br><span class="line">  *(<span class="keyword">char</span> *)(addr + i) = i;    <span class="comment">//page fault</span></span><br><span class="line">  sum += i;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i ++) &#123;</span><br><span class="line">  sum -= *(<span class="keyword">char</span> *)(addr + i);</span><br><span class="line">&#125;</span><br><span class="line">assert(sum == <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>触发tlb refill异常。（实际为pagefault，此时页表中没有该映射，因此tlb中也没有该项 ）</p>
+<p> 参考之前tlb refill异常处理的代码，进入pgfault_handler</p>
+<ol>
+<li>首先通过判断check_mm_struct非空，知道是在执行check_pgfault函数，将mm设置为check_mm_struct</li>
+<li>在do_pgfault中首先调用find_vma函数，确定该虚拟地址是有效的</li>
+<li>然后检查该地址访问权限是否正确（如果将</li>
+<li>都通过了后，调用pgdir_alloc_page，直接分配一个物理页，并在mm-&gt;pgdir中插入映射关系。</li>
+<li>异常处理完成并返回</li>
+</ol>
+</li>
+<li><p>再次触发tlb refill异常。（现在页表中存在了该映射，因此进入tlb_refill函数）</p>
+</li>
+</ol>
+<p>终端输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## pagefault in kernel, badaddr: 0x100</span><br><span class="line">## tlb refill in kernel, badaddr: 0x100</span><br><span class="line">check_pgfault() succeeded!</span><br></pre></td></tr></table></figure>
+
+<p>代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">get_error_code</span><span class="params">(<span class="keyword">int</span> <span class="built_in">write</span>, <span class="keyword">pte_t</span> *pte)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> r = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span>(pte!=<span class="literal">NULL</span> &amp;&amp; ptep_present(pte))	<span class="comment">//因为pagefault的条件(pte==NULL || ptep_invalid(pte))，这里根本不可能为真</span></span><br><span class="line">    r |= <span class="number">0x01</span>;</span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">write</span>)</span><br><span class="line">    r |= <span class="number">0x02</span>;</span><br><span class="line">  <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line">pgfault_handler(struct trapframe *tf, <span class="keyword">uint32_t</span> addr, <span class="keyword">uint32_t</span> error_code) &#123;</span><br><span class="line">  <span class="keyword">extern</span> <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">check_mm_struct</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">mm</span>;</span></span><br><span class="line">  <span class="keyword">if</span> (check_mm_struct != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    assert(current == <span class="literal">NULL</span>);</span><br><span class="line">    mm = check_mm_struct;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (current == <span class="literal">NULL</span>) &#123;</span><br><span class="line">      print_trapframe(tf);</span><br><span class="line">      <span class="comment">//print_pgfault(tf);</span></span><br><span class="line">      panic(<span class="string">"unhandled page fault.\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    mm = current-&gt;mm;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> do_pgfault(mm, error_code, addr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">#! vmm.c</span><br><span class="line"></span><br><span class="line"><span class="comment">//page fault number</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> pgfault_num=<span class="number">0</span>;</span><br><span class="line"><span class="comment">// do_pgfault - interrupt handler to process the page fault execption</span></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">do_pgfault(struct mm_struct *mm, <span class="keyword">uint32_t</span> error_code, <span class="keyword">uintptr_t</span> addr) &#123;</span><br><span class="line">  <span class="keyword">int</span> ret = -E_INVAL;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vma_struct</span> *<span class="title">vma</span> = <span class="title">find_vma</span>(<span class="title">mm</span>, <span class="title">addr</span>);</span></span><br><span class="line">  <span class="comment">//kprintf("## %08x %08x\n", error_code, addr);</span></span><br><span class="line"></span><br><span class="line">  pgfault_num++;</span><br><span class="line">  <span class="keyword">if</span> (vma == <span class="literal">NULL</span> || vma-&gt;vm_start &gt; addr) &#123;</span><br><span class="line">    kprintf(<span class="string">"not valid addr %x, and  can not find it in vma\n"</span>, addr);</span><br><span class="line">    <span class="keyword">goto</span> failed;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (error_code &amp; <span class="number">3</span>) &#123;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="comment">/* default is 3: write, present */</span></span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>: <span class="comment">/* write, not present */</span></span><br><span class="line">      <span class="keyword">if</span> (!(vma-&gt;vm_flags &amp; VM_WRITE)) &#123;</span><br><span class="line">        kprintf(<span class="string">"write, not present in do_pgfault failed\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> failed;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>: <span class="comment">/* read, present */</span></span><br><span class="line">      kprintf(<span class="string">"read, present in do_pgfault failed\n"</span>);</span><br><span class="line">      <span class="keyword">goto</span> failed;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0</span>: <span class="comment">/* read, not present */</span></span><br><span class="line">      <span class="keyword">if</span> (!(vma-&gt;vm_flags &amp; (VM_READ | VM_EXEC))) &#123;</span><br><span class="line">        kprintf(<span class="string">"read, not present in do_pgfault failed\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> failed;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint32_t</span> perm = PTE_U;</span><br><span class="line">  <span class="keyword">if</span> (vma-&gt;vm_flags &amp; VM_WRITE) &#123;</span><br><span class="line">    perm |= PTE_W;</span><br><span class="line">  &#125;</span><br><span class="line">  addr = ROUNDDOWN_2N(addr, PGSHIFT);</span><br><span class="line">    </span><br><span class="line">  ret = -E_NO_MEM;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// try to find a pte, if pte's PT(Page Table) isn't existed, then create a PT.</span></span><br><span class="line">  <span class="keyword">pte_t</span> *ptep=<span class="literal">NULL</span>;</span><br><span class="line">  <span class="keyword">if</span> ((ptep = get_pte(mm-&gt;pgdir, addr, <span class="number">1</span>)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="keyword">goto</span> failed;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (*ptep == <span class="number">0</span>) &#123; <span class="comment">// if the phy addr isn't exist, then alloc a page &amp; map the phy addr with logical addr</span></span><br><span class="line">    <span class="keyword">if</span> (pgdir_alloc_page(mm-&gt;pgdir, addr, perm) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">      <span class="keyword">goto</span> failed;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123; <span class="comment">// if this pte is a swap entry, then load data from disk to a page with phy addr, </span></span><br><span class="line">    <span class="comment">// map the phy addr with logical addr, trig swap manager to record the access situation of this page</span></span><br><span class="line">    <span class="keyword">if</span>(swap_init_ok) &#123;</span><br><span class="line">      panic(<span class="string">"No swap!! never reach!!"</span>); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      kprintf(<span class="string">"no swap_init_ok but ptep is %x, failed\n"</span>,*ptep);</span><br><span class="line">      <span class="keyword">goto</span> failed;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/* refill TLB for mips, no second exception */</span></span><br><span class="line">  <span class="comment">//tlb_refill(addr, ptep);</span></span><br><span class="line">  ret = <span class="number">0</span>;</span><br><span class="line">failed:</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h4><ol>
+<li><p>使用jal调用函数，使用jr ra返回。使用a0-a3传递参数，使用v0-v1传递返回值。对于更多的参数，使用栈传递。</p>
+</li>
+<li><p>为了防止寄存器的值被覆盖。需要在存储寄存器的值，可以由caller或者callee来完成。但是只有一方完成时，因为caller不知道callee会用哪些寄存器，或者callee不知道caller需要用哪些寄存器。因此就会导致存储不必要的寄存器。MIPS采用了一种折衷的策略，将寄存器分为caller-save（如t0-t7, a0-a3, v0-v1）和callee-save（如s0-s7, ra）</p>
+</li>
+<li><p>fp寄存器（也是s8）用于指向栈帧的第一个元素。因为x86中提供了push和pop指令，sp的位置是变化的，要引用不同变量的值是用fp更方便。而MIPS中则是在函数的开头手动将sp设置，sp之后的值不会变化，因此fp貌似作用不大。</p>
+</li>
+<li><p>gp寄存器，用于程序访问全局变量（比如函数的地址）。</p>
+<blockquote>
+<p>ps. 使用mipsel-linux-gnu-gcc -S编译一个简单的函数调用测试代码。不知为什么和上面讲的caller-save，callee-save对不上。比如函数开头<code>addiu $sp,$sp,-40</code>，但结果却根本没用上这么大的空间。然后，为什么还会出现<code>sw $a0,40($fp)</code>，即将参数<code>a0</code>写入父函数栈帧的情况。（这个然后fp和sp始终相等，不知道为什么要去存储fp</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="sched-init-amp-proc-init"><a href="#sched-init-amp-proc-init" class="headerlink" title="sched_init &amp; proc_init"></a>sched_init &amp; proc_init</h4><h5 id="proc-struct-进程控制块"><a href="#proc-struct-进程控制块" class="headerlink" title="proc_struct(进程控制块)"></a>proc_struct(进程控制块)</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc_struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">enum</span> proc_state state;                      <span class="comment">// Process state</span></span><br><span class="line">    <span class="keyword">int</span> pid;                                    <span class="comment">// Process ID</span></span><br><span class="line">    <span class="keyword">int</span> runs;                                   <span class="comment">// the running times of Proces</span></span><br><span class="line">    <span class="keyword">uintptr_t</span> kstack;                           <span class="comment">// Process kernel stack</span></span><br><span class="line">    <span class="keyword">volatile</span> <span class="keyword">bool</span> need_resched;                 <span class="comment">// bool value: need to be rescheduled to release CPU?</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">proc_struct</span> *<span class="title">parent</span>;</span>                 <span class="comment">// the parent process</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">mm</span>;</span>                       <span class="comment">// Process's memory management field</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">context</span> <span class="title">context</span>;</span>                     <span class="comment">// Switch here to run process</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">trapframe</span> *<span class="title">tf</span>;</span>                       <span class="comment">// Trap frame for current interrupt</span></span><br><span class="line">    <span class="keyword">uintptr_t</span> cr3;                              <span class="comment">// CR3 register: the base addr of Page Directroy Table(PDT)</span></span><br><span class="line">    <span class="keyword">uint32_t</span> flags;                             <span class="comment">// Process flag</span></span><br><span class="line">    <span class="keyword">char</span> name[PROC_NAME_LEN + <span class="number">1</span>];               <span class="comment">// Process name</span></span><br><span class="line">    <span class="keyword">list_entry_t</span> list_link;                     <span class="comment">// Process link list </span></span><br><span class="line">    <span class="keyword">list_entry_t</span> hash_link;                     <span class="comment">// Process hash list</span></span><br><span class="line">    <span class="keyword">int</span> exit_code;                              <span class="comment">// exit code (be sent to parent proc)</span></span><br><span class="line">    <span class="keyword">uint32_t</span> wait_state;                        <span class="comment">// waiting state</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">proc_struct</span> *<span class="title">cptr</span>, *<span class="title">yptr</span>, *<span class="title">optr</span>;</span>     <span class="comment">// relations between processes</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">run_queue</span> *<span class="title">rq</span>;</span>                       <span class="comment">// running queue contains Process</span></span><br><span class="line">    <span class="keyword">list_entry_t</span> run_link;                      <span class="comment">// the entry linked in run queue</span></span><br><span class="line">    <span class="keyword">int</span> time_slice;                             <span class="comment">// time slice for occupying the CPU</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">fs_struct</span> *<span class="title">fs_struct</span>;</span>                <span class="comment">// the file related info(pwd, files_count, files_array, fs_semaphore) of process</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h6 id="tf"><a href="#tf" class="headerlink" title="tf"></a>tf</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">trapframe</span> &#123;</span></span><br><span class="line">	<span class="keyword">uint32_t</span> tf_vaddr;	<span class="comment">/* coprocessor 0 vaddr register */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> tf_status;	<span class="comment">/* coprocessor 0 status register */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> tf_cause;	<span class="comment">/* coprocessor 0 cause register */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> tf_lo;</span><br><span class="line">	<span class="keyword">uint32_t</span> tf_hi;</span><br><span class="line">	<span class="keyword">uint32_t</span> tf_ra;	<span class="comment">/* Saved register 31 */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">pushregs</span> <span class="title">tf_regs</span>;</span></span><br><span class="line">	<span class="keyword">uint32_t</span> tf_epc;	<span class="comment">/* coprocessor 0 epc register */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>tf记录了</p>
+<ol>
+<li>进程的上下文：32个通用寄存器的值</li>
+<li>epc, status, cause等CP0寄存器</li>
+</ol>
+<p>进入异常后，要将sp切换到内核栈。对于内核进程来说，就是当前的sp，而对于用户进程来说，需要从进程控制块中读取kstack的地址。</p>
+<p>uCore内核允许嵌套中断。因此为了了保证嵌套中断发⽣生时tf 总是能够指向当前的trapframe，uCore 在内核栈上维<br>护了了 tf 的链。</p>
+<blockquote>
+<p>发生中断（异常）时，trap.c::mips_trap会改变当前进程current-&gt;tf的值</p>
+<p><code>current-&gt;tf = *tf*;</code></p>
+<p>要实现嵌套中断，需要在改变current-&gt;tf前使用一个trapframe *otf（局部变量，存储在内核栈中）存下来。之后再将current-&gt;tf恢复为otf。</p>
+<p>这里提一下，如果一个用户进程发生了异常，在异常处理程序中又发生了一次异常，那么第二次异常时，已经处于了内核模式（在压入tf后，调用mips_trap之前）。在ramExcHandle_general中就不会计算新的sp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mfc0 k0, CP0_STATUS &#x2F;* Get status register *&#x2F;</span><br><span class="line">andi k0, k0, KSU_USER&#x2F;* Check the we-were-in-user-mode bit *&#x2F;</span><br><span class="line">beq	k0, $0, 1f		&#x2F;* If clear, from kernel, already have stack *&#x2F;</span><br></pre></td></tr></table></figure>
+
+
+</blockquote>
+<h6 id="kstack"><a href="#kstack" class="headerlink" title="kstack"></a>kstack</h6><p>内核栈用于存储中断帧tf以及作为进程在内核中执行使用的sp</p>
+<p>对于内核线程，该栈就是运行时的程序使⽤用的栈。而对于普通进程，uCore在创建进程时分配了了 2 个连续的物理理⻚页作为内核栈的空间。</p>
+<p>内核栈位于内核地址空间，并且是不不共享的（每个线程都拥有⾃自⼰己的内核栈），因此不不受到 mm 的管理理，当进程退出的时候，内核能够根据 kstack 的值快速定位栈的位置并进⾏行行回收。</p>
+<h6 id="mm"><a href="#mm" class="headerlink" title="mm"></a>mm</h6><p>内存管理理的信息，包括内存映射列列表、⻚页表指针等。mm成员变量量在lab3中⽤用于虚存管理理。但在实际OS<br>中，内核线程常驻内存，不不需要考虑swap page问题，在lab3中涉及到了了⽤用户进程，才考虑进程⽤用户内存空间的<br>swap page问题，mm才会发挥作⽤用。</p>
+<blockquote>
+<p>还没看到用户进程的swap page代码</p>
+</blockquote>
+<h5 id="创建内核线程"><a href="#创建内核线程" class="headerlink" title="创建内核线程"></a>创建内核线程</h5><h6 id="idle"><a href="#idle" class="headerlink" title="idle"></a>idle</h6><p>proc_init函数启动了创建内核线程的步骤。首先当前的执行上下文（从kern_init 启动至今）就可以看成是uCore内核中的一个内线程的上下文。为此，uCore调用alloc_proc函数给当前执行的上下文分配一个进程控制块并在proc_init中对它进行相应初始化，将其打造成第0个内核线程 –idleproc。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//alloc_proc</span></span><br><span class="line">proc-&gt;mm = <span class="literal">NULL</span>;				<span class="comment">//不需要，所有内核进程公用一个页表</span></span><br><span class="line">proc-&gt;cr3 = boot_cr3;		<span class="comment">//在pmm_init中分配为PADDR(boot_pgdir)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//proc_init</span></span><br><span class="line">idleproc-&gt;pid = <span class="number">0</span>;</span><br><span class="line">idleproc-&gt;state = PROC_RUNNABLE;</span><br><span class="line">idleproc-&gt;kstack = (<span class="keyword">uintptr_t</span>)bootstack;	<span class="comment">//在entry.S中设置的</span></span><br><span class="line">idleproc-&gt;need_resched = <span class="number">1</span>;	<span class="comment">//表明在kern_init后会切换</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="init-kernel-thread-amp-do-fork"><a href="#init-kernel-thread-amp-do-fork" class="headerlink" title="init(kernel_thread &amp; do_fork)"></a>init(kernel_thread &amp; do_fork)</h6><p>idle内核线程主要工作是完成内核中各个子系统的初始化，idle会调用kernel_thread函数创建内核线程init。</p>
+<p>kernel_thread简单来说为新进程分配了PCB空间，和kstack空间。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">//proc_init</span></span><br><span class="line"><span class="keyword">int</span> pid = kernel_thread(init_main, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">   <span class="keyword">if</span> (pid &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">       panic(<span class="string">"create init_main failed.\n"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   initproc = find_proc(pid);</span><br><span class="line">   set_proc_name(initproc, <span class="string">"init"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>过程：</p>
+<ol>
+<li><p>kernel_thread创建内核线程的中断帧，重点在于将epc设置为了kernel_thread_entry，以及设置a0和a1为arg和fn。<strong>还有一点值得注意，status的KSU为内核模式</strong>。</p>
+<p>当从eret返回后（forkrets -&gt; exception_return），CPU便会进入kernel_thread_entry，并以tf中指定的寄存器值执行。</p>
+<p>kernel_thread函数采用了局部变量tf来放置中断帧，并把中断帧的指针传递给do_fork函数。</p>
+<p>kernel_thread调用do_fork的stack参数为0。在do_fork-&gt;copy_thread以此来判断是创建内核线程</p>
+</li>
+<li><p>do_fork作用是以当前进程为父进程，创建一个子进程，可以根据clone_flags决定是否共享mm。具体主要做了以下一些事情：</p>
+<ol>
+<li><p>调用alloc_proc为子进程分配PCB空间</p>
+</li>
+<li><p>调用setup_kstack(proc)<strong>分配了内核栈空间</strong>（注意这里的kstack为空闲页的起始地址，而非栈顶）</p>
+</li>
+<li><p>调用copy_mm，根据clone_flags来确定是复制还是共享mm。（只对用户进程有效，内核线程mm都为NULL）</p>
+</li>
+<li><p>调用copy_thread：将tf拷贝到kstack的栈顶，<strong>设置tf中的sp为proc-&gt;tf - 32</strong>（这里的减32应该和之前提到的MIPS函数调用规则有关，不管怎样，sp是位于kstack中的）</p>
+<p><strong>将context中的ra设置为forkret</strong></p>
+</li>
+<li><p>将子进程插入hash_list和proc_list</p>
+</li>
+<li><p>调用wakeup_proc将进程加入调度队列</p>
+</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span></span><br><span class="line">kernel_thread(<span class="keyword">int</span> (*fn)(<span class="keyword">void</span> *), <span class="keyword">void</span> *arg, <span class="keyword">uint32_t</span> clone_flags) &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">trapframe</span> <span class="title">tf</span>;</span></span><br><span class="line">    <span class="built_in">memset</span>(&amp;tf, <span class="number">0</span>, <span class="keyword">sizeof</span>(struct trapframe));</span><br><span class="line">    tf.tf_regs.reg_r[MIPS_REG_A0] = (<span class="keyword">uint32_t</span>)arg;</span><br><span class="line">    tf.tf_regs.reg_r[MIPS_REG_A1] = (<span class="keyword">uint32_t</span>)fn;</span><br><span class="line">    tf.tf_regs.reg_r[MIPS_REG_V0] = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//TODO</span></span><br><span class="line">    tf.tf_status = read_c0_status();</span><br><span class="line">    tf.tf_status &amp;= ~ST0_KSU;</span><br><span class="line">    tf.tf_status |= ST0_IE;</span><br><span class="line">    tf.tf_status |= ST0_EXL;</span><br><span class="line">    tf.tf_regs.reg_r[MIPS_REG_GP] = __read_reg($<span class="number">28</span>);</span><br><span class="line">    tf.tf_epc = (<span class="keyword">uint32_t</span>)kernel_thread_entry;</span><br><span class="line">    <span class="keyword">return</span> do_fork(clone_flags | CLONE_VM, <span class="number">0</span>, &amp;tf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//kern/proc/entry.S</span></span><br><span class="line">kernel_thread_entry:        <span class="meta"># void kernel_thread(void)</span></span><br><span class="line">  addiu $sp, $sp, <span class="number">-16</span></span><br><span class="line">  jal $a1</span><br><span class="line">  nop</span><br><span class="line">  <span class="built_in">move</span> $a0, $v0</span><br><span class="line">  la  $t0, do_exit</span><br><span class="line">  jal $t0 </span><br><span class="line">  nop</span><br><span class="line">  <span class="comment">/* never here */</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//called by do_fork</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">copy_thread(struct proc_struct *proc, <span class="keyword">uintptr_t</span> esp, struct trapframe *tf) &#123;</span><br><span class="line">    proc-&gt;tf = (struct trapframe *)(proc-&gt;kstack + KSTACKSIZE) - <span class="number">1</span>;</span><br><span class="line">    *(proc-&gt;tf) = *tf;</span><br><span class="line">    proc-&gt;tf-&gt;tf_regs.reg_r[MIPS_REG_V0] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(esp == <span class="number">0</span>) <span class="comment">//a kernel thread</span></span><br><span class="line">      esp = (<span class="keyword">uintptr_t</span>)proc-&gt;tf - <span class="number">32</span>;</span><br><span class="line">    proc-&gt;tf-&gt;tf_regs.reg_r[MIPS_REG_SP] = esp;</span><br><span class="line">    proc-&gt;context.sf_ra = (<span class="keyword">uintptr_t</span>)forkret;</span><br><span class="line">    proc-&gt;context.sf_sp = (<span class="keyword">uintptr_t</span>)(proc-&gt;tf) - <span class="number">32</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// do_fork - parent process for a new child process</span></span><br><span class="line"><span class="comment">//    1. call alloc_proc to allocate a proc_struct</span></span><br><span class="line"><span class="comment">//    2. call setup_kstack to allocate a kernel stack for child process</span></span><br><span class="line"><span class="comment">//    3. call copy_mm to dup OR share mm according clone_flag</span></span><br><span class="line"><span class="comment">//    4. call copy_thread to setup tf &amp; context in proc_struct</span></span><br><span class="line"><span class="comment">//    5. insert proc_struct into hash_list &amp;&amp; proc_list</span></span><br><span class="line"><span class="comment">//    6. call wakup_proc to make the new child process RUNNABLE </span></span><br><span class="line"><span class="comment">//    7. set the </span></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">do_fork(<span class="keyword">uint32_t</span> clone_flags, <span class="keyword">uintptr_t</span> <span class="built_in">stack</span>, struct trapframe *tf) &#123;</span><br><span class="line"> <span class="keyword">int</span> ret = -E_NO_FREE_PROC;</span><br><span class="line"> <span class="class"><span class="keyword">struct</span> <span class="title">proc_struct</span> *<span class="title">proc</span>;</span></span><br><span class="line"> <span class="keyword">if</span> (nr_process &gt;= MAX_PROCESS) &#123;</span><br><span class="line">     <span class="keyword">goto</span> fork_out;</span><br><span class="line"> &#125;</span><br><span class="line"> ret = -E_NO_MEM;</span><br><span class="line"> <span class="comment">//LAB4:EXERCISE2 2009010989</span></span><br><span class="line"> <span class="keyword">if</span> ((proc = alloc_proc()) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">     <span class="keyword">goto</span> fork_out;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> proc-&gt;parent = current;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span>(setup_kstack(proc))&#123;</span><br><span class="line">     <span class="keyword">goto</span> bad_fork_cleanup_proc;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//LAB8:EXERCISE2 2009010989 HINT:how to copy the fs in parent's proc_struct?</span></span><br><span class="line"> <span class="keyword">if</span> (copy_fs(clone_flags, proc) != <span class="number">0</span>) &#123;</span><br><span class="line">     <span class="keyword">goto</span> bad_fork_cleanup_kstack;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">if</span> (copy_mm(clone_flags, proc))&#123;</span><br><span class="line">     <span class="keyword">goto</span> bad_fork_cleanup_fs;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> copy_thread(proc, (<span class="keyword">uint32_t</span>)<span class="built_in">stack</span>, tf);</span><br><span class="line"></span><br><span class="line"> proc-&gt;pid = get_pid();</span><br><span class="line"> hash_proc(proc);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="comment">//list_add(&amp;proc_list, &amp;(proc-&gt;list_link));</span></span><br><span class="line"> set_links(proc);</span><br><span class="line"></span><br><span class="line"> wakeup_proc(proc);</span><br><span class="line"></span><br><span class="line"> ret = proc-&gt;pid;</span><br><span class="line"></span><br><span class="line">fork_out:</span><br><span class="line"> <span class="keyword">return</span> ret;</span><br><span class="line"></span><br><span class="line">bad_fork_cleanup_fs:</span><br><span class="line"> put_fs(proc);</span><br><span class="line">bad_fork_cleanup_kstack:</span><br><span class="line"> put_kstack(proc);</span><br><span class="line">bad_fork_cleanup_proc:</span><br><span class="line"> kfree(proc);</span><br><span class="line"> <span class="keyword">goto</span> fork_out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="user-main"><a href="#user-main" class="headerlink" title="user_main"></a>user_main</h6><p>在init_main中，创建了user_main线程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// init_main - the second kernel thread used to create user_main kernel threads</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line">init_main(<span class="keyword">void</span> *arg) &#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">int</span> pid = kernel_thread(user_main, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (pid &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        panic(<span class="string">"create user_main failed.\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (do_wait(<span class="number">0</span>, <span class="literal">NULL</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">        schedule();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fs_cleanup();</span><br><span class="line">    kprintf(<span class="string">"all user-mode processes have quit.\n"</span>);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>kernel_thread之前已经分析过了，我们来看user_main做了什么</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// user_main - kernel thread used to exec a user program</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line">user_main(<span class="keyword">void</span> *arg) &#123;</span><br><span class="line">    kprintf(<span class="string">"in user main, pid: %d\n"</span>, current-&gt;pid);</span><br><span class="line">    KERNEL_EXECVE(sh);</span><br><span class="line">    panic(<span class="string">"user_main execve failed.\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>user_main调用了<code>KERNEL_EXECVE</code>来加载执行一个用户程序。<code>KERNEL_EXECVE</code>被展开为对kernel_execve的调用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernel_execve - do SYS_exec syscall to exec a user program called by user_main kernel_thread</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line">kernel_execve(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> **argv) &#123;</span><br><span class="line">    <span class="keyword">int</span> argc = <span class="number">0</span>, ret;</span><br><span class="line">    <span class="keyword">while</span> (argv[argc] != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        argc ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//panic("unimpl");</span></span><br><span class="line">    <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"la $v0, %1;\n"</span> <span class="comment">/* syscall no. */</span></span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"move $a0, %2;\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"move $a1, %3;\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"move $a2, %4;\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"move $a3, %5;\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"syscall;\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"nop;\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="string">"move %0, $v0;\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">      : <span class="string">"=r"</span>(ret)</span></span></span><br><span class="line"><span class="function"><span class="params">      : <span class="string">"i"</span>(SYSCALL_BASE+SYS_exec), <span class="string">"r"</span>(name), <span class="string">"r"</span>(argc), <span class="string">"r"</span>(argv), <span class="string">"r"</span>(argc) </span></span></span><br><span class="line"><span class="function"><span class="params">      : <span class="string">"a0"</span>, <span class="string">"a1"</span>, <span class="string">"a2"</span>, <span class="string">"a3"</span>, <span class="string">"v0"</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span>;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而kernel_execve则是进行了一次系统调用。</p>
+<p>kernel_execve -&gt; SYSCALL -&gt; sys_exec -&gt; do_execve</p>
+<ol>
+<li><p>因为kernel_execve就是在内核线程，所以之后进行系统调用，仍然是使用一样的内核栈。</p>
+</li>
+<li><p>do_execve做的事情</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_execve</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv)</span></span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>创建局部变量local_name, kargv（位于上下文的内核栈中），将参数name, argv复制过来。</p>
+<p>kernel_execve调用时传递了”sh”字符串常量的地址。而该”sh”的地址在gdb调试时显示为0x8002_7ff0，而local_name的地址则为0x81fe_bd20（此时sp为0x81fe_bd00，可以知道local_name位于当前函数的栈帧中，而”sh”位于别处）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">copy_string(mm, local_name, name, <span class="keyword">sizeof</span>(local_name))</span><br><span class="line">    </span><br><span class="line">copy_kargv(mm, argc, kargv, argv)</span><br></pre></td></tr></table></figure>
+
+<p>copy_string函数，作用是先检查访问src是否合法（通过mm），然后将src复制到dst中。这里的dst位于内核空间</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">copy_string</span><span class="params">(struct mm_struct *mm, <span class="keyword">char</span> *dst, <span class="keyword">const</span> <span class="keyword">char</span> *src, <span class="keyword">size_t</span> maxn)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>copy_string具体代码，if判断有点复杂，且没有注释，没太看懂。</p>
+</li>
+<li><p>读取文件系统，获得文件号，之后传给load_icode使用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fd = sysfile_open(path, O_RDONLY)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>清空原本的mm。vma，分配的Page，页表等等都会被清除。(user此时是内核进程，因此没有mm)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mm != <span class="literal">NULL</span>) &#123;</span><br><span class="line">       lcr3(boot_cr3);</span><br><span class="line">       <span class="keyword">if</span> (mm_count_dec(mm) == <span class="number">0</span>) &#123;</span><br><span class="line">           exit_mmap(mm);</span><br><span class="line">           put_pgdir(mm);</span><br><span class="line">           mm_destroy(mm);</span><br><span class="line">       &#125;</span><br><span class="line">       current-&gt;mm = <span class="literal">NULL</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调用load_icode</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load_icode(fd, argc, kargv)</span><br></pre></td></tr></table></figure>
+
+<p>调用完load_icode后，elf文件已经被全部加载进内存，并且根据elf文件program header的内容设置好了vma，页表等内容。还分配了USTACK空间。</p>
+</li>
+</ol>
+</li>
+<li><p>load_icode做的事情</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// load_icode -  called by sys_exec--&gt;do_execve</span></span><br><span class="line"><span class="comment">// 1. create a new mm for current process</span></span><br><span class="line"><span class="comment">// 2. create a new PDT, and mm-&gt;pgdir= kernel virtual addr of PDT</span></span><br><span class="line"><span class="comment">// 3. copy TEXT/DATA/BSS parts in binary to memory space of process</span></span><br><span class="line"><span class="comment">// 4. call mm_map to setup user stack, and put parameters into user stack</span></span><br><span class="line"><span class="comment">// 5. setup trapframe for user environment	</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line">load_icode(<span class="keyword">int</span> fd, <span class="keyword">int</span> argc, <span class="keyword">char</span> **kargv)</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>创建新的mm</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">mm</span>;</span></span><br><span class="line">   <span class="keyword">if</span> ((mm = mm_create()) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">       <span class="keyword">goto</span> bad_mm;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> (setup_pgdir(mm) != <span class="number">0</span>) &#123;</span><br><span class="line">       <span class="keyword">goto</span> bad_pgdir_cleanup_mm;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来涉及到对elf文件的解析。首先调用load_icode_read读取elf头(struct elfhdr32)。然后根据elfhdr，获得程序头(struct proghdr)的文件内偏移elf-&gt;e_phoff、程序头的数量elf-&gt;e_phnum。再通过for循环，读取每个程序头ph。程序头显示了每个段的信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (phnum = <span class="number">0</span>; phnum &lt; elf-&gt;e_phnum; phnum ++) &#123;</span><br><span class="line">    <span class="keyword">off_t</span> phoff = elf-&gt;e_phoff + <span class="keyword">sizeof</span>(struct proghdr) * phnum;</span><br><span class="line">    <span class="keyword">if</span> ((ret = load_icode_read(fd, ph, <span class="keyword">sizeof</span>(struct proghdr), phoff)) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">goto</span> bad_cleanup_mmap;</span><br><span class="line">	&#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>readelf -l  obj/user/sh的信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Elf 文件类型为 EXEC (可执行文件)</span><br><span class="line">Entry point 0x100033d0</span><br><span class="line">There are 2 program headers, starting at offset 52</span><br><span class="line"></span><br><span class="line">程序头：</span><br><span class="line">  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align</span><br><span class="line">  ABIFLAGS       0x0141d0 0x100041d0 0x100041d0 0x00018 0x00018 R   0x8</span><br><span class="line">  LOAD           0x010000 0x10000000 0x10000000 0x05010 0x09010 RWE 0x10000</span><br><span class="line"></span><br><span class="line"> Section to Segment mapping:</span><br><span class="line">  段节...</span><br><span class="line">   00     .MIPS.abiflags </span><br><span class="line">   01     .text .MIPS.abiflags .data .bss</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据每个ph的信息，添加vma。这里用的是ph-&gt;p_memsz。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vm_flags = <span class="number">0</span>;</span><br><span class="line">     <span class="comment">//ptep_set_u_read(&amp;perm);</span></span><br><span class="line">   perm |= PTE_U;</span><br><span class="line">   <span class="keyword">if</span> (ph-&gt;p_flags &amp; ELF_PF_X) vm_flags |= VM_EXEC;</span><br><span class="line">   <span class="keyword">if</span> (ph-&gt;p_flags &amp; ELF_PF_W) vm_flags |= VM_WRITE;</span><br><span class="line">   <span class="keyword">if</span> (ph-&gt;p_flags &amp; ELF_PF_R) vm_flags |= VM_READ;</span><br><span class="line">   <span class="keyword">if</span> (vm_flags &amp; VM_WRITE) perm |= PTE_W; </span><br><span class="line">      </span><br><span class="line">   <span class="keyword">if</span> ((ret = mm_map(mm, ph-&gt;p_va, ph-&gt;p_memsz, vm_flags, <span class="literal">NULL</span>)) != <span class="number">0</span>) &#123;</span><br><span class="line">       <span class="keyword">goto</span> bad_cleanup_mmap;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调用pgdir_alloc_page为每个虚拟地址分配物理页，并添加页表映射。调用load_icode_read将elf文件对应段(segment)读取到对应的物理页中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">      </span><br><span class="line"><span class="keyword">off_t</span> offset = ph-&gt;p_offset;</span><br><span class="line"><span class="keyword">size_t</span> off, <span class="built_in">size</span>;</span><br><span class="line"><span class="keyword">uintptr_t</span> start = ph-&gt;p_va, <span class="built_in">end</span>, la = ROUNDDOWN_2N(start, PGSHIFT);</span><br><span class="line">      </span><br><span class="line"><span class="built_in">end</span> = ph-&gt;p_va + ph-&gt;p_filesz;</span><br><span class="line"><span class="keyword">while</span> (start &lt; <span class="built_in">end</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((page = pgdir_alloc_page(mm-&gt;pgdir, la, perm)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ret = -E_NO_MEM;</span><br><span class="line">        <span class="keyword">goto</span> bad_cleanup_mmap;</span><br><span class="line">    &#125;</span><br><span class="line">    off = start - la, <span class="built_in">size</span> = PGSIZE - off, la += PGSIZE;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">end</span> &lt; la) &#123;</span><br><span class="line">        <span class="built_in">size</span> -= la - <span class="built_in">end</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ((ret = load_icode_read(fd, page2kva(page) + off, <span class="built_in">size</span>, offset)) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">goto</span> bad_cleanup_mmap;</span><br><span class="line">    &#125;</span><br><span class="line">    start += <span class="built_in">size</span>, offset += <span class="built_in">size</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置bss段（猜测）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">end</span> = ph-&gt;p_va + ph-&gt;p_memsz;</span><br><span class="line">      </span><br><span class="line">   <span class="keyword">if</span> (start &lt; la) &#123;</span><br><span class="line">       <span class="keyword">if</span> (start &gt;= <span class="built_in">end</span>) &#123;</span><br><span class="line">           <span class="keyword">continue</span> ;</span><br><span class="line">       &#125;</span><br><span class="line">       off = start + PGSIZE - la, <span class="built_in">size</span> = PGSIZE - off;</span><br><span class="line">       <span class="keyword">if</span> (<span class="built_in">end</span> &lt; la) &#123;</span><br><span class="line">           <span class="built_in">size</span> -= la - <span class="built_in">end</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="built_in">memset</span>(page2kva(page) + off, <span class="number">0</span>, <span class="built_in">size</span>);</span><br><span class="line">       start += <span class="built_in">size</span>;</span><br><span class="line">       assert((<span class="built_in">end</span> &lt; la &amp;&amp; start == <span class="built_in">end</span>) || (<span class="built_in">end</span> &gt;= la &amp;&amp; start == la));</span><br><span class="line">   &#125;</span><br><span class="line">      </span><br><span class="line">   <span class="keyword">while</span> (start &lt; <span class="built_in">end</span>) &#123;</span><br><span class="line">       <span class="keyword">if</span> ((page = pgdir_alloc_page(mm-&gt;pgdir, la, perm)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">           ret = -E_NO_MEM;</span><br><span class="line">           <span class="keyword">goto</span> bad_cleanup_mmap;</span><br><span class="line">       &#125;</span><br><span class="line">       off = start - la, <span class="built_in">size</span> = PGSIZE - off, la += PGSIZE;</span><br><span class="line">       <span class="keyword">if</span> (<span class="built_in">end</span> &lt; la) &#123;</span><br><span class="line">           <span class="built_in">size</span> -= la - <span class="built_in">end</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="built_in">memset</span>(page2kva(page) + off, <span class="number">0</span>, <span class="built_in">size</span>);</span><br><span class="line">       start += <span class="built_in">size</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>映射用户栈空间（添加vma，当发生pagefault时，异常处理程序会自动分配物理页）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vm_flags = VM_READ | VM_WRITE | VM_STACK;</span><br><span class="line">   <span class="keyword">if</span> ((ret = mm_map(mm, USTACKTOP - USTACKSIZE, USTACKSIZE, vm_flags, <span class="literal">NULL</span>)) != <span class="number">0</span>) &#123;</span><br><span class="line">       <span class="keyword">goto</span> bad_cleanup_mmap;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将函数调用参数压入用户栈中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uintptr_t</span> stacktop = USTACKTOP - argc * PGSIZE;</span><br><span class="line"> <span class="keyword">char</span> **uargv = (<span class="keyword">char</span> **)(stacktop - argc * <span class="keyword">sizeof</span>(<span class="keyword">char</span> *));</span><br><span class="line"> <span class="keyword">int</span> i;</span><br><span class="line"> <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; argc; i ++) &#123;</span><br><span class="line">     uargv[i] = <span class="built_in">strcpy</span>((<span class="keyword">char</span> *)(stacktop + i * PGSIZE), kargv[i]);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>上一个步骤已经将USTACKTOP添加到了vma中。因此在第一次访问用户栈时会触发pagefault（页表中没有映射关系），操作系统会动态分配Page。第二次访问会再触发一次tlb refill，tlb添加映射关系，之后便可以正常访问了。</p>
+</li>
+<li><p>设置tf。</p>
+<ol>
+<li><p>将tf-&gt;tf_epc设置为了elf-&gt;e_entry。因此异常返回时便开始执行elf程序。</p>
+</li>
+<li><p>在tf-&gt;tf_status中设置了KSU_USER，因此从SYSCALL返回后，CPU会转变为用户态。</p>
+</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">trapframe</span> *<span class="title">tf</span> = <span class="title">current</span>-&gt;<span class="title">tf</span>;</span></span><br><span class="line">   <span class="built_in">memset</span>(tf, <span class="number">0</span>, <span class="keyword">sizeof</span>(struct trapframe));</span><br><span class="line">      </span><br><span class="line">   tf-&gt;tf_epc = elf-&gt;e_entry;</span><br><span class="line">   tf-&gt;tf_regs.reg_r[MIPS_REG_SP] = USTACKTOP;</span><br><span class="line">   <span class="keyword">uint32_t</span> status = read_c0_status();</span><br><span class="line">   status &amp;= ~ST0_KSU;</span><br><span class="line">   status |= KSU_USER;     <span class="comment">//变成用户进程</span></span><br><span class="line">   status |= ST0_EXL;</span><br><span class="line">   tf-&gt;tf_status = status;</span><br><span class="line">   tf-&gt;tf_regs.reg_r[MIPS_REG_A0] = argc;</span><br><span class="line">   tf-&gt;tf_regs.reg_r[MIPS_REG_A1] = (<span class="keyword">uint32_t</span>)uargv;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ol>
+<h5 id="调度"><a href="#调度" class="headerlink" title="调度"></a>调度</h5><p>执行完proc_init后，已经创建好了两个内核线程idle和init，并且当前执行的线程为proc_init。当ucore的所有初始化工作完成后，ucore执行kern_init的最后一个函数cpu_idle函数。cpu_idle会调用schedule让出CPU。</p>
+<p>schedule具体的实现我们可以不关心。我们只需要知道sched_class_enqueue(proc)将一个进程放入运行队列run queue。next = sched_class_pick_next()从rq中找到下一个执行的进程。</p>
+<p>当选定需要执行的进程后，proc_run函数将该进程载入CPU执行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">cpu_idle(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (current-&gt;need_resched) &#123;</span><br><span class="line">            schedule();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">schedule(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">bool</span> intr_flag;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">proc_struct</span> *<span class="title">next</span>;</span></span><br><span class="line">    local_intr_save(intr_flag);</span><br><span class="line">    &#123;</span><br><span class="line">        current-&gt;need_resched = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (current-&gt;state == PROC_RUNNABLE) &#123;</span><br><span class="line">            sched_class_enqueue(current);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ((next = sched_class_pick_next()) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            sched_class_dequeue(next);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (next == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            next = idleproc;</span><br><span class="line">        &#125;</span><br><span class="line">        next-&gt;runs ++;</span><br><span class="line">        <span class="keyword">if</span> (next != current) &#123;</span><br><span class="line">            <span class="comment">//kprintf("########################\n");</span></span><br><span class="line">            <span class="comment">//kprintf("c %d TO %d\n", current-&gt;pid, next-&gt;pid);</span></span><br><span class="line">            <span class="comment">//print_trapframe(next-&gt;tf);</span></span><br><span class="line">            <span class="comment">//kprintf("@@@@@@@@@@@@@@@@@@@@@@@@\n");</span></span><br><span class="line">            proc_run(next);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    local_intr_restore(intr_flag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">proc_run(struct proc_struct *proc) &#123;</span><br><span class="line">    <span class="keyword">if</span> (proc != current) &#123;</span><br><span class="line">        <span class="keyword">bool</span> intr_flag;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">proc_struct</span> *<span class="title">prev</span> = <span class="title">current</span>, *<span class="title">next</span> = <span class="title">proc</span>;</span></span><br><span class="line">        local_intr_save(intr_flag);</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="comment">//panic("unimpl");</span></span><br><span class="line">            current = proc;</span><br><span class="line">            <span class="comment">//load_sp(next-&gt;kstack + KSTACKSIZE);</span></span><br><span class="line">            lcr3(next-&gt;cr3);</span><br><span class="line">            tlb_invalidate_all();       <span class="comment">//标注一下这里的tlb清空，待优化</span></span><br><span class="line">            switch_to(&amp;(prev-&gt;context), &amp;(next-&gt;context));</span><br><span class="line">        &#125;</span><br><span class="line">        local_intr_restore(intr_flag);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>proc_run会调用switch_to，switch_to会：</p>
+<ol>
+<li>将当前的context存储在prev-&gt;context中。（注意，context只包含s0-s8, sp, gp, ra）</li>
+<li>恢复next-&gt;context</li>
+<li>执行<code>j ra</code></li>
+</ol>
+<h6 id="init进程执行过程"><a href="#init进程执行过程" class="headerlink" title="init进程执行过程"></a>init进程执行过程</h6><p>通过kernel_thread(init_main, NULL, 0)创建init进程后</p>
+<ol>
+<li><p>cpu_idle中（idle进程中），执行schedule()，此时只有idle和init两个进程，因此调度到init进程执行proc_run。</p>
+</li>
+<li><p>执行switch_to，kernel_thread设置了context中的sp, ra。执行jr ra后，跳转到forkret</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// forkret -- the first kernel entry point of a new thread/process</span></span><br><span class="line"><span class="comment">// <span class="doctag">NOTE:</span> the addr of forkret is setted in copy_thread function</span></span><br><span class="line"><span class="comment">//       after switch_to, the current proc will execute here.</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">forkret(<span class="keyword">void</span>) &#123;</span><br><span class="line">    forkrets(current-&gt;tf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">forkrets:</span><br><span class="line">  addiu sp, a0, <span class="number">-16</span></span><br><span class="line">  b exception_return</span><br><span class="line">  nop</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>forkrets-&gt;exception_return从中断返回，弹出中断帧tf。CPU便会进入kernel_thread_entry，并以tf中指定的寄存器值执行</p>
+</li>
+<li><p>kernel_thread_entry跳转执行$a1即init_main</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;kern&#x2F;proc&#x2F;entry.S</span><br><span class="line">kernel_thread_entry:        # void kernel_thread(void)</span><br><span class="line">  addiu $sp, $sp, -16</span><br><span class="line">  jal $a1</span><br><span class="line">  nop</span><br><span class="line">  move $a0, $v0</span><br><span class="line">  la  $t0, do_exit</span><br><span class="line">  jal $t0 </span><br><span class="line">  nop</span><br><span class="line">  &#x2F;* never here *&#x2F;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h6 id="user-main的执行过程"><a href="#user-main的执行过程" class="headerlink" title="user_main的执行过程"></a>user_main的执行过程</h6><ol>
+<li><p>在init_main中，创建了user_main线程。然后init_main执行do_wait</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// init_main - the second kernel thread used to create user_main kernel threads</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line">init_main(<span class="keyword">void</span> *arg) &#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">int</span> pid = kernel_thread(user_main, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (pid &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        panic(<span class="string">"create user_main failed.\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (do_wait(<span class="number">0</span>, <span class="literal">NULL</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">        schedule();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fs_cleanup();</span><br><span class="line">    kprintf(<span class="string">"all user-mode processes have quit.\n"</span>);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>do_wait的作用是等待指定的或者任意一个（传入的pid为0）子线程进入ZOMBIE状态，释放子进程的内核栈空间和PCB空间。否则，自己进入睡眠状态SLEEPING，然后调用schedule()。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// do_wait - wait one OR any children with PROC_ZOMBIE state, and free memory space of kernel stack</span></span><br><span class="line"><span class="comment">//         - proc struct of this child.</span></span><br><span class="line"><span class="comment">// <span class="doctag">NOTE:</span> only after do_wait function, all resources of the child proces are free.</span></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">do_wait(<span class="keyword">int</span> pid, <span class="keyword">int</span> *code_store)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>schedule调用到user_main线程。和init一样，执行到user_main函数。</p>
+</li>
+<li><p>user_main函数调用了kernel_execv函数，实质为一次SYS_exec系统调用。</p>
+</li>
+<li><p>最后重新分配内核和用户空间，加载了sh用户程序。user_main线程从内核线程变为用户线程。</p>
+</li>
+<li><p>用户进程链接脚本user.ld指定了ENTRY(_start)。_start在user/libs/initcode.S中定义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">_start:</span><br><span class="line">    nop</span><br><span class="line">    la $gp, _gp</span><br><span class="line">    addiu $sp, $sp, -16</span><br><span class="line">    jal umain</span><br><span class="line">    nop</span><br></pre></td></tr></table></figure>
+
+<p>umain在user/libs/umain.c中定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">umain(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[]) &#123;</span><br><span class="line">    <span class="keyword">int</span> fd;</span><br><span class="line">    <span class="keyword">if</span> ((fd = initfd(<span class="number">0</span>, <span class="string">"stdin:"</span>, O_RDONLY)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        warn(<span class="string">"open &lt;stdin&gt; failed: %e.\n"</span>, fd);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ((fd = initfd(<span class="number">1</span>, <span class="string">"stdout:"</span>, O_WRONLY)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        warn(<span class="string">"open &lt;stdout&gt; failed: %e.\n"</span>, fd);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> ret = main(argc, argv);</span><br><span class="line">    <span class="built_in">exit</span>(ret);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h4 id="ide-init-amp-fs-init"><a href="#ide-init-amp-fs-init" class="headerlink" title="ide_init &amp; fs_init"></a>ide_init &amp; fs_init</h4>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mips/" rel="tag"># mips</a>
+              <a href="/tags/ucore/" rel="tag"># ucore</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/08/%E6%9B%B4%E6%96%B0%E5%9B%BA%E6%80%81%E4%B9%8B%E6%97%85/" rel="prev" title="更新固态之旅">
+      <i class="fa fa-chevron-left"></i> 更新固态之旅
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/17/Openwrt%E6%8A%98%E8%85%BE/" rel="next" title="2021-09-17-Openwrt折腾">
+      2021-09-17-Openwrt折腾 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Makefile"><span class="nav-number">1.</span> <span class="nav-text">1. Makefile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-kernel-entry"><span class="nav-number">2.</span> <span class="nav-text">2. kernel_entry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-kern-init"><span class="nav-number">3.</span> <span class="nav-text">3. kern_init</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#杂项"><span class="nav-number">3.1.</span> <span class="nav-text">杂项</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tlb-invalidate-all"><span class="nav-number">3.1.1.</span> <span class="nav-text">tlb_invalidate_all</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#pic-init"><span class="nav-number">3.1.2.</span> <span class="nav-text">pic_init</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cons-init-amp-clock-init"><span class="nav-number">3.1.3.</span> <span class="nav-text">cons_init &amp; clock_init</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#check-initrd"><span class="nav-number">3.1.4.</span> <span class="nav-text">check_initrd</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kprintf"><span class="nav-number">3.2.</span> <span class="nav-text">kprintf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pmm-init"><span class="nav-number">3.3.</span> <span class="nav-text">pmm_init</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#page结构体"><span class="nav-number">3.3.1.</span> <span class="nav-text">page结构体</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空闲页"><span class="nav-number">3.3.2.</span> <span class="nav-text">空闲页</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#pmm-manager"><span class="nav-number">3.3.3.</span> <span class="nav-text">pmm_manager</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#页表相关函数"><span class="nav-number">3.3.4.</span> <span class="nav-text">页表相关函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#check"><span class="nav-number">3.3.5.</span> <span class="nav-text">check</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#kmalloc"><span class="nav-number">3.3.6.</span> <span class="nav-text">kmalloc</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vmm-init"><span class="nav-number">3.4.</span> <span class="nav-text">vmm_init</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#vma-struct"><span class="nav-number">3.4.1.</span> <span class="nav-text">vma_struct</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mm-struct"><span class="nav-number">3.4.2.</span> <span class="nav-text">mm_struct</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#check-pgfault（pagefault的处理）"><span class="nav-number">3.4.3.</span> <span class="nav-text">check_pgfault（pagefault的处理）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数调用"><span class="nav-number">3.5.</span> <span class="nav-text">函数调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sched-init-amp-proc-init"><span class="nav-number">3.6.</span> <span class="nav-text">sched_init &amp; proc_init</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#proc-struct-进程控制块"><span class="nav-number">3.6.1.</span> <span class="nav-text">proc_struct(进程控制块)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建内核线程"><span class="nav-number">3.6.2.</span> <span class="nav-text">创建内核线程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#调度"><span class="nav-number">3.6.3.</span> <span class="nav-text">调度</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ide-init-amp-fs-init"><span class="nav-number">3.7.</span> <span class="nav-text">ide_init &amp; fs_init</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

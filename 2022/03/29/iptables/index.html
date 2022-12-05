@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="iptables">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iptables">
+<meta property="og:url" content="http://yoursite.com/2022/03/29/iptables/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="iptables">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220227011520539.png">
+<meta property="article:published_time" content="2022-03-29T10:14:50.000Z">
+<meta property="article:modified_time" content="2022-12-05T13:18:01.282Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="iptables">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220227011520539.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/03/29/iptables/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>iptables | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/29/iptables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iptables
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-29 18:14:50" itemprop="dateCreated datePublished" datetime="2022-03-29T18:14:50+08:00">2022-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 21:18:01" itemprop="dateModified" datetime="2022-12-05T21:18:01+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/03/29/iptables/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/03/29/iptables/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>iptables</p>
+<a id="more"></a>
+
+<h1 id="Iptables"><a href="#Iptables" class="headerlink" title="Iptables"></a>Iptables</h1><p><em>iptables</em> is a command line utility for configuring Linux kernel <a href="https://wiki.archlinux.org/title/Firewall" target="_blank" rel="noopener">firewall</a> implemented within the <a href="https://en.wikipedia.org/wiki/Netfilter" target="_blank" rel="noopener">Netfilter</a> project.</p>
+<ul>
+<li>iptables是linux上的防火墙软件</li>
+<li>有一些工具作为iptables的前端，命令更加简单或者有GUI（如ufw和gufw）</li>
+<li><strong>Note:</strong> <em>iptables</em> is a legacy framework, <a href="https://wiki.archlinux.org/title/Nftables" target="_blank" rel="noopener">nftables</a> aims to provide a modern replacement including a compatibility layer.</li>
+</ul>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="名词"><a href="#名词" class="headerlink" title="名词"></a>名词</h3><ul>
+<li><p>table：内核有一系列特定功能的表，用来过滤IP包(filtering IP packets，可以对ip包进行一系列操作)，表由一系列预定义的链构成</p>
+</li>
+<li><p>chain：链由一系列规则(rule)构成，顺序地执行</p>
+<ul>
+<li>table是按功能划分</li>
+<li>chain是按包所处位置划分</li>
+</ul>
+</li>
+<li><p>rule：规则由一个匹配条件(match)和对应的行为(target)组成</p>
+</li>
+<li><p>target： If the rule has matched fully, the target specification tells us what to do with the packet. </p>
+</li>
+<li><p>policy：当网络包到达预定义链的结尾时，链有一个默认的策略(chain’s policy)，如DROP或者ACCEPT</p>
+<p><em>注：用户定义的chain没有默认的policy</em></p>
+</li>
+</ul>
+<h3 id="Flow-chart"><a href="#Flow-chart" class="headerlink" title="Flow chart"></a>Flow chart</h3><p>当一个网络接口上接受到一个包后，内核会对其进行一系列处理。</p>
+<blockquote>
+<p>When a packet first enters the firewall, it hits the hardware and then gets passed on to the proper device driver in the kernel. Then the packet starts to go through a series of steps in the kernel, before it is either sent to the correct application (locally), or forwarded to another host - or whatever happens to it.</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220227011520539.png" alt=""></p>
+<ul>
+<li>每一个IP包，无论来自哪一个网络接口(network interface)，都会按照该流图处理</li>
+<li>大致分为3种情况<ul>
+<li>包的目的是本机的某个进程：PREROUTING –&gt; INPUT –&gt; Local Process</li>
+<li>如果本地进程产生一个包，也需要一系列处理将其发送到某个接口上：OUTPUT –&gt; POSTROUTING</li>
+<li>如果包的目的地址不是本机，则需要进行转发：PREROUTING –&gt; FORWARD –&gt;  POSTROUTING</li>
+</ul>
+</li>
+</ul>
+<h3 id="Tables"><a href="#Tables" class="headerlink" title="Tables"></a>Tables</h3><ul>
+<li><p>raw：用于在其他表之前进行操作，可以避免connection tracking</p>
+</li>
+<li><p>filter：专门用于filtering packets，如进行DROP, LOG, ACCEPT or REJECT</p>
+</li>
+<li><p>nat：用于网络地址转换，如端口转发</p>
+<ul>
+<li>不应该在nat table上进行filter，因为nat只会对一个流中的第一个packet进行处理，其它的包已经没有了TCP Header（IP层进行了分片）。nat table is only traversed by the first packet in a connection</li>
+</ul>
+</li>
+<li><p>mangle：用于修改packet的header信息，如TTL, TOS。或者在内核空间给packet打上标记(MARK)，其他程序可以通过该mark进行其他操作。</p>
+<p>TTL的奇妙作用</p>
+<blockquote>
+<p>The TTL target is used to change the TTL (Time To Live) field of the packet. We could tell packets to only have a specific TTL and so on. One good reason for this could be that we don’t want to give ourself away to nosy Internet Service Providers. Some Internet Service Providers do not like users running multiple computers on one single connection, <strong>and there are some Internet Service Providers known to look for a single host generating different TTL values, and take this as one of many signs of multiple computers connected to a single connection.</strong></p>
+</blockquote>
+</li>
+<li><p>security：is used for <a href="https://wiki.archlinux.org/title/Mandatory_Access_Control" target="_blank" rel="noopener">Mandatory Access Control</a> networking rules (e.g. SELinux – see <a href="https://lwn.net/Articles/267140/" target="_blank" rel="noopener">this article</a> for more details)</p>
+</li>
+</ul>
+<p>通常只需要使用filter和nat表，mangle表用于更复杂的操作。</p>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><ul>
+<li><p>格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables [-t table] command [match] [target&#x2F;jump]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不指定-t时，默认使用filter表</p>
+</li>
+</ul>
+<h3 id="command"><a href="#command" class="headerlink" title="command"></a>command</h3><h4 id="chain管理"><a href="#chain管理" class="headerlink" title="chain管理"></a>chain管理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-P, --policy chain target ：为指定的链 chain 设置策略 target。注意，只有内置的链才允许有策略，用户自定义的是不允许的。</span><br><span class="line">-F, --flush [chain] 清空指定链 chain 上面的所有规则。如果没有指定链，清空该表上所有链的所有规则。</span><br><span class="line">-N, --new-chain chain 用指定的名字创建一个新的链。</span><br><span class="line">-X, --delete-chain [chain] ：删除指定的链，这个链必须没有被其它任何规则引用，而且这条上必须没有任何规则。如果没有指定链名，则会删除该表中所有非内置的链。</span><br><span class="line">-E, --rename-chain old-chain new-chain ：用指定的新名字去重命名指定的链。这并不会对链内部造成任何影响。</span><br><span class="line">-Z, --zero [chain] ：把指定链，或者表中的所有链上的所有计数器清零。</span><br></pre></td></tr></table></figure>
+
+<h4 id="规则管理命令"><a href="#规则管理命令" class="headerlink" title="规则管理命令"></a>规则管理命令</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-A, --append chain rule-specification 在指定链 chain 的末尾插入指定的规则，也就是说，这条规则会被放到最后，最后才会被执行。规则是由后面的匹配来指定。</span><br><span class="line">-I, --insert chain [rulenum] rule-specification 在链 chain 中的指定位置插入一条或多条规则。如果指定的规则号是1，则在链的头部插入。这也是默认的情况。</span><br><span class="line">-D, --delete chain rule-specification -D, --delete chain rulenum 在指定的链 chain 中删除一个或多个指定规则。</span><br><span class="line">-R num：Replays替换&#x2F;修改第几条规则</span><br></pre></td></tr></table></figure>
+
+<h3 id="match"><a href="#match" class="headerlink" title="match"></a>match</h3><ul>
+<li>-sport可以使用service名字，可以查看/etc/service有哪些预定义的服务端口</li>
+</ul>
+<h4 id="Conntrack-match"><a href="#Conntrack-match" class="headerlink" title="Conntrack match"></a>Conntrack match</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp -m conntrack --ctstate RELATED</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>INVALID</li>
+<li>ESTABLISHED：a connection that is already registered in the kernel</li>
+<li>NEW：the first packet of an as yet unestablished connection</li>
+<li>RELATED：a new connection that was created by an older, established one</li>
+<li>SNAT</li>
+<li>DNAT</li>
+</ul>
+<h3 id="target-jump"><a href="#target-jump" class="headerlink" title="target/jump"></a>target/jump</h3><h4 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h4><ul>
+<li><p>SNAT：修改packet的源地址，即我们常用的NAT功能</p>
+<p>The SNAT target is only valid within the nat table, within the POSTROUTING chain</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -A POSTROUTING -s 192.168.188.0&#x2F;24 -j SNAT --to-source 210.14.67.127</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>MASQUERADE</p>
+<p><strong>The MASQUERADE target is used basically the same as the SNAT target, but it does not require any –to-source option.</strong> The reason for this is that the MASQUERADE target was made to work with, for example, dial-up connections, or DHCP connections, which gets dynamic IP addresses when connecting to the network in question. This means that you should only use the MASQUERADE target with dynamically assigned IP connections, which we don’t know the actual address of at all times. If you have a static IP connection, you should instead use the SNAT target.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># iptables -t nat -A POSTROUTING -s 192.168.0.0&#x2F;24 -o ppp0 -j MASQUERADE</span><br></pre></td></tr></table></figure>
+
+<p>Machines from these subnets can now use your new NAT machine as their gateway. Note that you may want to set up a DNS and <a href="https://wiki.archlinux.org/title/DHCP" target="_blank" rel="noopener">DHCP</a> server like <a href="https://wiki.archlinux.org/title/Dnsmasq" target="_blank" rel="noopener">dnsmasq</a> or a combination of <a href="https://wiki.archlinux.org/title/BIND" target="_blank" rel="noopener">BIND</a> and <a href="https://wiki.archlinux.org/title/Dhcpd" target="_blank" rel="noopener">dhcpd</a> to simplify network settings DNS resolution on the client machines. This is not the topic of this guide.</p>
+</li>
+<li><p>DNAT: it is used to rewrite the <code>Destination IP</code> address of a packet.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 8000 -j DNAT --to 192.168.0.6:80</span><br><span class="line">iptables -A fw-open -d 192.168.0.6 -p tcp --dport 80 -j ACCEPT</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="MARK"><a href="#MARK" class="headerlink" title="MARK"></a>MARK</h4><ul>
+<li><p>MARK: The MARK target is used to set Netfilter mark values that are associated with specific packets. This target is only valid in the mangle table, and will not work outside there.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t mangle -A PREROUTING -p tcp --dport 22 -j MARK --set-mark 2</span><br></pre></td></tr></table></figure>
+
+<p>For example, we may set mark 2 on a specific stream of packets, or on all packets from a specific host and then do advanced routing on that host, to decrease or increase the network bandwidth, etc.</p>
+</li>
+<li><p>CONNMARK: The CONNMARK target is used to set a mark on a whole connection, much the same way as the MARK target does.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -A PREROUTING -p tcp --dport 80 -j CONNMARK --set-mark 4</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h4><ul>
+<li><p>ACCEPT</p>
+</li>
+<li><p>DROP</p>
+</li>
+<li><p>REJECT</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -A FORWARD -p TCP --dport 22 -j REJECT --reject-with tcp-reset</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>REDIRECT</p>
+<p>只能作用在nat表的PREROUTING和OUTPUT链上，或则自己定义的链上。</p>
+<p>Note that the REDIRECT target is only valid within the PREROUTING and OUTPUT chains of the nat table. It is also valid within user-defined chains that are only called from those chains, and nowhere else.</p>
+<p>The REDIRECT target is used to redirect packets and streams to the machine itself. This means that we could for example REDIRECT all packets destined for the HTTP ports to an HTTP proxy like squid, on our own host. Locally generated packets are mapped to the 127.0.0.1 address. <strong>In other words, this rewrites the destination address to our own host for packets that are forwarded, or something alike.</strong> The REDIRECT target is extremely good to use when we want, for example, <strong>transparent proxying</strong>, where the <em>LAN</em> hosts do not know about the proxy at all.</p>
+</li>
+<li><p>RETURN</p>
+<p>The RETURN target will cause the current packet to stop traveling through the chain where it hit the rule. If it is the subchain of another chain, the packet will <strong>continue to travel through the superior chains</strong> as if nothing had happened. If the chain is the main chain, for example the INPUT chain, the packet will <strong>have the default policy taken on it</strong>.</p>
+</li>
+<li><p>LOG</p>
+</li>
+</ul>
+<h3 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h3><h4 id="list-table"><a href="#list-table" class="headerlink" title="list table"></a>list table</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -nvL -t &lt;table&gt;	#默认filter表</span><br><span class="line">#or</span><br><span class="line">iptables-save</span><br></pre></td></tr></table></figure>
+
+<h4 id="保存和恢复"><a href="#保存和恢复" class="headerlink" title="保存和恢复"></a>保存和恢复</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables-save &gt; file</span><br><span class="line">iptables-restore &lt;file</span><br></pre></td></tr></table></figure>
+
+<h4 id="重置rule"><a href="#重置rule" class="headerlink" title="重置rule"></a>重置rule</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -F</span><br><span class="line">iptables -X</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://wiki.archlinux.org/title/iptables" target="_blank" rel="noopener">iptables - ArchWiki (archlinux.org)</a></li>
+<li>最全资料：<a href="https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html" target="_blank" rel="noopener">https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html</a><ul>
+<li>其中介绍各个table和chain是如何遍历的：<a href="https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#TRAVERSINGOFTABLES" target="_blank" rel="noopener">Iptables Tutorial 1.2.2 (frozentux.net)</a></li>
+</ul>
+</li>
+<li><a href="https://gsoc-blog.ecklm.com/iptables-redirect-vs.-dnat-vs.-tproxy/" target="_blank" rel="noopener">Iptables REDIRECT vs. DNAT vs. TPROXY – What I’ve learned during GSoC – Here I describe what I’ve learned during contributing to the netfilter project during my GSoC participation in 2018 hoping that it will help others looking for hard-to find information. (ecklm.com)</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iptables/" rel="tag"># iptables</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/14/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="prev" title="如何实现网络自由">
+      <i class="fa fa-chevron-left"></i> 如何实现网络自由
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/21/latex%E5%AD%97%E4%BD%93%E5%88%86%E7%B1%BB/" rel="next" title="latex字体分类">
+      latex字体分类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Iptables"><span class="nav-number">1.</span> <span class="nav-text">Iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#名词"><span class="nav-number">1.1.1.</span> <span class="nav-text">名词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flow-chart"><span class="nav-number">1.1.2.</span> <span class="nav-text">Flow chart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tables"><span class="nav-number">1.1.3.</span> <span class="nav-text">Tables</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">1.2.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#command"><span class="nav-number">1.2.1.</span> <span class="nav-text">command</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#chain管理"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">chain管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#规则管理命令"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">规则管理命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#match"><span class="nav-number">1.2.2.</span> <span class="nav-text">match</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Conntrack-match"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">Conntrack match</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#target-jump"><span class="nav-number">1.2.3.</span> <span class="nav-text">target&#x2F;jump</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NAT"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">NAT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MARK"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">MARK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Basic"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">Basic</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">1.2.4.</span> <span class="nav-text">其它</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#list-table"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">list table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#保存和恢复"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">保存和恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重置rule"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">重置rule</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">1.3.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

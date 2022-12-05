@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="说明写这个的原因是，网络上的教程真的太烂了。比如：  没有说明就默认用centos 默认是服务器版本的Linux发行版，没有桌面环境 桌面环境默认用xfce，而很少有gnome的 vnc各种版本，默认只说明其中一种 xstartup没有任何说明，如何配置  各种remote desktop软件，可以看到最近更新时间  Comparison of remote desktop software -">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vnc和rdp远程">
+<meta property="og:url" content="http://yoursite.com/2022/07/19/vnc%E5%92%8Crdp%E8%BF%9C%E7%A8%8B/index.html">
+<meta property="og:site_name" content="rain的随笔">
+<meta property="og:description" content="说明写这个的原因是，网络上的教程真的太烂了。比如：  没有说明就默认用centos 默认是服务器版本的Linux发行版，没有桌面环境 桌面环境默认用xfce，而很少有gnome的 vnc各种版本，默认只说明其中一种 xstartup没有任何说明，如何配置  各种remote desktop软件，可以看到最近更新时间  Comparison of remote desktop software -">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://user-images.githubusercontent.com/2255040/103416828-f869f700-4b90-11eb-836e-4446767002a0.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/2255040/103416852-0c155d80-4b91-11eb-8d1f-5ab7f534e8d4.png">
+<meta property="og:image" content="https://i.stack.imgur.com/VrSce.png">
+<meta property="article:published_time" content="2022-07-19T07:34:52.000Z">
+<meta property="article:modified_time" content="2022-12-05T14:17:07.816Z">
+<meta property="article:author" content="rain">
+<meta property="article:tag" content="vnc">
+<meta property="article:tag" content="rdp">
+<meta property="article:tag" content="tigervnc">
+<meta property="article:tag" content="x11vnc">
+<meta property="article:tag" content="noVNC">
+<meta property="article:tag" content="X11">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/2255040/103416828-f869f700-4b90-11eb-836e-4446767002a0.png">
+
+<link rel="canonical" href="http://yoursite.com/2022/07/19/vnc%E5%92%8Crdp%E8%BF%9C%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>vnc和rdp远程 | rain的随笔</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">rain的随笔</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A secret base!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/07/19/vnc%E5%92%8Crdp%E8%BF%9C%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vnc和rdp远程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-19 15:34:52" itemprop="dateCreated datePublished" datetime="2022-07-19T15:34:52+08:00">2022-07-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:17:07" itemprop="dateModified" datetime="2022-12-05T22:17:07+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/07/19/vnc%E5%92%8Crdp%E8%BF%9C%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/07/19/vnc%E5%92%8Crdp%E8%BF%9C%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>写这个的原因是，网络上的教程真的太烂了。比如：</p>
+<ul>
+<li>没有说明就默认用centos</li>
+<li>默认是服务器版本的Linux发行版，没有桌面环境</li>
+<li>桌面环境默认用xfce，而很少有gnome的</li>
+<li>vnc各种版本，默认只说明其中一种</li>
+<li>xstartup没有任何说明，如何配置</li>
+</ul>
+<p>各种remote desktop软件，可以看到最近更新时间</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Comparison_of_remote_desktop_software" target="_blank" rel="noopener">Comparison of remote desktop software - Wikipedia</a></li>
+</ul>
+<a id="more"></a>
+<h2 id="RDP"><a href="#RDP" class="headerlink" title="RDP"></a>RDP</h2><p>RDP是Windows远程桌面使用的一种<strong>专利</strong>协议。</p>
+<blockquote>
+<p><strong>Remote Desktop Protocol</strong> (<strong>RDP</strong>) is a <a href="https://en.wikipedia.org/wiki/Proprietary_protocol" target="_blank" rel="noopener">proprietary protocol</a> developed by <a href="https://en.wikipedia.org/wiki/Microsoft" target="_blank" rel="noopener">Microsoft</a> which provides a user with a <a href="https://en.wikipedia.org/wiki/Graphical_user_interface" target="_blank" rel="noopener">graphical interface</a> to connect to another computer over a network connection.<a href="https://en.wikipedia.org/wiki/Remote_Desktop_Protocol#cite_note-:0-1" target="_blank" rel="noopener">[1]</a> The user employs RDP client software for this purpose, while the other computer must run RDP server software.Clients exist for most versions of <a href="https://en.wikipedia.org/wiki/Microsoft_Windows" target="_blank" rel="noopener">Microsoft Windows</a> (including <a href="https://en.wikipedia.org/wiki/Windows_Mobile" target="_blank" rel="noopener">Windows Mobile</a>), <a href="https://en.wikipedia.org/wiki/Linux" target="_blank" rel="noopener">Linux</a>, <a href="https://en.wikipedia.org/wiki/Unix" target="_blank" rel="noopener">Unix</a>, <a href="https://en.wikipedia.org/wiki/MacOS" target="_blank" rel="noopener">macOS</a>, <a href="https://en.wikipedia.org/wiki/IOS" target="_blank" rel="noopener">iOS</a>, <a href="https://en.wikipedia.org/wiki/Android_(operating_system)" target="_blank" rel="noopener">Android</a>, and other <a href="https://en.wikipedia.org/wiki/Operating_system" target="_blank" rel="noopener">operating systems</a>. RDP servers are built into Windows operating systems; an RDP server for Unix and OS X also exists. By default, the server listens on <a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol" target="_blank" rel="noopener">TCP</a> <a href="https://en.wikipedia.org/wiki/Computer_port_(software)" target="_blank" rel="noopener">port</a> 3389<a href="https://en.wikipedia.org/wiki/Remote_Desktop_Protocol#cite_note-MSKBDefaultPort-2" target="_blank" rel="noopener">[2]</a> and <a href="https://en.wikipedia.org/wiki/User_Datagram_Protocol" target="_blank" rel="noopener">UDP</a> port 3389.<a href="https://en.wikipedia.org/wiki/Remote_Desktop_Protocol#cite_note-3" target="_blank" rel="noopener">[3]</a></p>
+</blockquote>
+<p>但是不知怎么做到的，linux下也有rdp server的开源实现——xrdp</p>
+<p><a href="https://github.com/neutrinolabs/xrdp" target="_blank" rel="noopener">neutrinolabs/xrdp: xrdp: an open source RDP server (github.com)</a></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ul>
+<li><p>对于服务器linux需要安装桌面环境，如xfce，Gnome（不知为何网上搜索教程全部都默认你没有桌面环境，并且都叫你安装xfce，感觉很奇怪）</p>
+</li>
+<li><p>安装只需要一行命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install xrdp</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后就可以通过systemctl看到服务正在运行了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status xrdp</span><br></pre></td></tr></table></figure>
+
+<p>xrdp监听的端口和windows一样也是3389，需要打开防火墙。</p>
+</li>
+<li><p>然后便可以通过RDP客户端连接使用了</p>
+</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li><p>显示黑屏：xrdp只支持同一个用户登录一个桌面。因此需要把其他登录了桌面的用户退出。</p>
+</li>
+<li><p><strong>显示卡顿</strong>：网上有类似问题，但是还不知如何解决</p>
+</li>
+<li><p>同样有任务栏(dock)不显示问题</p>
+</li>
+</ul>
+<h3 id="RDP-client"><a href="#RDP-client" class="headerlink" title="RDP client"></a>RDP client</h3><p><a href="https://en.wikipedia.org/wiki/Remote_Desktop_Protocol" target="_blank" rel="noopener">Remote Desktop Protocol - Wikipedia</a> #Non-Microsoft implementations</p>
+<ul>
+<li><p>mstsc.exe的全名是 (microsoft terminal service client)</p>
+</li>
+<li><p>rdesktop -&gt; FreeRDP -&gt; Remmina</p>
+<ul>
+<li>rdesktop很老</li>
+<li>命令行用FreeRDP </li>
+<li>GUI用Remmina（基于FreeRDP）</li>
+</ul>
+</li>
+<li><p>server</p>
+<ul>
+<li>xrdp</li>
+</ul>
+</li>
+</ul>
+<h2 id="VNC"><a href="#VNC" class="headerlink" title="VNC"></a>VNC</h2><p>VNC则是一个开源的协议用于远程控制计算机</p>
+<blockquote>
+<p> In computing, <strong>Virtual Network Computing</strong> (<strong>VNC</strong>) is a graphical desktop-sharing system that uses the <a href="https://en.wikipedia.org/wiki/RFB_protocol" target="_blank" rel="noopener">Remote Frame Buffer protocol (RFB)</a> to remotely control another <a href="https://en.wikipedia.org/wiki/Computer" target="_blank" rel="noopener">computer</a>. It transmits the <a href="https://en.wikipedia.org/wiki/Computer_keyboard" target="_blank" rel="noopener">keyboard</a> and <a href="https://en.wikipedia.org/wiki/Computer_mouse" target="_blank" rel="noopener">mouse</a> input from one computer to another, relaying the graphical-<a href="https://en.wikipedia.org/wiki/Computer_screen" target="_blank" rel="noopener">screen</a> updates, over a <a href="https://en.wikipedia.org/wiki/Computer_network" target="_blank" rel="noopener">network</a>.<a href="https://en.wikipedia.org/wiki/Virtual_Network_Computing#cite_note-1" target="_blank" rel="noopener">[1]</a></p>
+</blockquote>
+<p>linux下有好多不同的vncserver，如tightvnc, tigervnc, ultravnc等，<strong>不同vncserver的命令不同，配置文件不同</strong>，网上教程比较杂乱。这里以tigervnc为说明。</p>
+<h3 id="tigervnc"><a href="#tigervnc" class="headerlink" title="tigervnc"></a>tigervnc</h3><p>参考：</p>
+<ul>
+<li><a href="https://help.ubuntu.com/community/VNC/Servers" target="_blank" rel="noopener">VNC/Servers - Community Help Wiki (ubuntu.com)</a></li>
+<li><a href="https://page.syao.fun/2020/08/06/linux_vnc.html" target="_blank" rel="noopener">VNC的安装与使用 - SYAO</a><ul>
+<li>注意该教程针对1.11版本，1.12中配置文件，systemd service名称改变了。</li>
+</ul>
+</li>
+<li><a href="https://github.com/TigerVNC/tigervnc" target="_blank" rel="noopener">TigerVNC/tigervnc: High performance, multi-platform VNC client and server (github.com)</a><ul>
+<li>readme中的关于<em>Xvnc</em>,<em>vncserver@.service</em>介绍已经过时了（名字变化了）</li>
+</ul>
+</li>
+</ul>
+<h4 id="使用情况"><a href="#使用情况" class="headerlink" title="使用情况"></a>使用情况</h4><ul>
+<li>台式机离开不用时，点击注销，win+L锁屏是不够的。注销后，查看运行的Xserver会发现从X1变成了X0。</li>
+<li>vnc远程不再使用后，可以systemctl stop掉服务，也可以点击注销。此时vnc的Xserver也会关闭。</li>
+<li></li>
+</ul>
+<h4 id="桌面环境"><a href="#桌面环境" class="headerlink" title="桌面环境"></a>桌面环境</h4><p>需要有一个桌面环境(desktop environment)</p>
+<p>ubuntu desktop版使用自带的GNOME桌面即可，或者参考如何安装不同桌面环境，如xfce：<a href="https://www.howtogeek.com/193129/how-to-install-and-use-another-desktop-environment-on-linux/" target="_blank" rel="noopener">How to Install and Use Another Desktop Environment on Linux (howtogeek.com)</a></p>
+<h4 id="安装tigervnc"><a href="#安装tigervnc" class="headerlink" title="安装tigervnc"></a>安装tigervnc</h4><ul>
+<li><p>apt搜索tigervnc有很多包，需要确定哪个包包含vnc server</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">~ apt search tigervnc</span><br><span class="line"></span><br><span class="line">tigervnc-common&#x2F;jammy,now 1.12.0+dfsg-4 amd64 [已安装，自动]</span><br><span class="line">  Virtual network computing; Common software needed by servers</span><br><span class="line"></span><br><span class="line">tigervnc-scraping-server&#x2F;jammy 1.12.0+dfsg-4 amd64</span><br><span class="line">  Virtual network computing server performing X screen scraping</span><br><span class="line"></span><br><span class="line">tigervnc-standalone-server&#x2F;jammy,now 1.12.0+dfsg-4 amd64 [已安装]</span><br><span class="line">  Standalone virtual network computing server</span><br><span class="line"></span><br><span class="line">tigervnc-tools&#x2F;jammy,now 1.12.0+dfsg-4 amd64 [已安装，自动]</span><br><span class="line">  Virtual network computing; Tools for both clients and servers</span><br><span class="line"></span><br><span class="line">tigervnc-viewer&#x2F;jammy 1.12.0+dfsg-4 amd64</span><br><span class="line">  Virtual network computing client for X</span><br><span class="line"></span><br><span class="line">tigervnc-xorg-extension&#x2F;jammy 1.12.0+dfsg-4 amd64</span><br><span class="line">  Virtual network computing X server extension</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以在<a href="https://packages.ubuntu.com/" target="_blank" rel="noopener">Ubuntu – Ubuntu Packages Search</a>搜索，查看包里面包含哪些内容。比如tigervnc-standalone-server</p>
+<p><a href="https://packages.ubuntu.com/jammy/amd64/tigervnc-standalone-server/filelist" target="_blank" rel="noopener">https://packages.ubuntu.com/jammy/amd64/tigervnc-standalone-server/filelist</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;etc&#x2F;X11&#x2F;Xtigervnc-session</span><br><span class="line">&#x2F;etc&#x2F;tigervnc&#x2F;vncserver.users</span><br><span class="line">&#x2F;lib&#x2F;systemd&#x2F;system&#x2F;tigervncserver@.service</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;Xtigervnc</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;tigervncserver</span><br><span class="line">&#x2F;usr&#x2F;libexec&#x2F;tigervncsession-start</span><br><span class="line">&#x2F;usr&#x2F;sbin&#x2F;tigervncsession</span><br><span class="line">&#x2F;usr&#x2F;share&#x2F;doc&#x2F;tigervnc-standalone-server&#x2F;changelog.Debian.gz</span><br><span class="line">&#x2F;usr&#x2F;share&#x2F;doc&#x2F;tigervnc-standalone-server&#x2F;copyright</span><br><span class="line">&#x2F;usr&#x2F;share&#x2F;man&#x2F;man1&#x2F;Xtigervnc.1.gz</span><br><span class="line">&#x2F;usr&#x2F;share&#x2F;man&#x2F;man1&#x2F;tigervncserver.1.gz</span><br><span class="line">&#x2F;usr&#x2F;share&#x2F;man&#x2F;man8&#x2F;tigervncsession.8.gz</span><br></pre></td></tr></table></figure>
+
+<p>可以看到包含<code>/usr/bin/tigervncserver</code>，即为我们需要的。同时还包含一个systemd服务模板——<code>/lib/systemd/system/tigervncserver@.service</code>，说明可以使用systemd启动vnc server</p>
+</li>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install tigervnc-standalone-server</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="连接密码"><a href="#连接密码" class="headerlink" title="连接密码"></a>连接密码</h4><p>其它vncserver，第一次运行时会让用户设置密码，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vncserver -localhost no #设置为no localhost，不然只能在本计算机上访问（LAN内的都不行）。</span><br></pre></td></tr></table></figure>
+
+<p>tigervnc 1.10后虽然不应使用vncserver来启动，但是也可以使用该方式设置密码。</p>
+<p>创建密码后，会生成~/.vnc/passwd文件。</p>
+<h4 id="配置vncserver"><a href="#配置vncserver" class="headerlink" title="配置vncserver"></a>配置vncserver</h4><p>我们需要配置$HOME/.vnc/tigervnc.conf，示例配置如下，其中只有session是必须的，对应<code>/usr/share/xsessions</code>目录下的一个桌面环境。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$session&#x3D;ubuntu;</span><br><span class="line">$geometry &#x3D; &quot;1920x1080&quot;;</span><br><span class="line">$localhost &#x3D; &quot;no&quot;;</span><br><span class="line">#$depth &#x3D; &quot;24&quot;;</span><br><span class="line">#$pixelformat &#x3D; &quot;rgb888&quot;;</span><br><span class="line">$SecurityTypes &#x3D; &quot;VncAuth,TLSVnc&quot;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="配置的说明"><a href="#配置的说明" class="headerlink" title="配置的说明"></a>配置的说明</h5><ul>
+<li>查看man tigervnc.conf(5x)</li>
+<li>查看<code>/etc/tigervnc/vncserver-config-defaults</code></li>
+<li>可查看<code>/lib/systemd/system/tigervncserver@.service</code>注释说明</li>
+</ul>
+<p>查看<code>man tigervnc.conf(5x)</code>可以知道，以下四级配置依次生效，后者覆盖前者：vncserver-config-defaults, $HOME/.vnc/tigervnc.conf, command-line option, vncserver-config-mandatory</p>
+<p>具体配置可查看<code>/etc/tigervnc/vncserver-config-defaults</code></p>
+<p><strong>user assign</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#&#x2F;etc&#x2F;tigervnc&#x2F;vncserver.users</span><br></pre></td></tr></table></figure>
+
+<p><strong>startup script</strong></p>
+<ul>
+<li>相当于说默认条件下：<code>$vncUserDir/Xtigervnc-session</code>，<code>$vncUserDir/xstartup</code>，<code>/etc/X11/Xtigervnc-session</code>重要性依次降低，只有前者不存在的情况下才会执行后者。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># $vncStartup points to a script that will be started at the very beginning</span><br><span class="line"># when neither $vncUserDir&#x2F;Xtigervnc-session nor $vncUserDir&#x2F;xstartup is present.</span><br><span class="line"># If $vncUserDir&#x2F;Xtigervnc-session is present, it will be used. Otherwise, we try</span><br><span class="line"># $vncUserDir&#x2F;xstartup. If this is also absent, then we use the script given by</span><br><span class="line"># $vncStartup. If $vncStartup is specified in $vncUserDir&#x2F;tigervnc.conf, then this</span><br><span class="line"># script is used unconditionally. That is without checking for the presence of</span><br><span class="line"># $vncUserDir&#x2F;Xtigervnc-session or $vncUserDir&#x2F;xstartup.</span><br><span class="line">#</span><br><span class="line"># Default: $vncStartup &#x3D; &quot;&#x2F;etc&#x2F;X11&#x2F;Xtigervnc-session&quot;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>session(桌面环境)</strong>，<strong>必须设置</strong></p>
+<ul>
+<li><p>ubuntu22.04 安装了xfce4后的<code>/usr/share/xsessions</code></p>
+<ul>
+<li><p>ubuntu.desktop：使用wayland替代X windows system</p>
+</li>
+<li><p>ubuntu-xorg.desktop：使用X windows system</p>
+</li>
+<li><p>xfce.desktop</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># The $session option controls which X session type will be started. This</span><br><span class="line"># should match one of the files in &#x2F;usr&#x2F;share&#x2F;xsessions. For example, if there</span><br><span class="line"># is a file called gnome.desktop, then $session &#x3D; &quot;gnome&quot; would start this X</span><br><span class="line"># session. The command to start the session is passed to the $vncStartup</span><br><span class="line"># script. If this is not specified, then &#x2F;etc&#x2F;X11&#x2F;Xtigervnc-session will start</span><br><span class="line"># the session specified by &#x2F;usr&#x2F;bin&#x2F;x-session-manager.</span><br><span class="line">#</span><br><span class="line"># Default: $session &#x3D; undef;</span><br></pre></td></tr></table></figure>
+
+<p><strong>其它</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#显示器几何大小</span><br><span class="line"># Default: $geometry &#x3D; &quot;1920x1200&quot;;</span><br><span class="line"></span><br><span class="line">#颜色</span><br><span class="line"># $depth       sets the framebuffer color depth. Must be one of 16, 24, or 32.</span><br><span class="line"># $pixelformat sets the default pixelformat.</span><br><span class="line">#              A default can be derived if the tigervncserver is run in a</span><br><span class="line">#              X session -- either $ENV&#123;DISPLAY&#125; or the session given by</span><br><span class="line">#              $getDefaultFrom -- with the -xdisplaydefaults option. The depth</span><br><span class="line">#              and pixelformat can also be changed at the commandline with</span><br><span class="line">#              the -depth and -pixelformat options. Otherwise, the fixed</span><br><span class="line">#              defaults provided below for the two settings will be used.</span><br><span class="line"># Example: $depth &#x3D; &quot;16&quot;;</span><br><span class="line">#          $pixelformat &#x3D; &quot;rgb565&quot;;</span><br><span class="line"># Default: $depth &#x3D; &quot;24&quot;;</span><br><span class="line"># Default: $pixelformat &#x3D; undef;</span><br><span class="line"></span><br><span class="line">#是否本地才能访问</span><br><span class="line"># Default: $localhost &#x3D; &quot;yes&quot;; # if $SecurityTypes does not contain any TLS*</span><br><span class="line">#                              #    or X509* security types or the $SecurityTypes</span><br><span class="line">#                              #    does contain at least on *None security type.</span><br><span class="line"># Default: $localhost &#x3D; &quot;no&quot;;  # Otherwise</span><br></pre></td></tr></table></figure>
+
+<h4 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h4><p>systemd版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start tigervncserver@:1	#注意是:1不是1</span><br><span class="line"></span><br><span class="line">sudo systemctl enable tigervncserver@:1	#开机自启动</span><br><span class="line">sudo systemctl stop tigervncserver@:1</span><br></pre></td></tr></table></figure>
+
+<p>基本操作</p>
+<p>(使用sudo看到的是root用户开启的，看不到普通用户)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vncserver -list 			#查看当前运行的server。 在tightvnc中没有这个选项，需要通过查看~&#x2F;.vnc目录来查看</span><br><span class="line">vncserver -kill :number 	#停止指定的server</span><br></pre></td></tr></table></figure>
+
+<h4 id="隧道"><a href="#隧道" class="headerlink" title="隧道"></a>隧道</h4><p>-localhost yes时，只能在127.0.0.1上访问vncserver，需要利用ssh在客户端上和服务器上建立一条隧道。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -L 5901:localhost:5901 -C -N user@address -p PORT</span><br><span class="line">ssh -L 5901:localhost:5901 -C -N rzyen	#</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>-L 5901:localhost:5901</p>
+<p>The <strong>-L</strong> argument specifies the post on your local computer (ours is <strong>59000</strong>) to the given host (<strong>localhost</strong>) and port (<strong>5901</strong>) on the destination server (<strong>server_ip_address</strong>).</p>
+</li>
+<li><p>-C: This argument speeds up processes and minimizes resource usage.</p>
+</li>
+<li><p>-N: This argument prevents execution of remote commands and tells SSH to only forward ports</p>
+</li>
+</ul>
+<h4 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h4><ul>
+<li><p>远程访问界面和本地有些不一样。比如侧边栏自动隐藏了，只有按win键才会出现。</p>
+<ul>
+<li><p><a href="https://github.com/TigerVNC/tigervnc/issues/1168" target="_blank" rel="noopener">systemd can’t start on ubuntu 20.04 with error: No user configured for display 1 · Issue #1168 · TigerVNC/tigervnc (github.com)</a></p>
+<blockquote>
+<p>Gnome session doesn’t load users’ settings, it loads defaults. For instance, how dock should look<br><a href="https://user-images.githubusercontent.com/2255040/103416828-f869f700-4b90-11eb-836e-4446767002a0.png" target="_blank" rel="noopener"><img src="https://user-images.githubusercontent.com/2255040/103416828-f869f700-4b90-11eb-836e-4446767002a0.png" alt="image" style="zoom:25%;" /></a><br>And how it is right now:<br><a href="https://user-images.githubusercontent.com/2255040/103416852-0c155d80-4b91-11eb-8d1f-5ab7f534e8d4.png" target="_blank" rel="noopener"><img src="https://user-images.githubusercontent.com/2255040/103416852-0c155d80-4b91-11eb-8d1f-5ab7f534e8d4.png" alt="image" style="zoom:25%;" /></a></p>
+</blockquote>
+</li>
+<li><p>使用wayland版的ubuntu DE不会遇到</p>
+</li>
+</ul>
+</li>
+<li><p>使用以下命令，连接后可以看到一双眼睛</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tigervncserver -xstartup &#x2F;usr&#x2F;bin&#x2F;xeyes</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不同的命令到底作用是什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tigervncconfig</span><br><span class="line">tigervncpasswd</span><br><span class="line">tigervncserver</span><br><span class="line">tigervncsession</span><br><span class="line">Xtigervnc</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>man Xvnc</p>
+<blockquote>
+<p>Xtigervnc is the X VNC (Virtual Network Computing) server.  It is based on a standard X server, but it has a “virtual” screen rather than a physical one.  X applications display themselves on it as if it were a normal X display, but they can only  be  accessed  via  a  VNC  viewer  -  see vncviewer(1).</p>
+<p> So  Xtigervnc  is really two servers in one. To the applications it is an X server, and to the remote VNC users it is a VNC server.</p>
+</blockquote>
+</li>
+<li><p>man vncserver</p>
+<blockquote>
+<p>tigervncserver  is  used  to  start a TigerVNC (Virtual Network Computing) desktop. tigervncserver is a Perl wrapper script which simplifies the process of starting an instance of the TigerVNC server Xtigervnc. </p>
+<p>It runs Xtigervnc with appropriate options and starts some X  applications  to be displayed in the TigerVNC desktop.</p>
+</blockquote>
+</li>
+<li><p>/etc/X11/Xsession</p>
+<blockquote>
+<p>global Xsession file – used by display managers and xinit (startx)</p>
+</blockquote>
+<p>而vncserver默认会调用该脚本</p>
+</li>
+</ul>
+</li>
+<li><p>tigervnc1.12.0直接使用vncserver启动报错（这说明了必须使用systemd启动）</p>
+<p>直接运行该命令会报warnning信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ vncserver -localhost no</span><br><span class="line">vncserver: Warning: No X session desktop file or command for 0</span><br></pre></td></tr></table></figure>
+
+<p>此时vnc直接连接，只有一个黑白窗口显示<code>Xsession: unable to launch &quot;0&quot; X session --- &quot;0&quot; not found; falling back to default session</code></p>
+</li>
+<li><p>既然 X windows System本身就支持网络显示。为什么不在客户端上跑一个X server，这样服务端的X client不久可以远程显示到客户端上了吗？</p>
+<p>man Xvnc  (tigervnc 1.10)</p>
+</li>
+</ul>
+<h3 id="x11vnc"><a href="#x11vnc" class="headerlink" title="x11vnc"></a>x11vnc</h3><ul>
+<li><a href="https://wiki.archlinux.org/title/x11vnc" target="_blank" rel="noopener">X11vnc - ArchWiki (archlinux.org)</a></li>
+</ul>
+<blockquote>
+<p><a href="https://en.wikipedia.org/wiki/x11vnc" target="_blank" rel="noopener">x11vnc</a> is a VNC server, it allows one to view remotely and interact with real X displays (i.e. a display corresponding to a physical monitor, keyboard, and mouse) with any VNC viewer. While it is not developed any longer by its original author Karl Runge, <em>LibVNC</em> and the GitHub community have taken over the development.</p>
+<p><em>x11vnc</em> does not create an extra display (or X desktop) for remote control. Instead, it shows in real time the existing X11 display, unlike <em>Xvnc</em>, part of <a href="https://wiki.archlinux.org/title/TigerVNC" target="_blank" rel="noopener">TigerVNC</a>, which is an alternative VNC server available in the <a href="https://wiki.archlinux.org/title/Official_repositories" target="_blank" rel="noopener">official repositories</a>.</p>
+<p>Also note that x11vnc is not shipped with a client viewer. Any VNC viewer should do the job and be compatible with the x11vnc server while not necessarily using all its functionalities. TigerVNC’s <em>vncviewer</em> is a recommended client.</p>
+</blockquote>
+<h4 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h4><ul>
+<li><p>x11vnc和tigervnc, tightvnc的不同</p>
+<ul>
+<li>需要remote端实际插上显示器</li>
+<li>local端(控制端)的画面和remote显示器显示相同的画面</li>
+</ul>
+<p>因此<strong>适合远程协助场景</strong></p>
+</li>
+<li><p>实际使用过程中发现卡顿有点大，远不如tigervnc流畅，属于勉强能用水平。</p>
+</li>
+<li><p>默认情况下，剪贴板不起作用</p>
+</li>
+</ul>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x11vnc -display :0</span><br></pre></td></tr></table></figure>
+
+<p>运行时会输出一些guideline，按照其一步一步来即可</p>
+<ul>
+<li><p>running X server</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">An X server (the one you wish to view) must be running before x11vnc is</span><br><span class="line">   started: x11vnc does not start the X server.  (however, see the -create</span><br><span class="line">   option if that is what you really want).</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指定X Display</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">** You must use -display &lt;disp&gt;, -OR- set and export your $DISPLAY</span><br><span class="line">   environment variable to refer to the display of the desired X server.</span><br><span class="line"> - Usually the display is simply &quot;:0&quot; (in fact x11vnc uses this if you forget</span><br><span class="line">   to specify it), but in some multi-user situations it could be &quot;:1&quot;, &quot;:2&quot;,</span><br><span class="line">   or even &quot;:137&quot;.  Ask your administrator or a guru if you are having</span><br><span class="line">   difficulty determining what your X DISPLAY is.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>auth</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">** Next, you need to have sufficient permissions (Xauthority)</span><br><span class="line">   to connect to the X DISPLAY.   Here are some Tips:</span><br><span class="line"></span><br><span class="line"> - Often, you just need to run x11vnc as the user logged into the X session.</span><br><span class="line">   So make sure to be that user when you type x11vnc.</span><br><span class="line"> - Being root is usually not enough because the incorrect MIT-MAGIC-COOKIE</span><br><span class="line">   file may be accessed.  The cookie file contains the secret key that</span><br><span class="line">   allows x11vnc to connect to the desired X DISPLAY.</span><br><span class="line"> - You can explicitly indicate which MIT-MAGIC-COOKIE file should be used</span><br><span class="line">   by the -auth option, e.g.:</span><br><span class="line">       x11vnc -auth &#x2F;home&#x2F;someuser&#x2F;.Xauthority -display :0</span><br><span class="line">       x11vnc -auth &#x2F;tmp&#x2F;.gdmzndVlR -display :0</span><br><span class="line">   you must have read permission for the auth file.</span><br><span class="line">   See also &#39;-auth guess&#39; and &#39;-findauth&#39; discussed below.</span><br></pre></td></tr></table></figure>
+
+<p>无人登录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">If NO ONE is logged into an X session yet, but there is a greeter login</span><br><span class="line">   program like &quot;gdm&quot;, &quot;kdm&quot;, &quot;xdm&quot;, or &quot;dtlogin&quot; running, you will need</span><br><span class="line">   to find and use the raw display manager MIT-MAGIC-COOKIE file.</span><br><span class="line">   Some examples for various display managers:</span><br><span class="line"></span><br><span class="line">     gdm:     -auth &#x2F;var&#x2F;gdm&#x2F;:0.Xauth</span><br><span class="line">              -auth &#x2F;var&#x2F;lib&#x2F;gdm&#x2F;:0.Xauth</span><br><span class="line">     kdm:     -auth &#x2F;var&#x2F;lib&#x2F;kdm&#x2F;A:0-crWk72</span><br><span class="line">              -auth &#x2F;var&#x2F;run&#x2F;xauth&#x2F;A:0-crWk72</span><br><span class="line">     xdm:     -auth &#x2F;var&#x2F;lib&#x2F;xdm&#x2F;authdir&#x2F;authfiles&#x2F;A:0-XQvaJk</span><br><span class="line">     dtlogin: -auth &#x2F;var&#x2F;dt&#x2F;A:0-UgaaXa</span><br><span class="line">   Sometimes the command &quot;ps wwwwaux | grep auth&quot; can reveal the file location.</span><br><span class="line"></span><br><span class="line">   Starting with x11vnc 0.9.9 you can have it try to guess by using:</span><br><span class="line"></span><br><span class="line">              -auth guess</span><br><span class="line"></span><br><span class="line">   (see also the x11vnc -findauth option.)</span><br><span class="line">   </span><br><span class="line">   Only root will have read permission for the file, and so x11vnc must be run</span><br><span class="line">   as root (or copy it).  The random characters in the filenames will of course</span><br><span class="line">   change and the directory the cookie file resides in is system dependent.</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>realvnc客户端，windows下有单文件运行版本</p>
+<h4 id="noVNC-web客户端"><a href="#noVNC-web客户端" class="headerlink" title="noVNC(web客户端)"></a>noVNC(web客户端)</h4><p>VNC可以实现浏览器版本的客户端——noVNC</p>
+<p>需要在服务端安装响应软件来实现websocket代理。</p>
+<h2 id="其它remote-desktop"><a href="#其它remote-desktop" class="headerlink" title="其它remote desktop"></a>其它remote desktop</h2><h3 id="spice"><a href="#spice" class="headerlink" title="spice"></a>spice</h3><p><a href="https://en.wikipedia.org/wiki/Simple_Protocol_for_Independent_Computing_Environments" target="_blank" rel="noopener">Simple Protocol for Independent Computing Environments - Wikipedia</a></p>
+<ul>
+<li><p>SPICE最初用作虚拟机显示，有着不错的性能</p>
+<ul>
+<li><p>半虚拟化</p>
+</li>
+<li><blockquote>
+<p>The QEMU binary links to the spice-server library to provide this capability and implements the QXL paravirtualized framebuffer device to enable the guest OS to take advantage of the performance benefits the SPICE protocol offers.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>virt-viewer默认</p>
+</li>
+<li><p>现在也可以结合xorg用于remote desktop connection (Xspice)</p>
+</li>
+</ul>
+<h2 id="X11原理"><a href="#X11原理" class="headerlink" title="X11原理"></a>X11原理</h2><h3 id="查看正在运行的X-server"><a href="#查看正在运行的X-server" class="headerlink" title="查看正在运行的X server"></a>查看正在运行的X server</h3><ul>
+<li><p><a href="https://unix.stackexchange.com/questions/17255/is-there-a-command-to-list-all-open-displays-on-a-machine/17278#17278" target="_blank" rel="noopener">ssh - Is there a command to list all open displays on a machine? - Unix &amp; Linux Stack Exchange</a></p>
+<p>原理是本地运行的X server和X client间的通信是通过共享内存方式实现的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ ls &#x2F;tmp&#x2F;.X11-unix</span><br><span class="line">X0</span><br></pre></td></tr></table></figure>
+
+<p>开启tigervnc后会出现X1</p>
+</li>
+<li><p>登录了gdm后，gdm启动X server。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ps aux |grep xorg</span><br><span class="line">yfy         4380  4.7  1.0 1064284 81108 tty2    Sl+  14:11   0:00 &#x2F;usr&#x2F;lib&#x2F;xorg&#x2F;Xorg vt2 -displayfd 3 -auth &#x2F;run&#x2F;user&#x2F;1000&#x2F;gdm&#x2F;Xauthority -background none -noreset -keeptty -verbose 3</span><br><span class="line">yfy         4997  0.0  0.0  12132   716 pts&#x2F;0    S+   14:12   0:00 grep --color&#x3D;auto --exclude-dir&#x3D;.bzr --exclude-dir&#x3D;CVS --exclude-dir&#x3D;.git --exclude-dir&#x3D;.hg --exclude-dir&#x3D;.svn --exclude-dir&#x3D;.idea --exclude-dir&#x3D;.tox xorg</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="X-server-display"><a href="#X-server-display" class="headerlink" title="X server, display"></a>X server, display</h3><ul>
+<li><p><a href="https://unix.stackexchange.com/questions/503806/what-are-x-server-display-and-screen/503884#503884" target="_blank" rel="noopener">x11 - What are X server, display and screen? - Unix &amp; Linux Stack Exchange</a></p>
+<p><img src="https://i.stack.imgur.com/VrSce.png" alt="X11 connections example"></p>
+</li>
+</ul>
+<h3 id="boot-to-text-prompt"><a href="#boot-to-text-prompt" class="headerlink" title="boot to text prompt"></a>boot to text prompt</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl set-default multi-user.target</span><br><span class="line">#sudo systemctl set-default graphical.target</span><br><span class="line"></span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>ctrl + alt + F2进入tty2。类似的(F1, F3, …)</p>
+</li>
+<li><p>即使是在text模式下，开启display manager，会立马进入GUI界面，登录后一切正常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start gdm3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>同样的，在GUI界面，关闭display manager后，ctrl-alt-F2进入text prompt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl stop gdm3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>在text模式下，仍然可以使用tiger vnc</strong></p>
+</li>
+</ul>
+<p><strong>进一步的了解，可以看下systemd过程</strong></p>
+<h3 id="笔记本关闭屏幕"><a href="#笔记本关闭屏幕" class="headerlink" title="笔记本关闭屏幕"></a>笔记本关闭屏幕</h3><ul>
+<li><p><a href="https://wiki.archlinux.org/title/Display_Power_Management_Signaling" target="_blank" rel="noopener">Display Power Management Signaling - ArchWiki (archlinux.org)</a></p>
+<ul>
+<li>Standby， suspend， off是不同省电级别，但是是针对CRT显示器的，对于LCD显示器均相同。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Command	Description</span><br><span class="line">xset s off	Disable screen saver blanking</span><br><span class="line">xset s 3600 3600	Change blank time to 1 hour</span><br><span class="line">xset -dpms	Turn off DPMS</span><br><span class="line">xset s off -dpms	Disable DPMS and prevent screen from blanking</span><br><span class="line">xset dpms force off	Turn off screen immediately</span><br><span class="line">xset dpms force standby	Standby screen</span><br><span class="line">xset dpms force suspend	Suspend screen</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>笔记本关闭屏幕，只是出于省电。关闭台式机显示器电源应视为没有插屏幕。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vnc/" rel="tag"># vnc</a>
+              <a href="/tags/rdp/" rel="tag"># rdp</a>
+              <a href="/tags/tigervnc/" rel="tag"># tigervnc</a>
+              <a href="/tags/x11vnc/" rel="tag"># x11vnc</a>
+              <a href="/tags/noVNC/" rel="tag"># noVNC</a>
+              <a href="/tags/X11/" rel="tag"># X11</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/16/Linux%E5%AE%89%E8%A3%85windows%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%B9%B6%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A/" rel="prev" title="Linux安装windows虚拟机并显卡直通">
+      <i class="fa fa-chevron-left"></i> Linux安装windows虚拟机并显卡直通
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" rel="next" title="linux系统迁移">
+      linux系统迁移 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RDP"><span class="nav-number">2.</span> <span class="nav-text">RDP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">2.2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDP-client"><span class="nav-number">2.3.</span> <span class="nav-text">RDP client</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VNC"><span class="nav-number">3.</span> <span class="nav-text">VNC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tigervnc"><span class="nav-number">3.1.</span> <span class="nav-text">tigervnc</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用情况"><span class="nav-number">3.1.1.</span> <span class="nav-text">使用情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#桌面环境"><span class="nav-number">3.1.2.</span> <span class="nav-text">桌面环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装tigervnc"><span class="nav-number">3.1.3.</span> <span class="nav-text">安装tigervnc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接密码"><span class="nav-number">3.1.4.</span> <span class="nav-text">连接密码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置vncserver"><span class="nav-number">3.1.5.</span> <span class="nav-text">配置vncserver</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置的说明"><span class="nav-number">3.1.5.1.</span> <span class="nav-text">配置的说明</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行"><span class="nav-number">3.1.6.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隧道"><span class="nav-number">3.1.7.</span> <span class="nav-text">隧道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#问题-1"><span class="nav-number">3.1.8.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#x11vnc"><span class="nav-number">3.2.</span> <span class="nav-text">x11vnc</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#不同点"><span class="nav-number">3.2.1.</span> <span class="nav-text">不同点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">3.2.2.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端"><span class="nav-number">3.3.</span> <span class="nav-text">客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#noVNC-web客户端"><span class="nav-number">3.3.1.</span> <span class="nav-text">noVNC(web客户端)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其它remote-desktop"><span class="nav-number">4.</span> <span class="nav-text">其它remote desktop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spice"><span class="nav-number">4.1.</span> <span class="nav-text">spice</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#X11原理"><span class="nav-number">5.</span> <span class="nav-text">X11原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看正在运行的X-server"><span class="nav-number">5.1.</span> <span class="nav-text">查看正在运行的X server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X-server-display"><span class="nav-number">5.2.</span> <span class="nav-text">X server, display</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boot-to-text-prompt"><span class="nav-number">5.3.</span> <span class="nav-text">boot to text prompt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#笔记本关闭屏幕"><span class="nav-number">5.4.</span> <span class="nav-text">笔记本关闭屏幕</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="rain"
+      src="/images/images_lx/avatar_idenn.png">
+  <p class="site-author-name" itemprop="name">rain</p>
+  <div class="site-description" itemprop="description">记录一些关于数学、计算机的知识，以及一些日常。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TheRainstorm" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TheRainstorm" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1544016010@qq.com" title="E-Mail → mailto:1544016010@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'o4cQoSCyl8A6rNyF3TQecBOG-gzGzoHsz',
+      appKey     : 'RN9rQAQldGQFicEMmzpFUcMA',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

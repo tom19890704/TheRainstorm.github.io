@@ -20,18 +20,16 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Openwrt 编译说明自己编译优点 固件体积减小（需要安装的package被压缩到镜像中）  可以定制一些需要的选项（busybox可以选择zsh）  下次刷机，可以不用进行软件安装，配置    The main advantage of building your own firmware is that it compresses the files, so that you will ha">
+  <meta name="description" content="openwrt编译">
 <meta property="og:type" content="article">
 <meta property="og:title" content="openwrt编译">
 <meta property="og:url" content="http://yoursite.com/2022/02/13/openwrt%E7%BC%96%E8%AF%91/index.html">
 <meta property="og:site_name" content="rain的随笔">
-<meta property="og:description" content="Openwrt 编译说明自己编译优点 固件体积减小（需要安装的package被压缩到镜像中）  可以定制一些需要的选项（busybox可以选择zsh）  下次刷机，可以不用进行软件安装，配置    The main advantage of building your own firmware is that it compresses the files, so that you will ha">
+<meta property="og:description" content="openwrt编译">
 <meta property="og:locale" content="zh">
 <meta property="article:published_time" content="2022-02-12T17:18:16.000Z">
-<meta property="article:modified_time" content="2022-11-03T13:15:09.446Z">
+<meta property="article:modified_time" content="2022-12-05T14:22:48.026Z">
 <meta property="article:author" content="rain">
-<meta property="article:tag" content="折腾">
-<meta property="article:tag" content="如何实现网络自由">
 <meta property="article:tag" content="openwrt">
 <meta name="twitter:card" content="summary">
 
@@ -123,12 +121,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">16</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">49</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
 
   </li>
   </ul>
@@ -189,8 +192,17 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-11-03 21:15:09" itemprop="dateModified" datetime="2022-11-03T21:15:09+08:00">2022-11-03</time>
+                <time title="Modified: 2022-12-05 22:22:48" itemprop="dateModified" datetime="2022-12-05T22:22:48+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" itemprop="url" rel="index"><span itemprop="name">如何实现网络自由</span></a>
+                </span>
+            </span>
 
           
   
@@ -217,7 +229,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Openwrt-编译"><a href="#Openwrt-编译" class="headerlink" title="Openwrt 编译"></a>Openwrt 编译</h2><h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><h4 id="自己编译优点"><a href="#自己编译优点" class="headerlink" title="自己编译优点"></a>自己编译优点</h4><ol>
+        <p>openwrt编译</p>
+<a id="more"></a>
+<h2 id="Openwrt-编译"><a href="#Openwrt-编译" class="headerlink" title="Openwrt 编译"></a>Openwrt 编译</h2><h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><h4 id="自己编译优点"><a href="#自己编译优点" class="headerlink" title="自己编译优点"></a>自己编译优点</h4><ol>
 <li><p>固件体积减小（需要安装的package被压缩到镜像中）</p>
 </li>
 <li><p>可以定制一些需要的选项（busybox可以选择zsh）</p>
@@ -346,7 +360,7 @@
 <h4 id="webcam"><a href="#webcam" class="headerlink" title="webcam"></a>webcam</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#kmod &gt; video support</span><br><span class="line">kmod-video-core kmod-video-uvc</span><br><span class="line"></span><br><span class="line">#Multimedia</span><br><span class="line">mjpg-streamer</span><br><span class="line">input-uvc</span><br><span class="line">output-rtsp</span><br><span class="line">www-simple</span><br><span class="line"></span><br><span class="line">#luci</span><br><span class="line">luci-app-mjpg-streamer</span><br><span class="line"></span><br><span class="line">#utils(optional)</span><br><span class="line">uvcdynctrl</span><br></pre></td></tr></table></figure>
 
 <h4 id="opkg安装其它软件"><a href="#opkg安装其它软件" class="headerlink" title="opkg安装其它软件"></a>opkg安装其它软件</h4><p>剩余一些可选的使用opkg安装更方便</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mtr-json tmux iperf3 tcpdump htop vim-full</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bind-dig mtr-json tmux iperf3 tcpdump htop vim-full</span><br></pre></td></tr></table></figure>
 
 
 
@@ -371,8 +385,6 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%8A%98%E8%85%BE/" rel="tag"># 折腾</a>
-              <a href="/tags/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" rel="tag"># 如何实现网络自由</a>
               <a href="/tags/openwrt/" rel="tag"># openwrt</a>
           </div>
 
@@ -464,14 +476,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">posts</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">106</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

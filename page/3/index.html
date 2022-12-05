@@ -119,12 +119,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">16</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">106</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">49</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">88</span></a>
 
   </li>
   </ul>
@@ -154,7 +159,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/11/%E5%AE%89%E8%A3%85linux%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/19/gdb/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -168,7 +173,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/11/%E5%AE%89%E8%A3%85linux%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">安装linux后的配置</a>
+            <a href="/2022/09/19/gdb/" class="post-title-link" itemprop="url">gdb</a>
         </h2>
 
         <div class="post-meta">
@@ -178,15 +183,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-10-11 23:05:13" itemprop="dateCreated datePublished" datetime="2020-10-11T23:05:13+08:00">2020-10-11</time>
+              <time title="Created: 2022-09-19 18:14:50" itemprop="dateCreated datePublished" datetime="2022-09-19T18:14:50+08:00">2022-09-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-11-01 23:57:09" itemprop="dateModified" datetime="2022-11-01T23:57:09+08:00">2022-11-01</time>
+                <time title="Modified: 2022-12-05 21:14:19" itemprop="dateModified" datetime="2022-12-05T21:14:19+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -197,8 +211,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/10/11/%E5%AE%89%E8%A3%85linux%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/11/%E5%AE%89%E8%A3%85linux%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/09/19/gdb/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/19/gdb/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -213,11 +227,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>[TOC]</p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>不想每次配置linux都需要重新去搜索，因此在自己平时折腾时顺便记录一下（长期更新）</p>
+          <p>gdb</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/10/11/%E5%AE%89%E8%A3%85linux%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE/#more" rel="contents">
+              <a class="btn" href="/2022/09/19/gdb/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -241,7 +254,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/11/WSL%E8%AE%B0%E5%BD%95/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/19/pytorch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -255,7 +268,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/11/WSL%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">WSL记录</a>
+            <a href="/2022/09/19/pytorch/" class="post-title-link" itemprop="url">pytorch</a>
         </h2>
 
         <div class="post-meta">
@@ -265,15 +278,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-10-11 23:04:42" itemprop="dateCreated datePublished" datetime="2020-10-11T23:04:42+08:00">2020-10-11</time>
+              <time title="Created: 2022-09-19 15:49:50" itemprop="dateCreated datePublished" datetime="2022-09-19T15:49:50+08:00">2022-09-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:40:47" itemprop="dateModified" datetime="2022-12-05T21:40:47+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -284,8 +306,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/10/11/WSL%E8%AE%B0%E5%BD%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/11/WSL%E8%AE%B0%E5%BD%95/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/09/19/pytorch/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/19/pytorch/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -300,10 +322,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>发现使用wsl + docker + vs code(remote wsl + remote container插件)可以让开发、部署、运行整个流程变得更加方便。因此想写一篇文章记录接触wsl后了解到的一些知识以及遇到的一些问题以及解决方案（长期更新）。</p>
+          <p>pytorch</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/10/11/WSL%E8%AE%B0%E5%BD%95/#more" rel="contents">
+              <a class="btn" href="/2022/09/19/pytorch/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -327,7 +349,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/11/2020-10-9-%E5%AD%97%E4%BD%93%E5%88%86%E7%B1%BB/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/19/x86%E8%AE%B0%E5%BD%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -341,7 +363,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/11/2020-10-9-%E5%AD%97%E4%BD%93%E5%88%86%E7%B1%BB/" class="post-title-link" itemprop="url">字体分类</a>
+            <a href="/2022/09/19/x86%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">x86记录</a>
         </h2>
 
         <div class="post-meta">
@@ -351,15 +373,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-10-11 23:03:51" itemprop="dateCreated datePublished" datetime="2020-10-11T23:03:51+08:00">2020-10-11</time>
+              <time title="Created: 2022-09-19 15:49:50" itemprop="dateCreated datePublished" datetime="2022-09-19T15:49:50+08:00">2022-09-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:43:53" itemprop="dateModified" datetime="2022-12-05T21:43:53+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -370,8 +401,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/10/11/2020-10-9-%E5%AD%97%E4%BD%93%E5%88%86%E7%B1%BB/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/11/2020-10-9-%E5%AD%97%E4%BD%93%E5%88%86%E7%B1%BB/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/09/19/x86%E8%AE%B0%E5%BD%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/19/x86%E8%AE%B0%E5%BD%95/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -386,16 +417,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>[TOC]</p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>目前还没有一种统一的字体分类方法。因此本文从易于理解的角度，使用4个维度对字体进行分类。</p>
-<p>简单来说，确定了大小、粗细、样式和字体系列后便确定了一种字体。</p>
-<h3 id="font-family"><a href="#font-family" class="headerlink" title="font family"></a>font family</h3><p><strong>字体系列</strong>(font family)表示符合同一种设计风格的字体的集合。比如大名鼎鼎的Helvetica字体就因醒目，清晰而广泛应用于广告，宣传语等场合。Time New Roman也是一种使用非常广泛的字体。</p>
-<p>一种字体系列包含多种变体字体，如Times包含TimeIt(倾斜), TimeBd(加粗)等。我们口语中说的某一种字体，其实通常说的是一种字体系列。</p>
-<p>而对于现有的五花八门的字体系列，可以根据一些特点分成5类，也叫<strong>通用字体系列</strong>(generic font families)。如Helvetica就属于无衬线(sans serif)字体。</p>
-<p>以下是字体系列的5种类别</p>
+          <p>x86记录</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/10/11/2020-10-9-%E5%AD%97%E4%BD%93%E5%88%86%E7%B1%BB/#more" rel="contents">
+              <a class="btn" href="/2022/09/19/x86%E8%AE%B0%E5%BD%95/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -419,7 +444,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/11/%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E6%90%AD%E5%BB%BAoverleaf/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/16/cmake/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -433,7 +458,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/11/%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E6%90%AD%E5%BB%BAoverleaf/" class="post-title-link" itemprop="url">在虚拟机上搭建overleaf</a>
+            <a href="/2022/09/16/cmake/" class="post-title-link" itemprop="url">cmake</a>
         </h2>
 
         <div class="post-meta">
@@ -443,15 +468,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-10-11 23:03:15" itemprop="dateCreated datePublished" datetime="2020-10-11T23:03:15+08:00">2020-10-11</time>
+              <time title="Created: 2022-09-16 18:14:50" itemprop="dateCreated datePublished" datetime="2022-09-16T18:14:50+08:00">2022-09-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:08:59" itemprop="dateModified" datetime="2022-12-05T21:08:59+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -462,8 +496,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/10/11/%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E6%90%AD%E5%BB%BAoverleaf/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/11/%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E6%90%AD%E5%BB%BAoverleaf/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/09/16/cmake/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/16/cmake/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -478,18 +512,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>[TOC]</p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>因为学校的overleaf无法通过latex代码定位到pdf位置。因此想在本地搭建一个latex环境，而如果在windows里安装texlive+配置VS code比较麻烦，且以后重装系统又无法保留，因此考虑在ubuntu虚拟机里安装。</p>
-<p>这里考虑同样搭建一个overleaf，毕竟在主机里打开浏览器直接就能用就很方便，且界面也更美观。</p>
-<p>overleaf采用了docker进行部署，因此需要先安装docker。</p>
-<hr>
-<p>更新</p>
-<p>在virtualbox虚拟机搭建后发现存在性能问题。以编译计组指导书为例，每次修改编译需要1分钟，并且经常出现编译2-3分钟然后失败的情况。</p>
-<p>在查阅wsl性能比较后，发现wsl2的性能已经比较好了，有些场合接近原生linux的性能。参考<a href="https://www.phoronix.com/scan.php?page=article&item=windows10-may2020-wsl2&num=1" target="_blank" rel="noopener">Windows 10 May 2020 Performance For WSL vs. WSL2</a></p>
-<p>于是补充了在wsl2上搭建的内容。</p>
+          <p>cmake</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/10/11/%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E6%90%AD%E5%BB%BAoverleaf/#more" rel="contents">
+              <a class="btn" href="/2022/09/16/cmake/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -513,7 +539,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/07/Makefile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -527,7 +553,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">ucore lab3 总结</a>
+            <a href="/2022/09/07/Makefile/" class="post-title-link" itemprop="url">Makefile</a>
         </h2>
 
         <div class="post-meta">
@@ -537,15 +563,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-09-20 23:52:30" itemprop="dateCreated datePublished" datetime="2020-09-20T23:52:30+08:00">2020-09-20</time>
+              <time title="Created: 2022-09-07 19:11:50" itemprop="dateCreated datePublished" datetime="2022-09-07T19:11:50+08:00">2022-09-07</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 21:39:23" itemprop="dateModified" datetime="2022-12-05T21:39:23+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+                </span>
+            </span>
 
           
   
@@ -556,8 +591,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/09/07/Makefile/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/07/Makefile/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -572,34 +607,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ol>
-<li>x86中断/异常处理(tss和tf作用)</li>
-<li>重要函数说明<ol>
-<li>创建进程(线程)</li>
-<li>调度，运行</li>
-<li>do_wait &amp; do_exit</li>
-<li>do_execve</li>
-<li>其它系统调用</li>
-</ol>
-</li>
-<li>FAQ<ol>
-<li>一个进程被创建后如何开始执行？ </li>
-<li>一个用户进程如果因为时间片用完而被调度掉后，再次被调度回来时会从哪里继续执行？ </li>
-<li>一个进程的完整生命周期？ </li>
-<li>fork调用，为什么父进程返回值为pid，子进程返回值为0（<strong>涉及到用户进程的创建</strong>）</li>
-</ol>
-</li>
-</ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>实验3涉及到的知识点：</p>
-<ol>
-<li>x86中断中tss的作用（类似的内核栈，中断帧的概念）</li>
-<li>进程如何创建、执行、切换（do_fork, do_wait, do_exit等系统调用的设计与实现）</li>
-<li>用户进程的创建、执行过程</li>
-<li>用户ulib库fork, wait, exit的实现</li>
-</ol>
+          <p>Makefile</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/09/20/ucore-lab3-%E6%80%BB%E7%BB%93/#more" rel="contents">
+              <a class="btn" href="/2022/09/07/Makefile/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -623,7 +634,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -637,7 +648,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">ucore lab2总结</a>
+            <a href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">Openwrt Mesh和快速漫游配置</a>
         </h2>
 
         <div class="post-meta">
@@ -647,15 +658,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-09-14 20:59:11" itemprop="dateCreated datePublished" datetime="2020-09-14T20:59:11+08:00">2020-09-14</time>
+              <time title="Created: 2022-08-25 22:17:13" itemprop="dateCreated datePublished" datetime="2022-08-25T22:17:13+08:00">2022-08-25</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 20:30:58" itemprop="dateModified" datetime="2022-12-05T20:30:58+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+            </span>
 
           
   
@@ -666,8 +686,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -682,213 +702,115 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>回顾实验1，我觉得需要学习的知识有：</p>
-<ol>
-<li><strong>gdb</strong>工具的使用</li>
-<li><strong>ELF</strong>文件的格式，以及readelf, objdump, objcopy工具的使用（查看各个section，查看符号表）</li>
-<li>x86汇编基础（通用寄存器，段寄存器，EIP，EFLAG等），GCC<strong>内联汇编</strong>格式（AT&amp;T格式）</li>
-<li>x86内存<strong>分段</strong>机制（GDT表，段描述符）</li>
-<li>x86<strong>中断</strong>处理机制（IDT表，中断向量 -&gt; 中断处理程序）</li>
-<li>操作系统启动过程（BIOS-&gt;bootloader(第一扇区)-&gt;Kernel各阶段做的事情）</li>
-</ol>
-<p>而做完实验2后，我觉得需要学习的知识有：</p>
-<ol>
-<li>BIOS探测物理内存，Kernel打开分页时自带一个页表</li>
-<li><strong>二级页表</strong>进行虚拟地址转换</li>
-<li>物理内存管理 之 <strong>空闲块</strong>(以页为单位)管理（Page数据结构和物理页的对应，空闲块链表free_list，FirstHit分配连续的物理页）</li>
-<li>虚拟内存管理 之 <strong>有效虚拟页</strong>（表示一个程序可能使用的虚拟地址段，vma, mm数据结构）</li>
-<li>导致<strong>PageFault</strong>的原因（1. pte=0即从来没有被加载过, 2. 被swap out, 3. 访问权限错误）</li>
-<li><strong>FIFO页替换</strong>算法实现（page struct增加pra_page_link, pra_vaddr，mm-&gt;sm_priv(<strong>pra_list_header</strong>)记录最近使用的页序列；swap_manager）</li>
-</ol>
-<p>以下介绍一些难点</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/14/ucore-lab2%E6%80%BB%E7%BB%93/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/07/%E5%85%B3%E4%BA%8E2020%E5%88%B0%E7%9B%AE%E5%89%8D%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%BB%E7%BB%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
-      <meta itemprop="name" content="rain">
-      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="rain的随笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/07/%E5%85%B3%E4%BA%8E2020%E5%88%B0%E7%9B%AE%E5%89%8D%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">关于2020到目前的一个总结</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-09-07 20:56:47" itemprop="dateCreated datePublished" datetime="2020-09-07T20:56:47+08:00">2020-09-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2020/09/07/%E5%85%B3%E4%BA%8E2020%E5%88%B0%E7%9B%AE%E5%89%8D%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/07/%E5%85%B3%E4%BA%8E2020%E5%88%B0%E7%9B%AE%E5%89%8D%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>2020年对全人类来说是不平凡的一年，而对我来说也是不同寻常的一年。这一年发生了许多大大小小的事，有些事情身处其中时觉得非常不得了，而经历过后，又觉得也许很快就会忘记，因此想记录一些这一年我都干了些什么事。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/07/%E5%85%B3%E4%BA%8E2020%E5%88%B0%E7%9B%AE%E5%89%8D%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%BB%E7%BB%93/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/07/Virtual-Box%E9%85%8D%E7%BD%AE%E5%8F%8C%E7%BD%91%E5%8D%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
-      <meta itemprop="name" content="rain">
-      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="rain的随笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/07/Virtual-Box%E9%85%8D%E7%BD%AE%E5%8F%8C%E7%BD%91%E5%8D%A1/" class="post-title-link" itemprop="url">Virtual Box配置双网卡</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-09-07 19:02:24" itemprop="dateCreated datePublished" datetime="2020-09-07T19:02:24+08:00">2020-09-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2020/09/07/Virtual-Box%E9%85%8D%E7%BD%AE%E5%8F%8C%E7%BD%91%E5%8D%A1/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/07/Virtual-Box%E9%85%8D%E7%BD%AE%E5%8F%8C%E7%BD%91%E5%8D%A1/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>由于目前在电脑上运行一个虚拟机已经比较流畅，而虚拟机又有着真机无法比拟的优势，如：</p>
+          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>家里原本有两个路由器，一个负责楼上，一个负责楼下。但是仍然有许多覆盖不到的地方，比如厨房。并且更影响体验的是楼上楼下的WIFI使用不同的SSID，手机无法很好地自动切换。经常是楼上连接到楼下的网络导致信号很差。因此决定对家里的网络改造一番。</p>
+<p>以前听过mesh这个技术，可以将很多台路由器通过无线连接起来，共同提供一个网络。于是去搜索了openwrt是否支持mesh，发现是可以的。并且经过进一步的了解，纠正了自己之前对无线网络的一些错误认知。</p>
 <ul>
-<li>可以快速地进行备份与还原，且备份的虚拟机镜像可以复制到其它电脑上</li>
-<li>可以保存虚拟机当前的运行状态（快速休眠），而下次启动时恢复运行（且速度很快）</li>
+<li>首先，mesh解决的并不是如何让设备自动切换网络，而是如何进行<strong>无线组网</strong>，可以避免布线的困难。mesh节点通过同一个信道的的无线相互连接，而通过另一个无线提供WIFI。</li>
+<li><strong>快速漫游</strong>(fast roaming)协议，精确来说叫做802.11r协议，可以减少设备切换无线网络的耗时。</li>
 </ul>
-<p>因此我配置了一台Ubuntu18.0的虚拟机，并做了以下配置：</p>
+<p>硬件设备上，我选择使用小米路由3G来搭建，主要是因为硬件配置上在wifi5的路由器中算是很不错的了，且某鱼上一个只需要50元。于是又买了两个，加上原本的，现在有4台openwrt路由器，一个红米AC2100作为主路由，3个R3G作为AP节点。</p>
+<p>为了方便配置还实现了一个自动配置脚本放在github：<a href="https://github.com/TheRainstorm/my-openwrt-config" target="_blank" rel="noopener">TheRainstorm/my-openwrt-config (github.com)</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/08/25/Openwrt-Mesh%E5%92%8C%E5%BF%AB%E9%80%9F%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/" class="post-title-link" itemprop="url">使用openwrt路由器和usb摄像头进行延时摄影</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-24 14:13:52" itemprop="dateCreated datePublished" datetime="2022-08-24T14:13:52+08:00">2022-08-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:17:21" itemprop="dateModified" datetime="2022-12-05T22:17:21+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>放在楼顶，拍摄一天24h的户外录像、延时摄影。像超级小桀每天的直播录屏p1那样。</p>
 <ul>
-<li>配置了build-essential, python3, git, vim等常用软件</li>
-<li>配置了zsh，以及一些zsh的插件如自动提示，命令高亮，auto-jump</li>
-<li>配置了VS Code, Chromium软件</li>
-<li>配置了nodejs, cnpm, hexo等，用于编写hexo博客</li>
-<li>启动sshd，并配置网络</li>
+<li>可以远程通过网页实时查看摄像头直播画面</li>
 </ul>
-<p>其中，关于最后一点。刚开始我采用了桥接网络+静态ip的方案。但是发现当主机网络环境改变时，ssh便连接不上了，于是便有了这篇博客。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/09/07/Virtual-Box%E9%85%8D%E7%BD%AE%E5%8F%8C%E7%BD%91%E5%8D%A1/#more" rel="contents">
+              <a class="btn" href="/2022/08/24/%E4%BD%BF%E7%94%A8openwrt%E8%B7%AF%E7%94%B1%E5%99%A8%E5%92%8Cusb%E6%91%84%E5%83%8F%E5%A4%B4%E8%BF%9B%E8%A1%8C%E5%BB%B6%E6%97%B6%E6%91%84%E5%BD%B1/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -912,7 +834,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/31/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -926,7 +848,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/05/31/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">编译原理总结</a>
+            <a href="/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">openwrt DNS详解</a>
         </h2>
 
         <div class="post-meta">
@@ -936,15 +858,24 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-31 22:50:15" itemprop="dateCreated datePublished" datetime="2020-05-31T22:50:15+08:00">2020-05-31</time>
+              <time title="Created: 2022-08-16 23:23:52" itemprop="dateCreated datePublished" datetime="2022-08-16T23:23:52+08:00">2022-08-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 22:19:58" itemprop="dateModified" datetime="2022-12-05T22:19:58+08:00">2022-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E8%87%AA%E7%94%B1/" itemprop="url" rel="index"><span itemprop="name">如何实现网络自由</span></a>
+                </span>
+            </span>
 
           
   
@@ -955,8 +886,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/05/31/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/31/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -971,22 +902,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="目前我眼中的计算机层次："><a href="#目前我眼中的计算机层次：" class="headerlink" title="目前我眼中的计算机层次："></a>目前我眼中的计算机层次：</h2><ul>
-<li>计算机体系结构（RTL级设计，流水线，缓存，多发射）</li>
-<li>ISA （访存模式，中断/异常）</li>
-<li>汇编语言（寄存器+内存空间）</li>
-<li>高级语言 （编译器）</li>
-<li>操作系统（内核：进程调度，同步与死锁，内存管理：页表，文件系统<br>  应用：桌面系统，浏览器）</li>
+          <h3 id="openwrt-DNS说明"><a href="#openwrt-DNS说明" class="headerlink" title="openwrt DNS说明"></a>openwrt DNS说明</h3><p><a href="https://openwrt.org/docs/guide-user/base-system/dhcp" target="_blank" rel="noopener">[OpenWrt Wiki] DNS and DHCP configuration /etc/config/dhcp</a></p>
+<p><a href="https://openwrt.org/docs/guide-user/base-system/dhcp_configuration" target="_blank" rel="noopener">[OpenWrt Wiki] DNS and DHCP examples</a></p>
+<ul>
+<li><p>openwrt DNS和DHCP配置均位于/etc/config/dhcp</p>
+</li>
+<li><p>openwrt使用dnsmasq和odhcpd。它们功能如下：</p>
+<p><img src="https://raw.githubusercontent.com/TheRainstorm/.image-bed/main/picgo/image-20220816220011245.png" alt="image-20220816220011245"></p>
+</li>
+<li><p>总结来说：</p>
+<ul>
+<li>dnsmasq将自己设置为DHCP客户端的DNS</li>
+<li>dnsmasq使用缓存来提升性能。到达的dns请求如果没有命中则转发给<strong>上游DNS</strong></li>
 </ul>
-<h2 id="编译器各阶段"><a href="#编译器各阶段" class="headerlink" title="编译器各阶段"></a>编译器各阶段</h2><ol>
-<li><p><strong>词法分析</strong>：解析源代码文件，输出记号流。<br>记号即指一个有独立意义的“单词”。空白字符便一般不包含意义，故可以省略。<br>这些单词一般可分类为：标识符，常数（整数，浮点数），字符常量，字符串，<br>操作符，界符，关键字。</p>
+<blockquote>
+<p>Dnsmasq serves as a downstream caching DNS server advertising itself to DHCP clients. This allows better performance and management of DNS functionality on your local network. Every received DNS query not currently in cache is forwarded to the upstream DNS servers.</p>
+</blockquote>
 </li>
-<li><p><strong>语法分析</strong>：分析记号流，输出程序的逻辑结构，如语法分析树（或AST树）<br>一种语言的语法规则可以被文法产生式完全定义。<br>文法一般包括表达式的定义，各种语句的定义（if, while, for），变量声明，<br>函数定义等。</p>
-</li>
-</ol>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/05/31/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/#more" rel="contents">
+              <a class="btn" href="/2022/08/16/openwrt%20DNS%E8%AF%A6%E8%A7%A3/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1010,7 +946,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/CloudView%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%A1%8Cbad%20apple/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
@@ -1024,7 +960,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/04/09/CloudView%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%A1%8Cbad%20apple/" class="post-title-link" itemprop="url">CloudView平台运行bad apple</a>
+            <a href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">gcc mpi源码编译</a>
         </h2>
 
         <div class="post-meta">
@@ -1034,14 +970,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-04-09 12:00:00" itemprop="dateCreated datePublished" datetime="2020-04-09T12:00:00+08:00">2020-04-09</time>
+              <time title="Created: 2022-08-04 16:28:41" itemprop="dateCreated datePublished" datetime="2022-08-04T16:28:41+08:00">2022-08-04</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-24 16:48:12" itemprop="dateModified" datetime="2022-05-24T16:48:12+08:00">2022-05-24</time>
+                <time title="Modified: 2022-12-05 22:20:44" itemprop="dateModified" datetime="2022-12-05T22:20:44+08:00">2022-12-05</time>
               </span>
 
           
@@ -1053,8 +989,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/04/09/CloudView%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%A1%8Cbad%20apple/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/09/CloudView%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%A1%8Cbad%20apple/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -1069,78 +1005,115 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>重写了bad-apple的代码，利用了多进程的方式进行视频转换。</p>
-<p>以下是各个配置转换bad apple.mp4的时间</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>线性执行</th>
-<th>4线程</th>
-<th>1进程</th>
-<th>2进程</th>
-<th>4进程</th>
-<th>8进程</th>
-<th>16进程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>时间(秒)</td>
-<td>34.97</td>
-<td>34.70</td>
-<td>35.05</td>
-<td>24.15</td>
-<td>18.11</td>
-<td>18.09</td>
-<td>18</td>
-</tr>
-</tbody></table>
-<p>其中线程为采用threading库，进程则采用multiprocessing库</p>
-<p>我的电脑配置为：</p>
-<table>
-<thead>
-<tr>
-<th>CPU</th>
-<th>intel(R) Core(TM) i5-7200U CPU @ 2.50GHz 2.70GHz</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>RAM</td>
-<td>8.00 GB</td>
-</tr>
-<tr>
-<td>Windows</td>
-<td>Windows10 家庭版 1909 18363.720</td>
-</tr>
-</tbody></table>
-<p>官方文档说明了threading库底层实现时仍只有一个线程，因而只适用于大量I/O并发的情况。而我们的图片转换成字符画的过程主要是计算密集型，因此基本没有改善性能。</p>
-<p>而采用多进程时，刚好对应我电脑的4线程（2核，采用超线程技术可以有4个线程，其实这里进程线程有点晕）时提升最大。</p>
-<p>于是便想知道32个核时，能提升多少，便想在服务器上跑跑看。以下是配置运行过程。</p>
-<p>出人意料的结果：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>1进程</th>
-<th>4线程</th>
-<th>8进程</th>
-<th>16进程</th>
-<th>32进程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>时间(秒)</td>
-<td>51</td>
-<td>24</td>
-<td>23.22</td>
-<td>21.57</td>
-<td>21.14</td>
-</tr>
-</tbody></table>
-<p>可能进程多了后，写文件的速度反而成了瓶颈，查看top发现各个核的cpu利用率都只有10%左右，在代码中输出cvt_frame.qsize()也发现几乎都是满的。（在自己电脑上大多数都是0，表明cvt_frame供不应求）</p>
+          <p>gcc mpi源码编译过程记录</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/04/09/CloudView%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%A1%8Cbad%20apple/#more" rel="contents">
+              <a class="btn" href="/2022/08/04/gcc-mpi%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/images_lx/avatar_idenn.png">
+      <meta itemprop="name" content="rain">
+      <meta itemprop="description" content="记录一些关于数学、计算机的知识，以及一些日常。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="rain的随笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" class="post-title-link" itemprop="url">linux系统迁移</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-22 13:40:52" itemprop="dateCreated datePublished" datetime="2022-07-22T13:40:52+08:00">2022-07-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-05 22:19:21" itemprop="dateModified" datetime="2022-12-05T22:19:21+08:00">2022-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="linux系统迁移"><a href="#linux系统迁移" class="headerlink" title="linux系统迁移"></a>linux系统迁移</h2><p>买了一条三星的PM9A1 SSD，想要把原本的linux迁移到新的固态上。</p>
+<h3 id="系统信息"><a href="#系统信息" class="headerlink" title="系统信息"></a>系统信息</h3><ul>
+<li><p>原本的系统（windows和ubuntu双系统）安装在固态上，包含EFI分区。</p>
+</li>
+<li><p>系统引导方式：EFI/GPT（其它方式有BIOS/MBR, BIOS/GPT）</p>
+<blockquote>
+<p>BIOS system</p>
+<p>On a BIOS/GPT system there is no MBR and therefore no place to store the loader. The GPT partition specification allows for an unformatted partition of the BIOS boot partition type (0xEF02). The size of this partition can be as small as 1 mebibyte. The Calamares installer uses a fixed size of 32 mebibyte. On a BIOS/MBR system a part of the bootloader is written to the Master Boot Record for the primary disk.</p>
+</blockquote>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/07/22/linux%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1163,7 +1136,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1231,14 +1204,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">posts</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">106</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
